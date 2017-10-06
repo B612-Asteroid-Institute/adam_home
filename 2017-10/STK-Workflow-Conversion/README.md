@@ -6,3 +6,4 @@ This controls STK in a loop, incrementing the delta-V, and getting altitude and 
 It's stroed in a STKResults object.
 We output the results to a csv file, and we can read the csv file back in, so we don't have to re-run the STK loop.
 We can also read in the csv, which has the desired outputs, and re-run the run.
+The file data-frame.csv is an example output file, designed to mimic the excel output file in rows and columns.
