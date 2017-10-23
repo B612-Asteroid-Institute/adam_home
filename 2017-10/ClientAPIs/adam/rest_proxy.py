@@ -143,7 +143,7 @@ class _RestProxyForTest(RestProxy):
 
         # Check for empty expectations list - TODO more specific error
         if len(self._expectations) == 0:
-            raise AssertionError("Did not expect any calls, get POST")
+            raise AssertionError("Did not expect any calls, got POST")
 
         # Get first expectations list
         exp = self._expectations[0]
@@ -189,7 +189,7 @@ class _RestProxyForTest(RestProxy):
 
         # Check for empty expectations list - TODO more specific error
         if len(self._expectations) == 0:
-            raise AssertionError("Did not expect any calls, get GET")
+            raise AssertionError("Did not expect any calls, got GET")
 
         # Get first expectations list
         exp = self._expectations[0]
