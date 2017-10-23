@@ -101,7 +101,7 @@ class _RestProxyForTest(RestProxy):
 
         Args:
             url (str): the URL to send the POST to
-            data_func (dict): the input data to send to the POST
+            data_func (func): function to validate the input data to send to the POST
             code (int): return code from POST
             resp_data (dict): response data returned from POST
         """
