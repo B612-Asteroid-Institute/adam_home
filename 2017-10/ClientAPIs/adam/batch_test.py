@@ -423,7 +423,7 @@ class BatchTest(unittest.TestCase):
         # Override network access with proxy
         batch.set_rest_accessor(rest)
 
-        # Assert that an overall calc state as 'RUNNING' will return a KeyError
+        # Assert that a part calc state as 'RUNNING' will return a KeyError
         with self.assertRaises(KeyError):
             batch.get_part_state(part)
 
