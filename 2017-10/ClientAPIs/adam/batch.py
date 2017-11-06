@@ -382,7 +382,7 @@ class Batch(object):
         # Load the part from the given index
         part = self._load_part(index)
 
-        # Try to return the calc state for that part; return None otherwise
+        # Try to return the ephemeris for that part; return None otherwise
         try:
             return part['stk_ephemeris']
         except KeyError:
