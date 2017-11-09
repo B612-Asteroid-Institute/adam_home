@@ -493,5 +493,38 @@ class BatchTest(unittest.TestCase):
         with self.assertRaises(IndexError):
             batch.get_part_state(part)
 
+
+    def test_server_failed_part(self):
+        """Test a failing server for a specific part
+
+        This function tests a failed submit on the server side (i.e. code returned is not 200) for a specified part.
+
+        """
+
+        # Dummy UUID and part number for testing
+        uuid = 'BLAH'
+        part = 3
+
+        # Use REST proxy for testing
+        rest = _RestProxyForTest()
+
+        # Set expected 'GET' request with 404 error
+        rest.expect_get(self._base + '/batch/' + uuid + '/' + str(part), 404, {})
+
+        # Initiate Batch class
+        batch = Batch()
+
+        # Set UUID, parts count, and overall calc state (as 'RUNNING')
+        batch._uuid = uuid
+        batch._parts_count = 10
+        batch._calc_state = 'COMPLETED'
+
+        # Override network access with proxy
+        batch.set_rest_accessor(rest)
+
+        # Assert that a 404 error code will raise a RuntimeError
+        with self.assertRaises(RuntimeError):
+            batch.get_part_state(part)
+
 if __name__ == '__main__':
     unittest.main()

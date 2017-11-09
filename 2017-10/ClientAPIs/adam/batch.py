@@ -309,9 +309,9 @@ class Batch(object):
         if part is None:
             code, part = self._rest.get(_URL + '/batch/' + self._uuid + '/' + str(index))
 
-            # Return 'None' if specific part submission was not successful
+            # Raise error if specific part submission was not successful
             if code != 200:
-                return None
+                raise RuntimeError("Server status code: %s" % (code))
 
             # Get the status of the submitted job and grab the part if it is either 'COMPLETED' or 'FAILED'
             status = part['calc_state']
