@@ -427,5 +427,37 @@ class BatchTest(unittest.TestCase):
         with self.assertRaises(KeyError):
             batch.get_part_state(part)
 
+    def test_is_ready_failed_part(self):
+        """Test when an individual part has failed but the overall job has completed
+
+        This function tests that a job will correctly indicate when a part has failed.
+
+        """
+
+        # Dummy UUID and part number for testing
+        uuid = 'BLAH'
+        part = 3
+
+        # Use REST proxy for testing
+        rest = _RestProxyForTest()
+
+        # Set expected 'GET' request with calc_state as 'RUNNING'
+        rest.expect_get(self._base + '/batch/' + uuid + '/' + str(part), 200,
+                        {'calc_state': 'FAILED', 'part_index': part})
+
+        # Initiate Batch class
+        batch = Batch()
+
+        # Set UUID, parts count, and overall calc state (as 'RUNNING')
+        batch._uuid = uuid
+        batch._parts_count = 10
+        batch._calc_state = 'COMPLETED'
+
+        # Override network access with proxy
+        batch.set_rest_accessor(rest)
+
+        # Assert that the calc state for the specific part's run is as expected
+        self.assertEqual(batch.get_part_state(part), 'FAILED')
+
 if __name__ == '__main__':
     unittest.main()
