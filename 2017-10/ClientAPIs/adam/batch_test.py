@@ -459,5 +459,39 @@ class BatchTest(unittest.TestCase):
         # Assert that the calc state for the specific part's run is as expected
         self.assertEqual(batch.get_part_state(part), 'FAILED')
 
+
+    def test_part_not_in_range(self):
+        """Test a part not in the part range
+
+        This function tests that a part not within its range will raise an error.
+
+        """
+        # Dummy UUID and part number for testing
+        uuid = 'BLAH'
+        part = 15
+
+        # Use REST proxy for testing
+        rest = _RestProxyForTest()
+
+        # Set expected 'GET' request with calc_state as 'COMPLETED' for specific part
+        rest.expect_get(self._base + '/batch/' + uuid + '/' + str(part), 200,
+                        {'calc_state': 'COMPLETED', 'error': 'No error!', 'stk_ephemeris': 'something',
+                         'part_index': part})
+
+        # Initiate Batch class
+        batch = Batch()
+
+        # Set UUID, parts count, and overall calc state (as 'RUNNING')
+        batch._uuid = uuid
+        batch._parts_count = 10
+        batch._calc_state = 'COMPLETED'
+
+        # Override network access with proxy
+        batch.set_rest_accessor(rest)
+
+        # Assert that a part outside its range will return an IndexError
+        with self.assertRaises(IndexError):
+            batch.get_part_state(part)
+
 if __name__ == '__main__':
     unittest.main()
