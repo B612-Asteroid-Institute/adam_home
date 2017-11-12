@@ -473,11 +473,6 @@ class BatchTest(unittest.TestCase):
         # Use REST proxy for testing
         rest = _RestProxyForTest()
 
-        # Set expected 'GET' request with calc_state as 'COMPLETED' for specific part
-        rest.expect_get(self._base + '/batch/' + uuid + '/' + str(part), 200,
-                        {'calc_state': 'COMPLETED', 'error': 'No error!', 'stk_ephemeris': 'something',
-                         'part_index': part})
-
         # Initiate Batch class
         batch = Batch()
 
