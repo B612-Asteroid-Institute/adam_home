@@ -291,10 +291,6 @@ class Batch(object):
             IndexError: if provided index is out of bounds
         """
 
-        # Raise error if job has not completed
-        if self._calc_state != "COMPLETED":
-            raise KeyError
-
         # Check to see if index is out of bounds
         if index < 1 or index > self._parts_count:
             raise IndexError
