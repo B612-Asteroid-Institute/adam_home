@@ -322,38 +322,6 @@ class BatchTest(unittest.TestCase):
         # Assert that checking if the batch is ready will return True
         self.assertTrue(batch.is_ready())
 
-    def test_get_ephemeris_failed(self):
-        """Test that a failed run will raise a KeyError if retrieving ephemeris
-
-        This function tests that attempting to get the ephemeris will return a KeyError if the batch job has failed.
-
-        """
-
-        # Dummy UUID and part number for testing
-        uuid = 'BLAH'
-        part = 3
-
-        # Use REST proxy for testing
-        rest = _RestProxyForTest()
-
-        # Set expected 'GET' request with calc_state as 'FAILED' for specific part
-        rest.expect_get(self._base + '/batch/' + uuid + '/' + str(part), 200,
-                        {'calc_state': 'FAILED','error': 'No error!', 'part_index': part})
-
-        # Initiate Batch class
-        batch = Batch()
-
-        # Set UUID, parts count, and overall calc state (as 'FAILED')
-        batch._uuid = uuid
-        batch._parts_count = 10
-        batch._calc_state = 'FAILED'
-
-        # Override network access with proxy
-        batch.set_rest_accessor(rest)
-
-        # Assert that attempting to retrieve a part's ephemeris will return None
-        self.assertEqual(batch.get_part_ephemeris(part), None)
-
     def test_get_ephemeris(self):
         """Test that an ephemeris is returned if the job has completed successfully
 
@@ -426,9 +394,10 @@ class BatchTest(unittest.TestCase):
         self.assertEqual(batch.get_part_state(part), 'RUNNING')
 
     def test_is_ready_failed_part(self):
-        """Test when an individual part has failed but the overall job has completed
+        """Test when an individual part has failed
 
-        This function tests that a job will correctly indicate when a part has failed.
+        This function tests that a job will correctly indicate when a part has failed, that it returns the expected
+        error, and that it returns None for ephemeris.
 
         """
 
@@ -459,6 +428,9 @@ class BatchTest(unittest.TestCase):
 
         # Assert that the error returned is as expected
         self.assertEqual(batch.get_part_error(part), 'Some error')
+
+        # Assert that attempting to retrieve a part's ephemeris will return None
+        self.assertEqual(batch.get_part_ephemeris(part), None)
 
     def test_part_not_in_range(self):
         """Test a part not in the part range
