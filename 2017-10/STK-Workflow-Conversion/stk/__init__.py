@@ -3,3 +3,4 @@
 """
 
 from stk.astrogatoroutput import AstrogatorOutput
+from .io import *
