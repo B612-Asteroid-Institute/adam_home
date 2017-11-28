@@ -363,6 +363,23 @@ class Batch(object):
         except KeyError:
             return None
 
+    def is_ready_part(self, index):
+        """Determine if a part is ready
+
+        This function determines if the job for a specified part has either completed or failed (i.e., not waiting).
+
+        Args:
+            index (int): part index of job (1 for regular job, > 1 for jobs with covariance)
+
+        Returns:
+            Boolean
+        """
+
+        # Load the part from the given index
+        part_state = self.get_part_state(index)
+
+        return part_state in ["COMPLETED", "FAILED"]
+
     def get_part_ephemeris(self, index):
         """Get ephemeris from specified part
 

@@ -361,6 +361,9 @@ class BatchTest(unittest.TestCase):
         # Assert that the calc state for the specific part's run is as expected
         self.assertEqual(batch.get_part_state(part), 'COMPLETED')
 
+        # Assert that checking if the part is ready will return True
+        self.assertTrue(batch.is_ready_part(part))
+
     def test_is_not_ready_part(self):
         """Test when an individual part is not ready
 
@@ -390,8 +393,8 @@ class BatchTest(unittest.TestCase):
         # Override network access with proxy
         batch.set_rest_accessor(rest)
 
-        # Assert that the calc state for the specific part's run is as expected
-        self.assertEqual(batch.get_part_state(part), 'RUNNING')
+        # Assert that checking if the part is ready will return False
+        self.assertFalse(batch.is_ready_part(part))
 
     def test_is_ready_failed_part(self):
         """Test when an individual part has failed
