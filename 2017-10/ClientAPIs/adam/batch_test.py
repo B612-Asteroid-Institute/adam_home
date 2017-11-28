@@ -6,10 +6,6 @@ import unittest
 class BatchTest(unittest.TestCase):
     """Unit tests for running batch job
 
-    TODO:
-        - Check if individual parts are ready
-        - Check if part is within range
-        - Check different errors: 200, 404, 500
     """
 
     def setUp(self):
@@ -263,8 +259,6 @@ class BatchTest(unittest.TestCase):
 
         This function tests that a job will indicate that it is ready if it has completed.
 
-        TODO:
-            Other fields
         """
 
         # Dummy UUID for testing
@@ -290,13 +284,17 @@ class BatchTest(unittest.TestCase):
         # Assert that checking if the batch is ready will return True
         self.assertTrue(batch.is_ready())
 
+        # Assert that the calc state is as expected
+        self.assertEqual(batch.get_calc_state(), 'COMPLETED')
+
+        # Assert that the number of expected parts is returned
+        self.assertEqual(batch.get_parts_count(), 42)
+
     def test_is_ready_failed(self):
         """Test that job is ready when failed
 
         This function tests that a job will indicate that it is ready if it has failed.
 
-        TODO:
-            Other fields
         """
 
         # Dummy UUID for testing
@@ -321,6 +319,12 @@ class BatchTest(unittest.TestCase):
 
         # Assert that checking if the batch is ready will return True
         self.assertTrue(batch.is_ready())
+
+        # Assert that the calc state is as expected
+        self.assertEqual(batch.get_calc_state(), 'FAILED')
+
+        # Assert that the number of expected parts is returned
+        self.assertEqual(batch.get_parts_count(), 42)
 
     def test_get_ephemeris(self):
         """Test that an ephemeris is returned if the job has completed successfully
