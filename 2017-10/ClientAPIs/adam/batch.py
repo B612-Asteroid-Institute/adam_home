@@ -291,10 +291,6 @@ class Batch(object):
             IndexError: if provided index is out of bounds
         """
 
-        # Raise error if job has not completed
-        if self._calc_state != "COMPLETED":
-            raise KeyError
-
         # Check to see if index is out of bounds
         if index < 1 or index > self._parts_count:
             raise IndexError
@@ -309,9 +305,9 @@ class Batch(object):
         if part is None:
             code, part = self._rest.get(_URL + '/batch/' + self._uuid + '/' + str(index))
 
-            # Return 'None' if specific part submission was not successful
+            # Raise error if specific part submission was not successful
             if code != 200:
-                return None
+                raise RuntimeError("Server status code: %s" % (code))
 
             # Get the status of the submitted job and grab the part if it is either 'COMPLETED' or 'FAILED'
             status = part['calc_state']
@@ -366,6 +362,23 @@ class Batch(object):
             return part['calc_state']
         except KeyError:
             return None
+
+    def is_ready_part(self, index):
+        """Determine if a part is ready
+
+        This function determines if the job for a specified part has either completed or failed (i.e., not waiting).
+
+        Args:
+            index (int): part index of job (1 for regular job, > 1 for jobs with covariance)
+
+        Returns:
+            Boolean
+        """
+
+        # Load the part from the given index
+        part_state = self.get_part_state(index)
+
+        return part_state in ["COMPLETED", "FAILED"]
 
     def get_part_ephemeris(self, index):
         """Get ephemeris from specified part
