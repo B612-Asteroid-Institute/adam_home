@@ -6,10 +6,6 @@ import unittest
 class BatchTest(unittest.TestCase):
     """Unit tests for running batch job
 
-    TODO:
-        - Check if individual parts are ready
-        - Check if part is within range
-        - Check different errors: 200, 404, 500
     """
 
     def setUp(self):
@@ -263,8 +259,6 @@ class BatchTest(unittest.TestCase):
 
         This function tests that a job will indicate that it is ready if it has completed.
 
-        TODO:
-            Other fields
         """
 
         # Dummy UUID for testing
@@ -290,13 +284,17 @@ class BatchTest(unittest.TestCase):
         # Assert that checking if the batch is ready will return True
         self.assertTrue(batch.is_ready())
 
+        # Assert that the calc state is as expected
+        self.assertEqual(batch.get_calc_state(), 'COMPLETED')
+
+        # Assert that the number of expected parts is returned
+        self.assertEqual(batch.get_parts_count(), 42)
+
     def test_is_ready_failed(self):
         """Test that job is ready when failed
 
         This function tests that a job will indicate that it is ready if it has failed.
 
-        TODO:
-            Other fields
         """
 
         # Dummy UUID for testing
@@ -322,38 +320,11 @@ class BatchTest(unittest.TestCase):
         # Assert that checking if the batch is ready will return True
         self.assertTrue(batch.is_ready())
 
-    def test_get_ephemeris_failed(self):
-        """Test that a failed run will raise a KeyError if retrieving ephemeris
+        # Assert that the calc state is as expected
+        self.assertEqual(batch.get_calc_state(), 'FAILED')
 
-        This function tests that attempting to get the ephemeris will return a KeyError if the batch job has failed.
-
-        """
-
-        # Dummy UUID and part number for testing
-        uuid = 'BLAH'
-        part = 3
-
-        # Use REST proxy for testing
-        rest = _RestProxyForTest()
-
-        # Set expected 'GET' request with calc_state as 'FAILED' for specific part
-        rest.expect_get(self._base + '/batch/' + uuid + '/' + str(part), 200,
-                        {'calc_state': 'FAILED','error': 'No error!', 'part_index': part})
-
-        # Initiate Batch class
-        batch = Batch()
-
-        # Set UUID, parts count, and overall calc state (as 'FAILED')
-        batch._uuid = uuid
-        batch._parts_count = 10
-        batch._calc_state = 'FAILED'
-
-        # Override network access with proxy
-        batch.set_rest_accessor(rest)
-
-        # Assert that an overall calc state as 'FAILED' will return a KeyError
-        with self.assertRaises(KeyError):
-            batch.get_part_ephemeris(part)
+        # Assert that the number of expected parts is returned
+        self.assertEqual(batch.get_parts_count(), 42)
 
     def test_get_ephemeris(self):
         """Test that an ephemeris is returned if the job has completed successfully
@@ -394,6 +365,140 @@ class BatchTest(unittest.TestCase):
         # Assert that the calc state for the specific part's run is as expected
         self.assertEqual(batch.get_part_state(part), 'COMPLETED')
 
+        # Assert that checking if the part is ready will return True
+        self.assertTrue(batch.is_ready_part(part))
+
+    def test_is_not_ready_part(self):
+        """Test when an individual part is not ready
+
+        This function tests that a job will correctly indicate when a part is not ready.
+
+        """
+
+        # Dummy UUID and part number for testing
+        uuid = 'BLAH'
+        part = 3
+
+        # Use REST proxy for testing
+        rest = _RestProxyForTest()
+
+        # Set expected 'GET' request with calc_state as 'RUNNING'
+        rest.expect_get(self._base + '/batch/' + uuid + '/' + str(part), 200,
+                        {'calc_state': 'RUNNING', 'part_index': part})
+
+        # Initiate Batch class
+        batch = Batch()
+
+        # Set UUID, parts count, and overall calc state (as 'RUNNING')
+        batch._uuid = uuid
+        batch._parts_count = 10
+        batch._calc_state = 'RUNNING'
+
+        # Override network access with proxy
+        batch.set_rest_accessor(rest)
+
+        # Assert that checking if the part is ready will return False
+        self.assertFalse(batch.is_ready_part(part))
+
+    def test_is_ready_failed_part(self):
+        """Test when an individual part has failed
+
+        This function tests that a job will correctly indicate when a part has failed, that it returns the expected
+        error, and that it returns None for ephemeris.
+
+        """
+
+        # Dummy UUID and part number for testing
+        uuid = 'BLAH'
+        part = 3
+
+        # Use REST proxy for testing
+        rest = _RestProxyForTest()
+
+        # Set expected 'GET' request with calc_state as 'FAILED'
+        rest.expect_get(self._base + '/batch/' + uuid + '/' + str(part), 200,
+                        {'calc_state': 'FAILED', 'error': 'Some error', 'part_index': part})
+
+        # Initiate Batch class
+        batch = Batch()
+
+        # Set UUID, parts count, and overall calc state (as 'FAILED')
+        batch._uuid = uuid
+        batch._parts_count = 10
+        batch._calc_state = 'FAILED'
+
+        # Override network access with proxy
+        batch.set_rest_accessor(rest)
+
+        # Assert that the calc state for the specific part's run is as expected
+        self.assertEqual(batch.get_part_state(part), 'FAILED')
+
+        # Assert that the error returned is as expected
+        self.assertEqual(batch.get_part_error(part), 'Some error')
+
+        # Assert that attempting to retrieve a part's ephemeris will return None
+        self.assertEqual(batch.get_part_ephemeris(part), None)
+
+    def test_part_not_in_range(self):
+        """Test a part not in the part range
+
+        This function tests that a part not within its range will raise an error.
+
+        """
+        # Dummy UUID and part number for testing
+        uuid = 'BLAH'
+        part = 15
+
+        # Use REST proxy for testing
+        rest = _RestProxyForTest()
+
+        # Initiate Batch class
+        batch = Batch()
+
+        # Set UUID, parts count, and overall calc state (as 'RUNNING')
+        batch._uuid = uuid
+        batch._parts_count = 10
+        batch._calc_state = 'COMPLETED'
+
+        # Override network access with proxy
+        batch.set_rest_accessor(rest)
+
+        # Assert that a part outside its range will return an IndexError
+        with self.assertRaises(IndexError):
+            batch.get_part_state(part)
+
+
+    def test_server_failed_part(self):
+        """Test a failing server for a specific part
+
+        This function tests a failed submit on the server side (i.e. code returned is not 200) for a specified part.
+
+        """
+
+        # Dummy UUID and part number for testing
+        uuid = 'BLAH'
+        part = 3
+
+        # Use REST proxy for testing
+        rest = _RestProxyForTest()
+
+        # Set expected 'GET' request with 404 error
+        rest.expect_get(self._base + '/batch/' + uuid + '/' + str(part), 404, {})
+
+        # Initiate Batch class
+        batch = Batch()
+
+        # Set UUID, parts count, and overall calc state (as 'RUNNING')
+        batch._uuid = uuid
+        batch._parts_count = 10
+        batch._calc_state = 'COMPLETED'
+
+        # Override network access with proxy
+        batch.set_rest_accessor(rest)
+
+        # Assert that a 404 error code will raise a RuntimeError
+        with self.assertRaises(RuntimeError):
+            batch.get_part_state(part)
 
 if __name__ == '__main__':
     unittest.main()
