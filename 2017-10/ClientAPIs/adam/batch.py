@@ -45,6 +45,8 @@ class Batch(object):
         self._loaded_parts = {}      # parts that have already been loaded
         self._rest = RestRequests()  # rest request option (requests package or proxy)
 
+        self._propagator_uuid = "00000000-0000-0000-0000-000000000001"    # propagator settings
+
     def __repr__(self):
         """Printable representation of returned values from job run
 
@@ -112,6 +114,20 @@ class Batch(object):
         """
         self._end_time = end_time
 
+    def set_propagator_uuid(self, propagator_uuid):
+        """Set propagator uuid
+
+        This functions sets the propagator uuid for the desired force model
+        See https://pro-equinox-162418.appspot.com/_ah/api/adam/v1/config for configurations
+
+        Args:
+            propgator_uuid (str): configuration uuid to set for the propagator
+
+        Returns:
+            None
+        """
+        self._propagator_uuid = propagator_uuid
+
     def generate_opm(self):
         """Generate an OPM string
 
@@ -171,7 +187,8 @@ class Batch(object):
         data = {'start_time': self._start_time,
                 'step_duration_sec': self._step_size,
                 'end_time': self._end_time,
-                'opm_string': self.generate_opm()}
+                'opm_string': self.generate_opm(),
+                'propagator_uuid': self._propagator_uuid}
 
         # Post request on cloud server
         code, response = self._rest.post(_URL + '/batch', data)
