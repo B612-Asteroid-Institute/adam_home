@@ -123,7 +123,7 @@ class Batch(object):
         See https://pro-equinox-162418.appspot.com/_ah/api/adam/v1/config for configurations
 
         Args:
-            propgator_uuid (str): configuration uuid to set for the propagator
+            propagator_uuid (str): configuration uuid to set for the propagator
 
         Returns:
             None
