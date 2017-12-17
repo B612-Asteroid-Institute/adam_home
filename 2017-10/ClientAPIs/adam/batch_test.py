@@ -35,6 +35,7 @@ class BatchTest(unittest.TestCase):
                 - end time = 'BBB'
                 - opm string in data dictionary is not None
                 - epoch and state vector are 'CCC' and [1, 2, 3, 4, 5, 6], respectively
+                - propagator ID is default (none specified)
 
             Args:
                 data_dict (dict) - input data for POST
@@ -53,6 +54,7 @@ class BatchTest(unittest.TestCase):
             self.assertIn('X_DOT = 4', opm)
             self.assertIn('Y_DOT = 5', opm)
             self.assertIn('Z_DOT = 6', opm)
+            self.assertEqual(data_dict['propagator_uuid'], "00000000-0000-0000-0000-000000000001")
             return True
 
         # Set expected 'POST' request (good)
@@ -65,6 +67,55 @@ class BatchTest(unittest.TestCase):
         batch.set_start_time("AAA")
         batch.set_end_time("BBB")
         batch.set_state_vector('CCC', [1, 2, 3, 4, 5, 6])
+
+        # Override network access with proxy
+        batch.set_rest_accessor(rest)
+
+        # Submit job
+        batch.submit()
+
+        # Assert that the calc state is 'PENDING' and the UUID is 'BLAH'
+        self.assertEqual(batch.get_calc_state(), 'PENDING')
+        self.assertEqual(batch.get_uuid(), 'BLAH')
+
+    def test_custom_inputs(self):
+        """Test setting custom inputs
+
+        This function tests that setting an optional input will yield that value (instead of the default value).
+
+        """
+
+        # Use REST proxy for testing
+        rest = _RestProxyForTest()
+
+        def check_custom_inputs(data_dict):
+            """Check custom inputs
+
+            Checks input data for custom inputs by asserting the following:
+                - propagator uuid = 00000000-0000-0000-0000-000000000002
+
+            Args:
+                data_dict (dict) - input data for POST
+
+            Returns:
+                True
+            """
+            self.assertEqual(data_dict['propagator_uuid'], "00000000-0000-0000-0000-000000000002")
+            return True
+
+        # Set expected 'POST' request (good)
+        rest.expect_post(self._base + "/batch", check_custom_inputs, 200, {'calc_state': 'PENDING', 'uuid': 'BLAH'})
+
+        # Initiate Batch class
+        batch = Batch()
+
+        # Set start time, end time, and state vector with epoch
+        batch.set_start_time("AAA")
+        batch.set_end_time("BBB")
+        batch.set_state_vector('CCC', [1, 2, 3, 4, 5, 6])
+
+        # Set custom inputs
+        batch.set_propagator_uuid("00000000-0000-0000-0000-000000000002")
 
         # Override network access with proxy
         batch.set_rest_accessor(rest)
