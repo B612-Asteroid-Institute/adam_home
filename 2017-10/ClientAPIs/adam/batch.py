@@ -45,9 +45,8 @@ class Batch(object):
         self._loaded_parts = {}      # parts that have already been loaded
         self._rest = RestRequests()  # rest request option (requests package or proxy)
 
-        self._propagator_uuid = "00000000-0000-0000-0000-000000000001"    # propagator settings; default is
-                                                                          # the Sun, all planets, and the Moon
-                                                                          # as point masses (no asteroids)
+        # Propagator settings (default is the Sun, all planets, and the Moon as point masses [no asteroids])
+        self._propagator_uuid = "00000000-0000-0000-0000-000000000001"
 
     def __repr__(self):
         """Printable representation of returned values from job run
