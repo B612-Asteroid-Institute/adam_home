@@ -136,6 +136,71 @@ class Batch(object):
         step_size = round(step_size)
         self._step_size = step_size
 
+    def set_mass(self, mass):
+        """Set object mass
+
+        This function sets the object's mass for propagation
+
+        Args:
+            mass (float): object mass in kilograms
+
+        Returns:
+            None
+        """
+        self._mass = mass
+
+    def set_solar_rad_area(self, solar_rad_area):
+        """Set object solar radiation area
+
+        This function sets the object's solar radiation area for propagation
+
+        Args:
+            solar_rad_area (float): object solar radiation area in squared meters
+
+        Returns:
+            None
+        """
+        self._solar_rad_area = solar_rad_area
+
+    def set_solar_rad_coeff(self, solar_rad_coeff):
+        """Set object solar radiation coefficient
+
+        This function sets the object's solar radiation coefficient for propagation
+
+        Args:
+            solar_rad_coeff (float): object solar radiation coefficient
+
+        Returns:
+            None
+        """
+        self._solar_rad_coeff = solar_rad_coeff
+
+    def set_drag_area(self, drag_area):
+        """Set object drag area
+
+        This function sets the object's drag area for propagation
+
+        Args:
+            drag_area (float): object drag area in squared meters
+
+        Returns:
+            None
+        """
+        self._drag_area = drag_area
+
+    def set_drag_coeff(self, drag_coeff):
+        """Set object drag coefficient
+
+        This function sets the object's drag coefficient for propagation
+
+        Args:
+            drag_coeff (float): object drag coefficient
+
+        Returns:
+            None
+        """
+        self._drag_coeff = drag_coeff
+
     def set_propagator_uuid(self, propagator_uuid):
         """Set propagator uuid
 
