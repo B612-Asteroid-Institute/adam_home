@@ -33,6 +33,7 @@ class BatchTest(unittest.TestCase):
             Checks input data by asserting the following:
                 - start time = 'AAA'
                 - end time = 'BBB'
+                - step size = 86400 (default)
                 - opm string in data dictionary is not None
                 - epoch and state vector are 'CCC' and [1, 2, 3, 4, 5, 6], respectively
                 - propagator ID is default (none specified)
@@ -45,6 +46,7 @@ class BatchTest(unittest.TestCase):
             """
             self.assertEqual(data_dict['start_time'], 'AAA')
             self.assertEqual(data_dict['end_time'], 'BBB')
+            self.assertEqual(data_dict['step_duration_sec'], 86400)
             opm = data_dict['opm_string']
             self.assertIsNotNone(opm)
             self.assertIn('EPOCH = CCC', opm)
@@ -93,6 +95,7 @@ class BatchTest(unittest.TestCase):
 
             Checks input data for custom inputs by asserting the following:
                 - propagator uuid = 00000000-0000-0000-0000-000000000002
+                - step size = 3600
 
             Args:
                 data_dict (dict) - input data for POST
@@ -101,6 +104,7 @@ class BatchTest(unittest.TestCase):
                 True
             """
             self.assertEqual(data_dict['propagator_uuid'], "00000000-0000-0000-0000-000000000002")
+            self.assertEqual(data_dict['step_duration_sec'], 3600)
             return True
 
         # Set expected 'POST' request (good)
@@ -116,6 +120,7 @@ class BatchTest(unittest.TestCase):
 
         # Set custom inputs
         batch.set_propagator_uuid("00000000-0000-0000-0000-000000000002")
+        batch.set_step_size(3600)
 
         # Override network access with proxy
         batch.set_rest_accessor(rest)
