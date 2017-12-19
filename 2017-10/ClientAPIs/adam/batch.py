@@ -45,6 +45,13 @@ class Batch(object):
         self._loaded_parts = {}      # parts that have already been loaded
         self._rest = RestRequests()  # rest request option (requests package or proxy)
 
+        # Object properties
+        self._mass = 1000            # mass, kg
+        self._solar_rad_area = 20    # solar radiation area, m^2
+        self._solar_rad_coeff = 1    # solar radiation coefficient
+        self._drag_area = 20         # drag area, m^2
+        self._drag_coeff = 2.2       # drag coefficient
+
         # Propagator settings (default is the Sun, all planets, and the Moon as point masses [no asteroids])
         self._propagator_uuid = "00000000-0000-0000-0000-000000000001"
 
@@ -170,11 +177,11 @@ class Batch(object):
                ("X_DOT = %s\n" % (self._state_vector[3])) + \
                ("Y_DOT = %s\n" % (self._state_vector[4])) + \
                ("Z_DOT = %s\n" % (self._state_vector[5])) + \
-               "MASS = 1000\n" + \
-               "SOLAR_RAD_AREA = 20\n" + \
-               "SOLAR_RAD_COEFF = 1\n" + \
-               "DRAG_AREA = 20\n" + \
-               "DRAG_COEFF = 2.2"
+               "MASS = %s\n" % self._mass + \
+               "SOLAR_RAD_AREA = %s\n" % self._solar_rad_area + \
+               "SOLAR_RAD_COEFF = %s\n" % self._solar_rad_coeff + \
+               "DRAG_AREA = %s\n" % self._drag_area + \
+               "DRAG_COEFF = %s" % self._drag_coeff
 
     def submit(self):
         """Submit a job to the cloud

@@ -36,6 +36,11 @@ class BatchTest(unittest.TestCase):
                 - step size = 86400 (default)
                 - opm string in data dictionary is not None
                 - epoch and state vector are 'CCC' and [1, 2, 3, 4, 5, 6], respectively
+                - object mass = 1000 (default)
+                - object solar radiation area = 20 (default)
+                - object solar radiation coefficient = 1 (default)
+                - object drag area = 20 (default)
+                - object drag coefficient = 2.2 (default)
                 - propagator ID is default (none specified)
 
             Args:
@@ -56,6 +61,11 @@ class BatchTest(unittest.TestCase):
             self.assertIn('X_DOT = 4', opm)
             self.assertIn('Y_DOT = 5', opm)
             self.assertIn('Z_DOT = 6', opm)
+            self.assertIn('MASS = 1000', opm)
+            self.assertIn('SOLAR_RAD_AREA = 20', opm)
+            self.assertIn('SOLAR_RAD_COEFF = 1', opm)
+            self.assertIn('DRAG_AREA = 20', opm)
+            self.assertIn('DRAG_COEFF = 2.2', opm)
             self.assertEqual(data_dict['propagator_uuid'], "00000000-0000-0000-0000-000000000001")
             return True
 
