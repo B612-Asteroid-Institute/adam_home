@@ -127,6 +127,9 @@ class BatchTest(unittest.TestCase):
             self.assertEqual(data_dict['propagator_uuid'], "00000000-0000-0000-0000-000000000002")
             self.assertEqual(data_dict['step_duration_sec'], 3600)
             opm = data_dict['opm_string']
+            self.assertIn('ORIGINATOR = Robot', opm)
+            self.assertIn('OBJECT_NAME = TestObj', opm)
+            self.assertIn('OBJECT_ID = test1234', opm)
             self.assertIn('MASS = 500.5', opm)
             self.assertIn('SOLAR_RAD_AREA = 25.2', opm)
             self.assertIn('SOLAR_RAD_COEFF = 1.2', opm)
@@ -153,6 +156,9 @@ class BatchTest(unittest.TestCase):
         batch.set_solar_rad_coeff(1.2)
         batch.set_drag_area(33.3)
         batch.set_drag_coeff(2.5)
+        batch.set_originator('Robot')
+        batch.set_object_name('TestObj')
+        batch.set_object_id('test1234')
 
         # Override network access with proxy
         batch.set_rest_accessor(rest)

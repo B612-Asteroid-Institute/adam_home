@@ -86,6 +86,45 @@ class Batch(object):
         """
         self._rest = proxy
 
+    def set_originator(self, originator):
+        """Sets the originator of the run
+
+        This function sets the originator of the propagated run
+
+        Args:
+            originator (str): responsible entity for run
+
+        Returns:
+            None
+        """
+        self._originator = originator
+
+    def set_object_name(self, object_name):
+        """Sets the object name
+
+        This function sets the object's name for the propagation
+
+        Args:
+            object_name (str): name of object
+
+        Returns:
+            None
+        """
+        self._object_name = object_name
+
+    def set_object_id(self, object_id):
+        """Sets the object ID
+
+        This function sets the object's ID for the propagation
+
+        Args:
+            object_id (str): identification of object
+
+        Returns:
+            None
+        """
+        self._object_id = object_id
+
     def set_state_vector(self, epoch, state_vector):
         """Set epoch and state vector
 
