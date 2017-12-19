@@ -9,9 +9,9 @@ state_vec = [130347560.13690618,
              10.346605942591514]
 
 batch_run = Batch()
-batch_run.set_start_time('2017-12-18T00:00:00Z')
-batch_run.set_end_time('2017-12-18T01:00:00Z')
-batch_run.set_state_vector('2017-12-18T00:00:00.000Z', state_vec)
+batch_run.set_start_time('2017-10-04T00:00:00Z')
+batch_run.set_end_time('2017-10-11T00:00:00Z')
+batch_run.set_state_vector('2017-10-04T00:00:00.000Z', state_vec)
 
 # Optional parameters (uncomment to use)
 # batch_run.set_propagator_uuid("00000000-0000-0000-0000-000000000002")    # Only Sun as point mass, nothing else
