@@ -35,6 +35,9 @@ class BatchTest(unittest.TestCase):
                 - end time = 'BBB'
                 - step size = 86400 (default)
                 - opm string in data dictionary is not None
+                - originator = 'ADAM_User'
+                - object name = 'dummy'
+                - object ID = '001'
                 - epoch and state vector are 'CCC' and [1, 2, 3, 4, 5, 6], respectively
                 - object mass = 1000 (default)
                 - object solar radiation area = 20 (default)
@@ -54,6 +57,9 @@ class BatchTest(unittest.TestCase):
             self.assertEqual(data_dict['step_duration_sec'], 86400)
             opm = data_dict['opm_string']
             self.assertIsNotNone(opm)
+            self.assertIn('ORIGINATOR = ADAM_User', opm)
+            self.assertIn('OBJECT_NAME = dummy', opm)
+            self.assertIn('OBJECT_ID = 001', opm)
             self.assertIn('EPOCH = CCC', opm)
             self.assertIn('X = 1', opm)
             self.assertIn('Y = 2', opm)
