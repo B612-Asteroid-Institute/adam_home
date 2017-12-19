@@ -115,6 +115,20 @@ class Batch(object):
         """
         self._end_time = end_time
 
+    def set_step_size(self, step_size):
+        """Set step size
+
+        This function sets the step size for the propagator run; can be positive or negative
+
+        Args:
+            step_size (int): step size in seconds
+
+        Returns:
+            None
+        """
+        step_size = round(step_size)
+        self._step_size = step_size
+
     def set_propagator_uuid(self, propagator_uuid):
         """Set propagator uuid
 
