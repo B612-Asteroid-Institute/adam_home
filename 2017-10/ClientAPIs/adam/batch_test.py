@@ -106,6 +106,11 @@ class BatchTest(unittest.TestCase):
             Checks input data for custom inputs by asserting the following:
                 - propagator uuid = 00000000-0000-0000-0000-000000000002
                 - step size = 3600
+                - object mass = 500.5
+                - object solar radiation area = 25.2
+                - object solar radiation coefficient = 1.2
+                - object drag area = 33.3
+                - object drag coefficient = 2.5
 
             Args:
                 data_dict (dict) - input data for POST
@@ -115,6 +120,12 @@ class BatchTest(unittest.TestCase):
             """
             self.assertEqual(data_dict['propagator_uuid'], "00000000-0000-0000-0000-000000000002")
             self.assertEqual(data_dict['step_duration_sec'], 3600)
+            opm = data_dict['opm_string']
+            self.assertIn('MASS = 500.5', opm)
+            self.assertIn('SOLAR_RAD_AREA = 25.2', opm)
+            self.assertIn('SOLAR_RAD_COEFF = 1.2', opm)
+            self.assertIn('DRAG_AREA = 33.3', opm)
+            self.assertIn('DRAG_COEFF = 2.5', opm)
             return True
 
         # Set expected 'POST' request (good)
@@ -131,6 +142,11 @@ class BatchTest(unittest.TestCase):
         # Set custom inputs
         batch.set_propagator_uuid("00000000-0000-0000-0000-000000000002")
         batch.set_step_size(3600)
+        batch.set_mass(500.5)
+        batch.set_solar_rad_area(25.2)
+        batch.set_solar_rad_coeff(1.2)
+        batch.set_drag_area(33.3)
+        batch.set_drag_coeff(2.5)
 
         # Override network access with proxy
         batch.set_rest_accessor(rest)
