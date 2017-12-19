@@ -24,6 +24,7 @@ batch_run.set_state_vector('2017-10-04T00:00:00.000Z', state_vec)
 # batch_run.set_originator('Robot')
 # batch_run.set_object_name('TestObj')
 # batch_run.set_object_id('test1234')
+# batch_run.set_description('some description')
 
 print("Initial state %s" % batch_run)
 print

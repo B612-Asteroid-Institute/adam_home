@@ -59,6 +59,7 @@ class Batch(object):
         self._originator = 'ADAM_User'
         self._object_name = 'dummy'
         self._object_id = '001'
+        self._description = None
 
     def __repr__(self):
         """Printable representation of returned values from job run
@@ -85,6 +86,19 @@ class Batch(object):
             None
         """
         self._rest = proxy
+
+    def set_description(self, description):
+        """Sets the description of the run
+
+        This function sets the description of the propagated run
+
+        Args:
+            description (str): description of the run
+
+        Returns:
+            None
+        """
+        self._description = description
 
     def set_originator(self, originator):
         """Sets the originator of the run
@@ -320,6 +334,9 @@ class Batch(object):
                 'end_time': self._end_time,
                 'opm_string': self.generate_opm(),
                 'propagator_uuid': self._propagator_uuid}
+
+        if self._description is not None:
+            data['description'] = self._description
 
         # Post request on cloud server
         code, response = self._rest.post(_URL + '/batch', data)

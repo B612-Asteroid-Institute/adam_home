@@ -126,6 +126,8 @@ class BatchTest(unittest.TestCase):
             """
             self.assertEqual(data_dict['propagator_uuid'], "00000000-0000-0000-0000-000000000002")
             self.assertEqual(data_dict['step_duration_sec'], 3600)
+            self.assertIsNotNone(data_dict['description'])
+            self.assertEqual(data_dict['description'], 'some description')
             opm = data_dict['opm_string']
             self.assertIn('ORIGINATOR = Robot', opm)
             self.assertIn('OBJECT_NAME = TestObj', opm)
@@ -159,6 +161,7 @@ class BatchTest(unittest.TestCase):
         batch.set_originator('Robot')
         batch.set_object_name('TestObj')
         batch.set_object_id('test1234')
+        batch.set_description('some description')
 
         # Override network access with proxy
         batch.set_rest_accessor(rest)
