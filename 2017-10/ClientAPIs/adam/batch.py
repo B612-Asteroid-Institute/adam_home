@@ -55,6 +55,11 @@ class Batch(object):
         # Propagator settings (default is the Sun, all planets, and the Moon as point masses [no asteroids])
         self._propagator_uuid = "00000000-0000-0000-0000-000000000001"
 
+        # Header and metadata information
+        self._originator = 'ADAM_User'
+        self._object_name = 'dummy'
+        self._object_id = '001'
+
     def __repr__(self):
         """Printable representation of returned values from job run
 
@@ -228,10 +233,10 @@ class Batch(object):
         """
         return "CCSDS_OPM_VERS = 2.0\n" + \
                ("CREATION_DATE = %s\n" % datetime.utcnow()) + \
-               "ORIGINATOR = Tatiana\n" + \
+               ("ORIGINATOR = %s\n" % self._originator) + \
                "COMMENT Cartesian coordinate system\n" + \
-               "OBJECT_NAME = dummy\n" + \
-               "OBJECT_ID = 001\n" + \
+               ("OBJECT_NAME = %s\n" % self._object_name) + \
+               ("OBJECT_ID = %s\n" % self._object_id) + \
                "CENTER_NAME = SUN\n" + \
                "REF_FRAME = ITRF-97\n" + \
                "TIME_SYSTEM = UTC\n" + \
@@ -242,11 +247,11 @@ class Batch(object):
                ("X_DOT = %s\n" % (self._state_vector[3])) + \
                ("Y_DOT = %s\n" % (self._state_vector[4])) + \
                ("Z_DOT = %s\n" % (self._state_vector[5])) + \
-               "MASS = %s\n" % self._mass + \
-               "SOLAR_RAD_AREA = %s\n" % self._solar_rad_area + \
-               "SOLAR_RAD_COEFF = %s\n" % self._solar_rad_coeff + \
-               "DRAG_AREA = %s\n" % self._drag_area + \
-               "DRAG_COEFF = %s" % self._drag_coeff
+               ("MASS = %s\n" % self._mass) + \
+               ("SOLAR_RAD_AREA = %s\n" % self._solar_rad_area) + \
+               ("SOLAR_RAD_COEFF = %s\n" % self._solar_rad_coeff) + \
+               ("DRAG_AREA = %s\n" % self._drag_area) + \
+               ("DRAG_COEFF = %s" % self._drag_coeff)
 
     def submit(self):
         """Submit a job to the cloud
