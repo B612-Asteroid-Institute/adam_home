@@ -38,7 +38,7 @@ class Batch(object):
         self._epoch = None           # epoch associated with state vector
         self._start_time = None      # start time of run
         self._end_time = None        # end time of run
-        self._step_size = 86400      # defaulted to 1 day
+        self._step_size = 86400      # step size in sec (defaulted to 1 day)
         self._calc_state = None      # status on run (e.g. RUNNING, COMPLETED)
         self._uuid = None            # uuid associated with run
         self._parts_count = 0        # number of parts count
