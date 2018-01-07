@@ -173,6 +173,79 @@ class BatchTest(unittest.TestCase):
         self.assertEqual(batch.get_calc_state(), 'PENDING')
         self.assertEqual(batch.get_uuid(), 'BLAH')
 
+    def test_step_size_units(self):
+        """Test setting step size units
+
+        This function tests that setting the units for step size will yield expected results.
+
+        """
+
+        # Use REST proxy for testing
+        rest = _RestProxyForTest()
+
+        def check_step_duration(data_dict):
+            """Check step duration based on custom step size input
+
+            Checks step size duration based on units by asserting the following:
+                - step size = 311040000 (3600 days)
+
+            Args:
+                data_dict (dict) - input data for POST
+
+            Returns:
+                True
+            """
+            self.assertEqual(data_dict['step_duration_sec'], 311040000)
+            return True
+
+        # Set expected 'POST' request (good)
+        rest.expect_post(self._base + "/batch", check_step_duration, 200, {'calc_state': 'PENDING', 'uuid': 'BLAH'})
+
+        # Initiate Batch class
+        batch = Batch()
+
+        # Set start time, end time, and state vector with epoch
+        batch.set_start_time("AAA")
+        batch.set_end_time("BBB")
+        batch.set_state_vector('CCC', [1, 2, 3, 4, 5, 6])
+
+        # Set custom inputs
+        batch.set_step_size_unit("day")
+        batch.set_step_size(3600)
+
+        # Override network access with proxy
+        batch.set_rest_accessor(rest)
+
+        # Submit job
+        batch.submit()
+
+        # Assert that the calc state is 'PENDING' and the UUID is 'BLAH'
+        self.assertEqual(batch.get_calc_state(), 'PENDING')
+        self.assertEqual(batch.get_uuid(), 'BLAH')
+
+    def test_bad_step_size_unit(self):
+        """Tests an invalid step size unit
+
+        This function tests that an invalid defined step size unit will raise a KeyError.
+
+        """
+
+        # Use REST proxy for testing
+        rest = _RestProxyForTest()
+
+        # Initiate Batch class
+        batch = Batch()
+
+        # Set start time, end time, and state vector with epoch
+        batch.set_start_time("AAA")
+        batch.set_end_time("BBB")
+        batch.set_state_vector('CCC', [1, 2, 3, 4, 5, 6])
+        batch.set_step_size_unit("blah")
+
+        with self.assertRaises(KeyError):
+            batch.set_step_size(3600)
+
+
     def test_server_fails(self):
         """Test a failing server
 

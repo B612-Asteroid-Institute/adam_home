@@ -34,23 +34,24 @@ class Batch(object):
         """Initializes attributes
 
         """
-        self._state_vector = None    # position and velocity state vector
-        self._epoch = None           # epoch associated with state vector
-        self._start_time = None      # start time of run
-        self._end_time = None        # end time of run
-        self._step_size = 86400      # step size in sec (defaulted to 1 day)
-        self._calc_state = None      # status on run (e.g. RUNNING, COMPLETED)
-        self._uuid = None            # uuid associated with run
-        self._parts_count = 0        # number of parts count
-        self._loaded_parts = {}      # parts that have already been loaded
-        self._rest = RestRequests()  # rest request option (requests package or proxy)
+        self._state_vector = None     # position and velocity state vector
+        self._epoch = None            # epoch associated with state vector
+        self._start_time = None       # start time of run
+        self._end_time = None         # end time of run
+        self._step_size_unit = 'sec'  # step size units (defaulted to seconds)
+        self._step_size = 86400       # step size (defaulted to 1 day)
+        self._calc_state = None       # status on run (e.g. RUNNING, COMPLETED)
+        self._uuid = None             # uuid associated with run
+        self._parts_count = 0         # number of parts count
+        self._loaded_parts = {}       # parts that have already been loaded
+        self._rest = RestRequests()   # rest request option (requests package or proxy)
 
         # Object properties
-        self._mass = 1000            # mass, kg
-        self._solar_rad_area = 20    # solar radiation area, m^2
-        self._solar_rad_coeff = 1    # solar radiation coefficient
-        self._drag_area = 20         # drag area, m^2
-        self._drag_coeff = 2.2       # drag coefficient
+        self._mass = 1000             # mass, kg
+        self._solar_rad_area = 20     # solar radiation area, m^2
+        self._solar_rad_coeff = 1     # solar radiation coefficient
+        self._drag_area = 20          # drag area, m^2
+        self._drag_coeff = 2.2        # drag coefficient
 
         # Propagator settings (default is the Sun, all planets, and the Moon as point masses [no asteroids])
         self._propagator_uuid = "00000000-0000-0000-0000-000000000001"
@@ -180,10 +181,26 @@ class Batch(object):
         """
         self._end_time = end_time
 
+    def set_step_size_unit(self, step_size_unit):
+        """Set the units for step size
+
+        This function sets the units for the step size; options include: sec (default), min, hour, or day
+        NOTE: Must be set prior to setting the actual step size!
+        Setting the step size unit and not the step size will result in default settings
+
+        Args:
+            step_size_unit (str): units of time for step size
+
+        Returns:
+            None
+        """
+        self._step_size_unit = step_size_unit
+
     def set_step_size(self, step_size):
         """Set step size
 
         This function sets the step size for the propagator run; can be positive or negative
+        It first converts the step size to seconds given the step size unit
 
         Args:
             step_size (int): step size in seconds
@@ -191,7 +208,17 @@ class Batch(object):
         Returns:
             None
         """
-        step_size = round(step_size)
+
+        # Multiplier dictionary to convert to seconds
+        multiplier = {"sec": 1, "min": 60, "hour": 3600, "day": 86400}
+
+        # Get step size; throw KeyError and use default if unit not in dictionary
+        try:
+            step_size = round(step_size * multiplier[self._step_size_unit])
+        except:
+            raise KeyError('Invalid units. Options: "sec", "min", "hour", or "day"')
+
+        # Set step size
         self._step_size = step_size
 
     def set_mass(self, mass):
