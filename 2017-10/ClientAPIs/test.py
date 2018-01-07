@@ -15,6 +15,16 @@ batch_run.set_state_vector('2017-10-04T00:00:00.000Z', state_vec)
 
 # Optional parameters (uncomment to use)
 # batch_run.set_propagator_uuid("00000000-0000-0000-0000-000000000002")    # Only Sun as point mass, nothing else
+# batch_run.set_step_size(3600, 'min')
+# batch_run.set_mass(500.5)
+# batch_run.set_solar_rad_area(25.2)
+# batch_run.set_solar_rad_coeff(1.2)
+# batch_run.set_drag_area(33.3)
+# batch_run.set_drag_coeff(2.5)
+# batch_run.set_originator('Robot')
+# batch_run.set_object_name('TestObj')
+# batch_run.set_object_id('test1234')
+# batch_run.set_description('some description')
 
 print("Initial state %s" % batch_run)
 print

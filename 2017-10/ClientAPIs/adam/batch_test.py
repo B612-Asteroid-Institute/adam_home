@@ -33,8 +33,17 @@ class BatchTest(unittest.TestCase):
             Checks input data by asserting the following:
                 - start time = 'AAA'
                 - end time = 'BBB'
+                - step size = 86400 (default)
                 - opm string in data dictionary is not None
+                - originator = 'ADAM_User'
+                - object name = 'dummy'
+                - object ID = '001'
                 - epoch and state vector are 'CCC' and [1, 2, 3, 4, 5, 6], respectively
+                - object mass = 1000 (default)
+                - object solar radiation area = 20 (default)
+                - object solar radiation coefficient = 1 (default)
+                - object drag area = 20 (default)
+                - object drag coefficient = 2.2 (default)
                 - propagator ID is default (none specified)
 
             Args:
@@ -45,8 +54,12 @@ class BatchTest(unittest.TestCase):
             """
             self.assertEqual(data_dict['start_time'], 'AAA')
             self.assertEqual(data_dict['end_time'], 'BBB')
+            self.assertEqual(data_dict['step_duration_sec'], 86400)
             opm = data_dict['opm_string']
             self.assertIsNotNone(opm)
+            self.assertIn('ORIGINATOR = ADAM_User', opm)
+            self.assertIn('OBJECT_NAME = dummy', opm)
+            self.assertIn('OBJECT_ID = 001', opm)
             self.assertIn('EPOCH = CCC', opm)
             self.assertIn('X = 1', opm)
             self.assertIn('Y = 2', opm)
@@ -54,6 +67,11 @@ class BatchTest(unittest.TestCase):
             self.assertIn('X_DOT = 4', opm)
             self.assertIn('Y_DOT = 5', opm)
             self.assertIn('Z_DOT = 6', opm)
+            self.assertIn('MASS = 1000', opm)
+            self.assertIn('SOLAR_RAD_AREA = 20', opm)
+            self.assertIn('SOLAR_RAD_COEFF = 1', opm)
+            self.assertIn('DRAG_AREA = 20', opm)
+            self.assertIn('DRAG_COEFF = 2.2', opm)
             self.assertEqual(data_dict['propagator_uuid'], "00000000-0000-0000-0000-000000000001")
             return True
 
@@ -93,6 +111,12 @@ class BatchTest(unittest.TestCase):
 
             Checks input data for custom inputs by asserting the following:
                 - propagator uuid = 00000000-0000-0000-0000-000000000002
+                - step size = 216000
+                - object mass = 500.5
+                - object solar radiation area = 25.2
+                - object solar radiation coefficient = 1.2
+                - object drag area = 33.3
+                - object drag coefficient = 2.5
 
             Args:
                 data_dict (dict) - input data for POST
@@ -101,6 +125,18 @@ class BatchTest(unittest.TestCase):
                 True
             """
             self.assertEqual(data_dict['propagator_uuid'], "00000000-0000-0000-0000-000000000002")
+            self.assertEqual(data_dict['step_duration_sec'], 216000)
+            self.assertIsNotNone(data_dict['description'])
+            self.assertEqual(data_dict['description'], 'some description')
+            opm = data_dict['opm_string']
+            self.assertIn('ORIGINATOR = Robot', opm)
+            self.assertIn('OBJECT_NAME = TestObj', opm)
+            self.assertIn('OBJECT_ID = test1234', opm)
+            self.assertIn('MASS = 500.5', opm)
+            self.assertIn('SOLAR_RAD_AREA = 25.2', opm)
+            self.assertIn('SOLAR_RAD_COEFF = 1.2', opm)
+            self.assertIn('DRAG_AREA = 33.3', opm)
+            self.assertIn('DRAG_COEFF = 2.5', opm)
             return True
 
         # Set expected 'POST' request (good)
@@ -116,6 +152,16 @@ class BatchTest(unittest.TestCase):
 
         # Set custom inputs
         batch.set_propagator_uuid("00000000-0000-0000-0000-000000000002")
+        batch.set_step_size(3600, 'min')
+        batch.set_mass(500.5)
+        batch.set_solar_rad_area(25.2)
+        batch.set_solar_rad_coeff(1.2)
+        batch.set_drag_area(33.3)
+        batch.set_drag_coeff(2.5)
+        batch.set_originator('Robot')
+        batch.set_object_name('TestObj')
+        batch.set_object_id('test1234')
+        batch.set_description('some description')
 
         # Override network access with proxy
         batch.set_rest_accessor(rest)
@@ -126,6 +172,27 @@ class BatchTest(unittest.TestCase):
         # Assert that the calc state is 'PENDING' and the UUID is 'BLAH'
         self.assertEqual(batch.get_calc_state(), 'PENDING')
         self.assertEqual(batch.get_uuid(), 'BLAH')
+
+    def test_bad_step_size_unit(self):
+        """Tests an invalid step size unit
+
+        This function tests that an invalid defined step size unit will raise a KeyError.
+
+        """
+
+        # Use REST proxy for testing
+        rest = _RestProxyForTest()
+
+        # Initiate Batch class
+        batch = Batch()
+
+        # Set start time, end time, and state vector with epoch
+        batch.set_start_time("AAA")
+        batch.set_end_time("BBB")
+        batch.set_state_vector('CCC', [1, 2, 3, 4, 5, 6])
+
+        with self.assertRaises(KeyError):
+            batch.set_step_size(3600, 'blah')
 
     def test_server_fails(self):
         """Test a failing server

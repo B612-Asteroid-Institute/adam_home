@@ -34,19 +34,32 @@ class Batch(object):
         """Initializes attributes
 
         """
-        self._state_vector = None    # position and velocity state vector
-        self._epoch = None           # epoch associated with state vector
-        self._start_time = None      # start time of run
-        self._end_time = None        # end time of run
-        self._step_size = 86400      # defaulted to 1 day
-        self._calc_state = None      # status on run (e.g. RUNNING, COMPLETED)
-        self._uuid = None            # uuid associated with run
-        self._parts_count = 0        # number of parts count
-        self._loaded_parts = {}      # parts that have already been loaded
-        self._rest = RestRequests()  # rest request option (requests package or proxy)
+        self._state_vector = None     # position and velocity state vector
+        self._epoch = None            # epoch associated with state vector
+        self._start_time = None       # start time of run
+        self._end_time = None         # end time of run
+        self._step_size = 86400       # step size in seconds (defaulted to 1 day)
+        self._calc_state = None       # status on run (e.g. RUNNING, COMPLETED)
+        self._uuid = None             # uuid associated with run
+        self._parts_count = 0         # number of parts count
+        self._loaded_parts = {}       # parts that have already been loaded
+        self._rest = RestRequests()   # rest request option (requests package or proxy)
+
+        # Object properties
+        self._mass = 1000             # mass, kg
+        self._solar_rad_area = 20     # solar radiation area, m^2
+        self._solar_rad_coeff = 1     # solar radiation coefficient
+        self._drag_area = 20          # drag area, m^2
+        self._drag_coeff = 2.2        # drag coefficient
 
         # Propagator settings (default is the Sun, all planets, and the Moon as point masses [no asteroids])
         self._propagator_uuid = "00000000-0000-0000-0000-000000000001"
+
+        # Header and metadata information
+        self._originator = 'ADAM_User'
+        self._object_name = 'dummy'
+        self._object_id = '001'
+        self._description = None
 
     def __repr__(self):
         """Printable representation of returned values from job run
@@ -73,6 +86,58 @@ class Batch(object):
             None
         """
         self._rest = proxy
+
+    def set_description(self, description):
+        """Sets the description of the run
+
+        This function sets the description of the propagated run
+
+        Args:
+            description (str): description of the run
+
+        Returns:
+            None
+        """
+        self._description = description
+
+    def set_originator(self, originator):
+        """Sets the originator of the run
+
+        This function sets the originator of the propagated run
+
+        Args:
+            originator (str): responsible entity for run
+
+        Returns:
+            None
+        """
+        self._originator = originator
+
+    def set_object_name(self, object_name):
+        """Sets the object name
+
+        This function sets the object's name for the propagation
+
+        Args:
+            object_name (str): name of object
+
+        Returns:
+            None
+        """
+        self._object_name = object_name
+
+    def set_object_id(self, object_id):
+        """Sets the object ID
+
+        This function sets the object's ID for the propagation
+
+        Args:
+            object_id (str): identification of object
+
+        Returns:
+            None
+        """
+        self._object_id = object_id
 
     def set_state_vector(self, epoch, state_vector):
         """Set epoch and state vector
@@ -115,6 +180,98 @@ class Batch(object):
         """
         self._end_time = end_time
 
+    def set_step_size(self, step_size, step_size_unit):
+        """Set step size
+
+        This function sets the step size for the propagator run; can be positive or negative
+        It first converts the step size to seconds given the step size unit
+        Valid units for step size are: "sec", "min", "hour", or "day"
+
+        Args:
+            step_size (int): step size in seconds
+            step_size_unit (str): units of time for step size
+
+        Returns:
+            None
+        """
+
+        # Multiplier dictionary to convert to seconds
+        multiplier = {"sec": 1, "min": 60, "hour": 3600, "day": 86400}
+
+        # Get step size; raise KeyError if unit not in dictionary
+        try:
+            step_size = round(step_size * multiplier[step_size_unit])
+        except:
+            raise KeyError('Invalid units. Options: "sec", "min", "hour", or "day"')
+
+        # Set step size
+        self._step_size = step_size
+
+    def set_mass(self, mass):
+        """Set object mass
+
+        This function sets the object's mass for propagation
+
+        Args:
+            mass (float): object mass in kilograms
+
+        Returns:
+            None
+        """
+        self._mass = mass
+
+    def set_solar_rad_area(self, solar_rad_area):
+        """Set object solar radiation area
+
+        This function sets the object's solar radiation area for propagation
+
+        Args:
+            solar_rad_area (float): object solar radiation area in squared meters
+
+        Returns:
+            None
+        """
+        self._solar_rad_area = solar_rad_area
+
+    def set_solar_rad_coeff(self, solar_rad_coeff):
+        """Set object solar radiation coefficient
+
+        This function sets the object's solar radiation coefficient for propagation
+
+        Args:
+            solar_rad_coeff (float): object solar radiation coefficient
+
+        Returns:
+            None
+        """
+        self._solar_rad_coeff = solar_rad_coeff
+
+    def set_drag_area(self, drag_area):
+        """Set object drag area
+
+        This function sets the object's drag area for propagation
+
+        Args:
+            drag_area (float): object drag area in squared meters
+
+        Returns:
+            None
+        """
+        self._drag_area = drag_area
+
+    def set_drag_coeff(self, drag_coeff):
+        """Set object drag coefficient
+
+        This function sets the object's drag coefficient for propagation
+
+        Args:
+            drag_coeff (float): object drag coefficient
+
+        Returns:
+            None
+        """
+        self._drag_coeff = drag_coeff
+
     def set_propagator_uuid(self, propagator_uuid):
         """Set propagator uuid
 
@@ -142,10 +299,10 @@ class Batch(object):
         """
         return "CCSDS_OPM_VERS = 2.0\n" + \
                ("CREATION_DATE = %s\n" % datetime.utcnow()) + \
-               "ORIGINATOR = Tatiana\n" + \
+               ("ORIGINATOR = %s\n" % self._originator) + \
                "COMMENT Cartesian coordinate system\n" + \
-               "OBJECT_NAME = dummy\n" + \
-               "OBJECT_ID = 001\n" + \
+               ("OBJECT_NAME = %s\n" % self._object_name) + \
+               ("OBJECT_ID = %s\n" % self._object_id) + \
                "CENTER_NAME = SUN\n" + \
                "REF_FRAME = ITRF-97\n" + \
                "TIME_SYSTEM = UTC\n" + \
@@ -156,11 +313,11 @@ class Batch(object):
                ("X_DOT = %s\n" % (self._state_vector[3])) + \
                ("Y_DOT = %s\n" % (self._state_vector[4])) + \
                ("Z_DOT = %s\n" % (self._state_vector[5])) + \
-               "MASS = 1000\n" + \
-               "SOLAR_RAD_AREA = 20\n" + \
-               "SOLAR_RAD_COEFF = 1\n" + \
-               "DRAG_AREA = 20\n" + \
-               "DRAG_COEFF = 2.2"
+               ("MASS = %s\n" % self._mass) + \
+               ("SOLAR_RAD_AREA = %s\n" % self._solar_rad_area) + \
+               ("SOLAR_RAD_COEFF = %s\n" % self._solar_rad_coeff) + \
+               ("DRAG_AREA = %s\n" % self._drag_area) + \
+               ("DRAG_COEFF = %s" % self._drag_coeff)
 
     def submit(self):
         """Submit a job to the cloud
@@ -190,6 +347,9 @@ class Batch(object):
                 'end_time': self._end_time,
                 'opm_string': self.generate_opm(),
                 'propagator_uuid': self._propagator_uuid}
+
+        if self._description is not None:
+            data['description'] = self._description
 
         # Post request on cloud server
         code, response = self._rest.post(_URL + '/batch', data)
