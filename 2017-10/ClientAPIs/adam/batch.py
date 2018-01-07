@@ -38,8 +38,7 @@ class Batch(object):
         self._epoch = None            # epoch associated with state vector
         self._start_time = None       # start time of run
         self._end_time = None         # end time of run
-        self._step_size_unit = 'sec'  # step size units (defaulted to seconds)
-        self._step_size = 86400       # step size (defaulted to 1 day)
+        self._step_size = 86400       # step size in seconds (defaulted to 1 day)
         self._calc_state = None       # status on run (e.g. RUNNING, COMPLETED)
         self._uuid = None             # uuid associated with run
         self._parts_count = 0         # number of parts count
@@ -181,29 +180,16 @@ class Batch(object):
         """
         self._end_time = end_time
 
-    def set_step_size_unit(self, step_size_unit):
-        """Set the units for step size
-
-        This function sets the units for the step size; options include: sec (default), min, hour, or day
-        NOTE: Must be set prior to setting the actual step size!
-        Setting the step size unit and not the step size will result in default settings
-
-        Args:
-            step_size_unit (str): units of time for step size
-
-        Returns:
-            None
-        """
-        self._step_size_unit = step_size_unit
-
-    def set_step_size(self, step_size):
+    def set_step_size(self, step_size, step_size_unit):
         """Set step size
 
         This function sets the step size for the propagator run; can be positive or negative
         It first converts the step size to seconds given the step size unit
+        Valid units for step size are: "sec", "min", "hour", or "day"
 
         Args:
             step_size (int): step size in seconds
+            step_size_unit (str): units of time for step size
 
         Returns:
             None
@@ -214,7 +200,7 @@ class Batch(object):
 
         # Get step size; raise KeyError if unit not in dictionary
         try:
-            step_size = round(step_size * multiplier[self._step_size_unit])
+            step_size = round(step_size * multiplier[step_size_unit])
         except:
             raise KeyError('Invalid units. Options: "sec", "min", "hour", or "day"')
 
