@@ -212,7 +212,7 @@ class Batch(object):
         # Multiplier dictionary to convert to seconds
         multiplier = {"sec": 1, "min": 60, "hour": 3600, "day": 86400}
 
-        # Get step size; throw KeyError and use default if unit not in dictionary
+        # Get step size; raise KeyError if unit not in dictionary
         try:
             step_size = round(step_size * multiplier[self._step_size_unit])
         except:
