@@ -245,7 +245,6 @@ class BatchTest(unittest.TestCase):
         with self.assertRaises(KeyError):
             batch.set_step_size(3600)
 
-
     def test_server_fails(self):
         """Test a failing server
 
