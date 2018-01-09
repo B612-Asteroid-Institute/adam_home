@@ -1,5 +1,6 @@
 from adam import Batch
-from adam.batch import _set_url_base
+# Why don't I have to say "from adam.batch import Batch"?
+from adam.auth import Auth
 from adam.rest_proxy import _RestProxyForTest
 import unittest
 
@@ -15,7 +16,6 @@ class BatchTest(unittest.TestCase):
 
         """
         self._base = "http://BASE"
-        _set_url_base(self._base)
 
     def test_good_submit(self):
         """Test a good/passing batch submit
@@ -79,7 +79,7 @@ class BatchTest(unittest.TestCase):
         rest.expect_post(self._base + "/batch", check_input, 200, {'calc_state' : 'PENDING', 'uuid' : 'BLAH'})
 
         # Initiate Batch class
-        batch = Batch()
+        batch = Batch(self._base)
 
         # Set start time, end time, and state vector with epoch
         batch.set_start_time("AAA")
@@ -143,7 +143,7 @@ class BatchTest(unittest.TestCase):
         rest.expect_post(self._base + "/batch", check_custom_inputs, 200, {'calc_state': 'PENDING', 'uuid': 'BLAH'})
 
         # Initiate Batch class
-        batch = Batch()
+        batch = Batch(self._base)
 
         # Set start time, end time, and state vector with epoch
         batch.set_start_time("AAA")
@@ -184,7 +184,7 @@ class BatchTest(unittest.TestCase):
         rest = _RestProxyForTest()
 
         # Initiate Batch class
-        batch = Batch()
+        batch = Batch(self._base)
 
         # Set start time, end time, and state vector with epoch
         batch.set_start_time("AAA")
@@ -208,7 +208,7 @@ class BatchTest(unittest.TestCase):
         rest.expect_post(self._base + '/batch', lambda x : True, 404, {})
 
         # Initiate Batch class
-        batch = Batch()
+        batch = Batch(self._base)
 
         # Set start time, end time, and state vector with epoch
         batch.set_start_time("AAA")
@@ -235,7 +235,7 @@ class BatchTest(unittest.TestCase):
         rest = _RestProxyForTest()
 
         # Initiate Batch class
-        batch = Batch()
+        batch = Batch(self._base)
 
         # Set start time, end time, and state vector with epoch
         batch.set_start_time("AAA")
@@ -280,7 +280,7 @@ class BatchTest(unittest.TestCase):
         rest.expect_get(self._base + '/batch/' + uuid, 404, {})
 
         # Initiate Batch class
-        batch = Batch()
+        batch = Batch(self._base)
 
         # Set UUID
         batch._uuid = uuid
@@ -308,7 +308,7 @@ class BatchTest(unittest.TestCase):
         rest.expect_get(self._base + '/batch/' + uuid, 500, {})
 
         # Initiate Batch class
-        batch = Batch()
+        batch = Batch(self._base)
 
         # Set UUID
         batch._uuid = uuid
@@ -331,7 +331,7 @@ class BatchTest(unittest.TestCase):
         rest = _RestProxyForTest()
 
         # Initiate Batch class
-        batch = Batch()
+        batch = Batch(self._base)
 
         # Override network access with proxy
         batch.set_rest_accessor(rest)
@@ -358,7 +358,7 @@ class BatchTest(unittest.TestCase):
         rest.expect_get(self._base + '/batch/' + uuid, 200, {'calc_state' : 'RUNNING', 'parts_count': 5})
 
         # Initiate Batch class
-        batch = Batch()
+        batch = Batch(self._base)
 
         # Set UUID
         batch._uuid = uuid
@@ -391,7 +391,7 @@ class BatchTest(unittest.TestCase):
                          'error': 'No error!'})
 
         # Initiate Batch class
-        batch = Batch()
+        batch = Batch(self._base)
 
         # Set UUID
         batch._uuid = uuid
@@ -427,7 +427,7 @@ class BatchTest(unittest.TestCase):
                          'error': 'No error!'})
 
         # Initiate Batch class
-        batch = Batch()
+        batch = Batch(self._base)
 
         # Set UUID
         batch._uuid = uuid
@@ -464,7 +464,7 @@ class BatchTest(unittest.TestCase):
                              'part_index': part})
 
         # Initiate Batch class
-        batch = Batch()
+        batch = Batch(self._base)
 
         # Set UUID, parts count, and overall calc state (as 'COMPLETED')
         batch._uuid = uuid
@@ -505,7 +505,7 @@ class BatchTest(unittest.TestCase):
                         {'calc_state': 'RUNNING', 'part_index': part})
 
         # Initiate Batch class
-        batch = Batch()
+        batch = Batch(self._base)
 
         # Set UUID, parts count, and overall calc state (as 'RUNNING')
         batch._uuid = uuid
@@ -538,7 +538,7 @@ class BatchTest(unittest.TestCase):
                         {'calc_state': 'FAILED', 'error': 'Some error', 'part_index': part})
 
         # Initiate Batch class
-        batch = Batch()
+        batch = Batch(self._base)
 
         # Set UUID, parts count, and overall calc state (as 'FAILED')
         batch._uuid = uuid
@@ -571,7 +571,7 @@ class BatchTest(unittest.TestCase):
         rest = _RestProxyForTest()
 
         # Initiate Batch class
-        batch = Batch()
+        batch = Batch(self._base)
 
         # Set UUID, parts count, and overall calc state (as 'RUNNING')
         batch._uuid = uuid
@@ -604,7 +604,7 @@ class BatchTest(unittest.TestCase):
         rest.expect_get(self._base + '/batch/' + uuid + '/' + str(part), 404, {})
 
         # Initiate Batch class
-        batch = Batch()
+        batch = Batch(self._base)
 
         # Set UUID, parts count, and overall calc state (as 'RUNNING')
         batch._uuid = uuid

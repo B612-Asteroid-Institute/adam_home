@@ -5,32 +5,16 @@
 from adam.rest_proxy import RestRequests
 from datetime import datetime
 
-# Base URL
-_URL = 'https://pro-equinox-162418.appspot.com/_ah/api/adam/v1'
-
-def _set_url_base(url):
-    """Set the base URL
-
-    This function sets the global _URL to the inputted url and returns the old global _URL.
-
-    Args:
-        url (str): the URL to set as global
-
-    Returns:
-        the old _URL (str)
-    """
-    global _URL
-    old_value = _URL
-    _URL = url
-    return old_value
-
 class Batch(object):
     """Module for a batch request
 
     This class is used for creating batch runs on the cloud
 
     """
-    def __init__(self):
+    def __init__(self, url):
+    # What do you think about moving the base URL to the rest proxy? Then it can take
+    # care of prepending it before each request, and the url really should match the
+    # proxy anyway, right?
         """Initializes attributes
 
         """
@@ -60,6 +44,8 @@ class Batch(object):
         self._object_name = 'dummy'
         self._object_id = '001'
         self._description = None
+        
+        self._url = url
 
     def __repr__(self):
         """Printable representation of returned values from job run
@@ -352,7 +338,7 @@ class Batch(object):
             data['description'] = self._description
 
         # Post request on cloud server
-        code, response = self._rest.post(_URL + '/batch', data)
+        code, response = self._rest.post(self._url + '/batch', data)
 
         # Check error code
         if code != 200:
@@ -384,7 +370,7 @@ class Batch(object):
             raise KeyError("Need uuid!")
 
         # Get code and response from UUID
-        code, response = self._rest.get(_URL + '/batch/' + self._uuid)
+        code, response = self._rest.get(self._url + '/batch/' + self._uuid)
 
         # Check for failed error codes and raise error if job failed
         if code == 404:    # Not found
@@ -481,7 +467,7 @@ class Batch(object):
 
         # If no part exists, grab part from URL
         if part is None:
-            code, part = self._rest.get(_URL + '/batch/' + self._uuid + '/' + str(index))
+            code, part = self._rest.get(self._url + '/batch/' + self._uuid + '/' + str(index))
 
             # Raise error if specific part submission was not successful
             if code != 200:
