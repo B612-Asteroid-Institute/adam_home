@@ -1,5 +1,11 @@
 from adam import Batch
+from adam.auth import Auth
+from adam import common
 import time
+
+
+auth = Auth(common.DEFAULT_BASE_URL, '')
+auth.whoami()
 
 state_vec = [130347560.13690618,
              -74407287.6018632,
@@ -8,7 +14,7 @@ state_vec = [130347560.13690618,
              27.146279819258538,
              10.346605942591514]
 
-batch_run = Batch()
+batch_run = Batch(common.DEFAULT_BASE_URL)
 batch_run.set_start_time('2017-10-04T00:00:00Z')
 batch_run.set_end_time('2017-10-11T00:00:00Z')
 batch_run.set_state_vector('2017-10-04T00:00:00.000Z', state_vec)
