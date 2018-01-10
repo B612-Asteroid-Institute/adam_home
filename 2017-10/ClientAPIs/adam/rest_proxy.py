@@ -64,7 +64,13 @@ class RestRequests(RestProxy):
             Pair of code and json data (actual from server)
         """
         req = requests.post(url, data=json.dumps(data_dict))
-        return req.status_code, req.json()
+        req_json = {}
+        try:
+            req_json = req.json()
+        except ValueError:
+            # TODO(laura): make the rest server return json responses, always
+            print "Received non-JSON response from API:", req.status_code, req.content
+        return req.status_code, req_json
 
     def get(self, url):
         """Send GET request to the server
@@ -78,7 +84,13 @@ class RestRequests(RestProxy):
             Pair of code and json data
         """
         req = requests.get(url)
-        return req.status_code, req.json()
+        req_json = {}
+        try:
+            req_json = req.json()
+        except ValueError:
+            # TODO(laura): make the rest server return json responses, always
+            print "Received non-JSON response from API:", req.status_code, req.content
+        return req.status_code, req_json
 
 class _RestProxyForTest(RestProxy):
     """Implementation using REST proxy
