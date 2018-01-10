@@ -4,18 +4,21 @@
 
 from adam.rest_proxy import RestRequests
 import adam
+import webbrowser
 
 class Auth(object):
     """Module for generating and using authentication tokens
 
     """
-    def __init__(self, url, token):
+    def __init__(self, url):
         """Initializes attributes
 
         """
         self._rest = RestRequests()   # rest request option (requests package or proxy)
         self._url = url
-        self._token = token
+        self._token = '' 
+        self._logged_in = False
+        self._email = ''
 
     def __repr__(self):
     	"""
@@ -23,9 +26,9 @@ class Auth(object):
             None
 
         Returns:
-            A dummy string
+            A string describing the contents of this authorization object.
         """
-        return "Auth"
+        return "Auth [url=" + self._url + ", token=" + self._token + "]"
 
     def set_rest_accessor(self, proxy):
         """Override network access methods
@@ -39,19 +42,81 @@ class Auth(object):
             None
         """
         self._rest = proxy
+    
+    def get_token(self):
+        """Accessor for token.
         
-
-    def whoami(self):
-        """Checks on current authorization status.
-
-        Raises:
+        Returns:
+            Stored token. If accessed before call to authorize, will be empty.
         """
+        return self._token
+    
+    def get_user(self):
+        """Accessor for user email.
+        
+        Returns:
+            Stored user email. If accessed before call to authorize, will be empty.
+        """
+        return self._email
+        
+    def __validate_token__(self, token):
+        # For some reason, we get 404's when using an empty token. Do this instead.
+        if token == "": token = "invalid"
+        code, response = self._rest.get(self._url + '/me/' + token)
+        return code, response
+    
+    def authorize(self, token):
+        """Checks whether the given token is valid. If so, updates this object to 
+        hold information about the token's logged in user. If not, clears information
+        from this object.
+        
+        Returns:
+            Whether this object now reflects a valid user session.
+        """
+        code, response = self.__validate_token__(token)
+        if code == 200 and response['loggedIn']:
+            self._token = token
+            self._logged_in = response['loggedIn']
+            self._email = response['email']
+            return True
+        else:
+            self._token = ''
+            self._logged_in = False
+            self._email = ''
+            return False
+    
+    def authorize_from_file(self, filename):
+        """Reads the contents of the file by the given name as a token, then attempts
+        to authorize using that token. If successful, updates this object to 
+        hold information about the token's logged in user. If not, clears information
+        from this object.
+        
+        Returns:
+            Whether this object now reflects a valid user session.
+        """
+        token = ""
+        try:
+            with open(filename, "r") as f:
+                token = f.read()
+        except IOError:
+            return False
 
-        # Post request on cloud server
-        code, response = self._rest.get(self._url + '/me/' + self._token)
-
-        # Check error code
-        if code != 200:
-            raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
-
-        return response
+        return self.authorize(token)
+    
+    def initial_authorization(self):
+        """Prompts the user to log in in the browser, then paste the generated token
+        back here. If the token generated is valid, updates this object to hold
+        information about the logged in user. If not, clears information from this object.
+        
+        Returns:
+            Whether this object now reflects a valid user session.
+        """
+        message = (
+            "A web browser will open with a page where you can log in. "
+            "Please choose your method of authorization, then copy the "
+            "generated token here. Press enter to continue.")
+        raw_input(message)
+        webbrowser.open("http://pro-equinox-162418.appspot.com/token.html")
+        token = raw_input("Please paste the generated token here: ")
+        
+        return self.authorize(token)
