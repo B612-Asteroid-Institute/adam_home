@@ -1,5 +1,4 @@
 from adam import Batch
-from adam.auth import Auth
 from adam import common
 import time
 import os
