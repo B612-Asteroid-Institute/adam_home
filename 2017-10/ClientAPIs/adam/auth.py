@@ -16,9 +16,7 @@ class Auth(object):
         """
         self._rest = RestRequests()   # rest request option (requests package or proxy)
         self._url = url
-        self._token = '' 
-        self._logged_in = False
-        self._email = ''
+        self.__clear_attributes__()
 
     def __repr__(self):
     	"""
@@ -76,6 +74,11 @@ class Auth(object):
         code, response = self._rest.get(url)
         return code, response
     
+    def __clear_attributes__(self):
+        self._token = ''
+        self._logged_in = False
+        self._email = ''
+    
     def authorize(self, token):
         """Checks whether the given token is valid. If so, updates this object to 
         hold information about the token's logged in user. If not, clears information
@@ -88,6 +91,13 @@ class Auth(object):
 
         # Check error code
         if code != 200:
+            # Handle 503s, since this is how the server communicates authentication
+            # errors.
+            if 'error' in response:
+                if response['error']['message'].startswith('org.apache.shiro.authc.'):
+                    self.__clear_attributes__()
+                    return False
+                    
             raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
         
         if 'loggedIn' in response and response['loggedIn']:
@@ -99,9 +109,7 @@ class Auth(object):
                 self._email = ''
             return True
         else:
-            self._token = ''
-            self._logged_in = False
-            self._email = ''
+            self.__clear_attributes__()
             return False
     
     def authorize_from_file(self, filename):

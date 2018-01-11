@@ -4,21 +4,6 @@ from adam import common
 import time
 import os
 
-tokenFile = os.getcwd() + '/token.txt'
-url = "http://localhost:8080/_ah/api/adam/v1"
-auth = Auth(url)
-if not auth.authorize_from_file(tokenFile):
-    if not auth.initial_authorization():
-        print 'Could not authorize user.'
-    else:
-        with open(tokenFile, "w") as f:
-            f.write(auth.get_token())
-
-if not auth.get_token() == "":
-    print 'Welcome,', auth.get_user()
-
-# auth.get_token() may now be used for any methods requiring authorization.
-
 state_vec = [130347560.13690618,
              -74407287.6018632,
              -35247598.541470632,

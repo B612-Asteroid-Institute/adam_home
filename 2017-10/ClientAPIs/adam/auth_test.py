@@ -65,7 +65,7 @@ class AuthTest(unittest.TestCase):
 			  }
 			}
 			"""
-        rest.expect_get(self._base + '/me?token=' + bad_token, 200,
+        rest.expect_get(self._base + '/me?token=' + bad_token, 503,
         	json.loads(server_error_on_bad_token))
         auth.authorize(bad_token)
         self.assertEqual(auth.get_token(), '')
@@ -108,7 +108,7 @@ class AuthTest(unittest.TestCase):
         
         # Authorization should throw on a non-200 response and leave auth contents
         # unchanged.
-        rest.expect_get(self._base + '/me?token=problematic_token', 201, {})
+        rest.expect_get(self._base + '/me?token=problematic_token', 404, {})
         with self.assertRaises(RuntimeError):
             auth.authorize('problematic_token')
         self.assertEqual(auth.get_token(), good_token)
