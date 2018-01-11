@@ -7,7 +7,7 @@ import adam
 import webbrowser
 
 class Auth(object):
-    """Module for generating and using authentication tokens
+    """Module for generating, validating, and using authentication tokens
 
     """
     def __init__(self, url):
@@ -58,11 +58,22 @@ class Auth(object):
             Stored user email. If accessed before call to authorize, will be empty.
         """
         return self._email
+    
+    def get_logged_in(self):
+        """Accessor for logged in.
+        
+        Returns:
+            Stored logged in value. If accessed before call to authorize, will be False.
+        """
+        return self._logged_in
         
     def __validate_token__(self, token):
-        # For some reason, we get 404's when using an empty token. Do this instead.
-        if token == "": token = "invalid"
-        code, response = self._rest.get(self._url + '/me/' + token)
+        url = ""
+        if token == "":
+            url = self._url + '/me'
+        else:
+            url = self._url + '/me?token=' + token
+        code, response = self._rest.get(url)
         return code, response
     
     def authorize(self, token):
@@ -74,10 +85,18 @@ class Auth(object):
             Whether this object now reflects a valid user session.
         """
         code, response = self.__validate_token__(token)
-        if code == 200 and response['loggedIn']:
+
+        # Check error code
+        if code != 200:
+            raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
+        
+        if 'loggedIn' in response and response['loggedIn']:
             self._token = token
             self._logged_in = response['loggedIn']
-            self._email = response['email']
+            if self._logged_in:
+                self._email = response['email']
+            else:
+                self._email = ''
             return True
         else:
             self._token = ''
