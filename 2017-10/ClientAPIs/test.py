@@ -1,7 +1,6 @@
 from adam import Batch
 from adam import common
 import time
-import os
 
 state_vec = [130347560.13690618,
              -74407287.6018632,
