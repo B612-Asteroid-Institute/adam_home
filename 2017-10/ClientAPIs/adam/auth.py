@@ -19,7 +19,7 @@ class Auth(object):
         self.__clear_attributes__()
 
     def __repr__(self):
-    	"""
+        """
         Args:
             None
 
