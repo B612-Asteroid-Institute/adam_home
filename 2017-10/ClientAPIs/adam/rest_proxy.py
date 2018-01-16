@@ -69,7 +69,7 @@ class RestRequests(RestProxy):
             req_json = req.json()
         except ValueError:
             # TODO(laura): make the rest server return json responses, always
-            print "Received non-JSON response from API:", req.status_code, req.content
+            print("Received non-JSON response from API: " + req.status_code + ", " + req.content)
         return req.status_code, req_json
 
     def get(self, url):
@@ -89,7 +89,7 @@ class RestRequests(RestProxy):
             req_json = req.json()
         except ValueError:
             # TODO(laura): make the rest server return json responses, always
-            print "Received non-JSON response from API:", req.status_code, req.content
+            print("Received non-JSON response from API: " + req.status_code + ", " +  req.content)
         return req.status_code, req_json
 
 class _RestProxyForTest(RestProxy):

@@ -1,6 +1,4 @@
 from adam import Batch
-# Why don't I have to say "from adam.batch import Batch"?
-from adam.auth import Auth
 from adam.rest_proxy import _RestProxyForTest
 import unittest
 
