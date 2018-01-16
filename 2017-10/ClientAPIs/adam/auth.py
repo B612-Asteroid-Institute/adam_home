@@ -10,12 +10,11 @@ class Auth(object):
     """Module for generating, validating, and using authentication tokens
 
     """
-    def __init__(self, url):
+    def __init__(self):
         """Initializes attributes
 
         """
         self._rest = RestRequests()   # rest request option (requests package or proxy)
-        self._url = url
         self.__clear_attributes__()
 
     def __repr__(self):
@@ -26,7 +25,7 @@ class Auth(object):
         Returns:
             A string describing the contents of this authorization object.
         """
-        return "Auth [url=" + self._url + ", token=" + self._token + "]"
+        return "Auth [token=" + self._token + ",email=" + self._email + "]"
 
     def set_rest_accessor(self, proxy):
         """Override network access methods
@@ -66,12 +65,12 @@ class Auth(object):
         return self._logged_in
         
     def __validate_token__(self, token):
-        url = ""
+        path = ""
         if token == "":
-            url = self._url + '/me'
+            path = '/me'
         else:
-            url = self._url + '/me?token=' + token
-        code, response = self._rest.get(url)
+            path = '/me?token=' + token
+        code, response = self._rest.get(path)
         return code, response
     
     def __clear_attributes__(self):

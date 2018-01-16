@@ -11,10 +11,7 @@ class Batch(object):
     This class is used for creating batch runs on the cloud
 
     """
-    def __init__(self, url):
-    # What do you think about moving the base URL to the rest proxy? Then it can take
-    # care of prepending it before each request, and the url really should match the
-    # proxy anyway, right?
+    def __init__(self):
         """Initializes attributes
 
         """
@@ -44,8 +41,6 @@ class Batch(object):
         self._object_name = 'dummy'
         self._object_id = '001'
         self._description = None
-        
-        self._url = url
 
     def __repr__(self):
         """Printable representation of returned values from job run
@@ -338,7 +333,7 @@ class Batch(object):
             data['description'] = self._description
 
         # Post request on cloud server
-        code, response = self._rest.post(self._url + '/batch', data)
+        code, response = self._rest.post('/batch', data)
 
         # Check error code
         if code != 200:
@@ -370,7 +365,7 @@ class Batch(object):
             raise KeyError("Need uuid!")
 
         # Get code and response from UUID
-        code, response = self._rest.get(self._url + '/batch/' + self._uuid)
+        code, response = self._rest.get('/batch/' + self._uuid)
 
         # Check for failed error codes and raise error if job failed
         if code == 404:    # Not found
@@ -465,9 +460,9 @@ class Batch(object):
         except KeyError:
             part = None
 
-        # If no part exists, grab part from URL
+        # If no part exists, grab part from server
         if part is None:
-            code, part = self._rest.get(self._url + '/batch/' + self._uuid + '/' + str(index))
+            code, part = self._rest.get('/batch/' + self._uuid + '/' + str(index))
 
             # Raise error if specific part submission was not successful
             if code != 200:

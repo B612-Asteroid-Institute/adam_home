@@ -11,13 +11,13 @@ class RestProxy(object):
     """Interface for accessing the server
 
     """
-    def post(self, url, data_dict):
+    def post(self, path, data_dict):
         """Send POST request to the server
 
         This function is intended to be overriden by derived classes to POST a request to a real or proxy server
 
         Args:
-            url (str): the URL to send the POST to
+            path (str): the path to send the POST to
             data_dict (dict): dictionary to be sent in the body of the POST
 
         Returns:
@@ -28,13 +28,13 @@ class RestProxy(object):
         """
         raise NotImplementedError("Got interface, need implementation")
 
-    def get(self, url):
-        """Send GET request to the URL
+    def get(self, path):
+        """Send GET request to the server
 
-        This function is intended to be overriden by derived classes to GET a request from a real or proxy URL
+        This function is intended to be overriden by derived classes to GET a request from a real or proxy server
 
         Args:
-            url (str): the URL to send the GET request to
+            path (str): the path to send the GET request to
 
         Returns:
             Pair of code and json data (when overriden)
@@ -51,19 +51,29 @@ class RestRequests(RestProxy):
 
     """
 
-    def post(self, url, data_dict):
-        """Send POST request to the URL
+    # Default base URL corresponding to ADAM project.
+    DEFAULT_BASE_URL = 'https://pro-equinox-162418.appspot.com/_ah/api/adam/v1'
+    
+    def __init__(self, base_url=DEFAULT_BASE_URL):
+        """Initialize with the give base URL. All paths for requests will be appended
+        to this URL.
+        
+        """
+        self._base_url = base_url
+
+    def post(self, path, data_dict):
+        """Send POST request to the server
 
         This function is used to POST a request to the actual server
 
         Args:
-            url (str): the URL to send the POST to
+            path (str): the path to send the POST to
             data_dict (dict): dictionary to be sent in the body of the POST
 
         Returns:
             Pair of code and json data (actual from server)
         """
-        req = requests.post(url, data=json.dumps(data_dict))
+        req = requests.post(self._base_url + path, data=json.dumps(data_dict))
         req_json = {}
         try:
             req_json = req.json()
@@ -72,18 +82,18 @@ class RestRequests(RestProxy):
             print("Received non-JSON response from API: " + req.status_code + ", " + req.content)
         return req.status_code, req_json
 
-    def get(self, url):
+    def get(self, path):
         """Send GET request to the server
 
-        This function is used to GET a request from the server's URL
+        This function is used to GET a request from the server
 
         Args:
-            url (str): the URL to send the GET request to
+            path (str): the path to send the GET request to
 
         Returns:
             Pair of code and json data
         """
-        req = requests.get(url)
+        req = requests.get(self._base_url + path)
         req_json = {}
         try:
             req_json = req.json()
@@ -101,43 +111,44 @@ class _RestProxyForTest(RestProxy):
     def __init__(self):
         """Initializes attributes
 
-        Expectations as tuples (method, input_url, input_data, return_code, return_data)
+        Expectations as tuples (method, input_path, input_data, return_code, return_data)
 
         """
         self._expectations = []
 
-    def expect_post(self, url, data_func, code, resp_data):
+    def expect_post(self, path, data_func, code, resp_data):
         """Expectations for POST method
 
         This function defines the expectations for a POST method.
 
         Args:
-            url (str): the URL to send the POST to
+            path (str): the path to send the POST to
             data_func (func): function to validate the input data to send to the POST
             code (int): return code from POST
             resp_data (dict): response data returned from POST
         """
-        self._expectations.append(('POST', url, data_func, code, resp_data))
+        self._expectations.append(('POST', path, data_func, code, resp_data))
 
-    def expect_get(self, url, code, resp_data):
+    def expect_get(self, path, code, resp_data):
         """Expectations for GET method
 
         This function defines the expectations for a GET method.
 
         Args:
-            url (str): the URL to send the GET request to
+            path (str): the path to send the GET request to
             code (int): return code from GET
             resp_data (dict): response data returned from GET
         """
-        self._expectations.append(('GET', url, None, code, resp_data))
+        self._expectations.append(('GET', path, None, code, resp_data))
 
-    def post(self, url, data_dict):
-        """Send POST request to the proxy URL
+    def post(self, path, data_dict):
+        """Imitate sending POST request to server.
 
-        This function is used to POST a request to a proxy server for testing purposes.
+        This function is used to imitate POSTing a request to a server for testing
+        purposes.
 
         Args:
-            url (str): the URL to send the POST to
+            path (str): the path to send the POST to
             data_dict (dict): the input data to send to the POST
 
         Returns:
@@ -146,7 +157,7 @@ class _RestProxyForTest(RestProxy):
         Raises:
             AssertionError: expectations are empty list
             AssertionError: wrong method called
-            AssertionError: mismatched URLs for POST request
+            AssertionError: mismatched paths for POST request
             AssertionError: POST data not valid
 
         TODO:
@@ -168,9 +179,9 @@ class _RestProxyForTest(RestProxy):
             # Method is not 'POST'
             raise AssertionError("Expected %s, got POST" % exp[0])
 
-        if url != exp[1]:
-            # URL does not match expected one
-            raise AssertionError("Expected POST request to %s, got %s" % (exp[1], url))
+        if path != exp[1]:
+            # path does not match expected one
+            raise AssertionError("Expected POST request to %s, got %s" % (exp[1], path))
 
         if not exp[2](data_dict):
             # POST data not valid
@@ -179,13 +190,14 @@ class _RestProxyForTest(RestProxy):
         # Return code and response data
         return exp[3], exp[4]
 
-    def get(self, url):
-        """Send GET request to proxy server URL
+    def get(self, path):
+        """Imitate sending GET request to server
 
-        This function is used to GET a request from the proxy server's URL for testing purposes.
+        This function is used to imitate GETting a request from the server for testing 
+        purposes.
 
         Args:
-            url (str): the URL to send the GET request to
+            path (str): the path to send the GET request to
 
         Returns:
             Pair of code and json data
@@ -193,7 +205,7 @@ class _RestProxyForTest(RestProxy):
         Raises:
             AssertionError: expectations are empty list
             AssertionError: wrong method called
-            AssertionError: mismatched URLs for GET request
+            AssertionError: mismatched paths for GET request
 
         TODO:
             Substitute with more specific errors
@@ -214,9 +226,9 @@ class _RestProxyForTest(RestProxy):
             # Method is not 'GET'
             raise AssertionError("Expected %s, got GET" % exp[0])
 
-        if url != exp[1]:
-            # URL does not match expected one
-            raise AssertionError("Expected GET request to %s, got %s" % (exp[1], url))
+        if path != exp[1]:
+            # path does not match expected one
+            raise AssertionError("Expected GET request to %s, got %s" % (exp[1], path))
 
         # Return code and response data
         return exp[3], exp[4]
