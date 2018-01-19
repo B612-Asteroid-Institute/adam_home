@@ -4,7 +4,6 @@
 
 from adam.rest_proxy import RestRequests
 import adam
-import webbrowser
 
 class Auth(object):
     """Module for generating, validating, and using authentication tokens
@@ -138,11 +137,9 @@ class Auth(object):
             Whether this object now reflects a valid user session.
         """
         message = (
-            "A web browser will open with a page where you can log in. "
-            "Please choose your method of authorization, then copy the "
-            "generated token here. Press enter to continue.")
-        raw_input(message)
-        webbrowser.open("http://pro-equinox-162418.appspot.com/token.html")
-        token = raw_input("Please paste the generated token here: ")
+            "Please visit http://pro-equinox-162418.appspot.com/token.html "
+            "in a browser. Please choose your method of authorization, then paste the "
+            "generated token here: ")
+        token = input(message)
         
         return self.authorize(token)
