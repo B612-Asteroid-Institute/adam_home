@@ -80,15 +80,13 @@ class AuthorizingRestProxy(RestProxy):
     def _add_token_to_path(self, path):
         parsed = list(urllib.parse.urlparse(path))
         query = urllib.parse.parse_qs(parsed[4])
-        print(query)
-        print(urllib.parse.urlencode(query, doseq=True))
         query['token'] = self._token
-        print(urllib.parse.urlencode(query, doseq=True))
-        print(urllib.parse.parse_qs(urllib.parse.urlencode(query, doseq=True)))
+        # doseq=True is required to avoid very strange encodings of all existing values.
+        # Existing values are parsed as lists by parse_qs, but then the lists are encoded
+        # as strings (like a=%5B%271%27%5D (encoded a=['1']) instead of a=1).
         parsed[4] = urllib.parse.urlencode(query, doseq=True)
         return urllib.parse.urlunparse(parsed)
     
-
     def post(self, path, data_dict):
         data_dict['token'] = self._token
         return self._rest_proxy.post(path, data_dict)
@@ -109,8 +107,7 @@ class RestRequests(RestProxy):
     """
 
     # Default base URL corresponding to ADAM project.
-#     DEFAULT_BASE_URL = 'https://pro-equinox-162418.appspot.com/_ah/api/adam/v1'
-    DEFAULT_BASE_URL = 'http://localhost:8080/_ah/api/adam/v1'
+    DEFAULT_BASE_URL = 'https://pro-equinox-162418.appspot.com/_ah/api/adam/v1'
     
     def __init__(self, base_url=DEFAULT_BASE_URL):
         """Initialize with the give base URL. All paths for requests will be appended
