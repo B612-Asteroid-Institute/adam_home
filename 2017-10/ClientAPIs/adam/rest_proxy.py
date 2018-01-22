@@ -1,11 +1,17 @@
 """
     rest_proxy.py
 
-    Class for setting up a REST proxy (for testing purposes)
+    Exposes an interface for making calls to the REST API.
+    
+    Implementations:
+        - RestRequests: makes simple calls to REST API.
+        - AuthorizingRestProxy: wraps a RestProxy and adds the auth token to all calls.
+        - _RestProxyForTest: mocks methods and exposes extra functionality to add expectations.
 """
 
 import json
 import requests
+import urllib
 
 class RestProxy(object):
     """Interface for accessing the server
@@ -44,6 +50,57 @@ class RestProxy(object):
         """
         raise NotImplementedError("Got interface, need implementation")
 
+    def delete(self, path):
+        """Send DELETE request to the server
+
+        This function is intended to be overriden by derived classes to DELETE a request from a real or proxy server
+
+        Args:
+            path (str): the path to send the DELETE request to
+
+        Returns:
+            Http code
+
+        Raises:
+            NotImplementedError: if this does not get overriden by the derived classes
+        """
+        raise NotImplementedError("Got interface, need implementation")
+
+
+class AuthorizingRestProxy(RestProxy):
+    """ Rest proxy implementation that wraps another rest proxy and adds the authorization
+    token to every method call.
+    
+    """
+    
+    def __init__(self, rest_proxy, token):
+        self._rest_proxy = rest_proxy
+        self._token = token
+    
+    def _add_token_to_path(self, path):
+        parsed = list(urllib.parse.urlparse(path))
+        query = urllib.parse.parse_qs(parsed[4])
+        print(query)
+        print(urllib.parse.urlencode(query, doseq=True))
+        query['token'] = self._token
+        print(urllib.parse.urlencode(query, doseq=True))
+        print(urllib.parse.parse_qs(urllib.parse.urlencode(query, doseq=True)))
+        parsed[4] = urllib.parse.urlencode(query, doseq=True)
+        return urllib.parse.urlunparse(parsed)
+    
+
+    def post(self, path, data_dict):
+        data_dict['token'] = self._token
+        return self._rest_proxy.post(path, data_dict)
+
+    def get(self, path):
+        path = self._add_token_to_path(path)
+        return self._rest_proxy.get(path)
+
+    def delete(self, path):
+        path = self._add_token_to_path(path)
+        return self._rest_proxy.delete(path)
+
 class RestRequests(RestProxy):
     """Implementation using requests package
 
@@ -52,7 +109,8 @@ class RestRequests(RestProxy):
     """
 
     # Default base URL corresponding to ADAM project.
-    DEFAULT_BASE_URL = 'https://pro-equinox-162418.appspot.com/_ah/api/adam/v1'
+#     DEFAULT_BASE_URL = 'https://pro-equinox-162418.appspot.com/_ah/api/adam/v1'
+    DEFAULT_BASE_URL = 'http://localhost:8080/_ah/api/adam/v1'
     
     def __init__(self, base_url=DEFAULT_BASE_URL):
         """Initialize with the give base URL. All paths for requests will be appended
@@ -102,6 +160,20 @@ class RestRequests(RestProxy):
             print("Received non-JSON response from API: " + str(req.status_code) + ", " +  req.content)
         return req.status_code, req_json
 
+    def delete(self, path):
+        """Send DELETE request to the server
+
+        This function is used to DELETE a request from the server
+
+        Args:
+            path (str): the path to send the DELETE request to
+
+        Returns:
+            Pair of code and json data
+        """
+        req = requests.delete(self._base_url + path)
+        return req.status_code
+
 class _RestProxyForTest(RestProxy):
     """Implementation using REST proxy
 
@@ -140,6 +212,19 @@ class _RestProxyForTest(RestProxy):
             resp_data (dict): response data returned from GET
         """
         self._expectations.append(('GET', path, None, code, resp_data))
+    
+    def expect_delete(self, path, code):
+        """Expectations for DELETE method.
+        
+        This function defines the expectations for a DELETE method.
+        
+        Args:
+            path (str): the path to send the DELETE request to
+            code (int): return code from DELETE
+        
+        Note that delete methods do not generally return data.
+        """
+        self._expectations.append(('DELETE', path, None, code, None))
 
     def post(self, path, data_dict):
         """Imitate sending POST request to server.
@@ -232,3 +317,24 @@ class _RestProxyForTest(RestProxy):
 
         # Return code and response data
         return exp[3], exp[4]
+    
+    def delete(self, path):
+        if len(self._expectations) == 0:
+            raise AssertionError("Did not expect any calls, got DELETE")
+
+        # Get first expectations list
+        exp = self._expectations[0]
+
+        # Remove list from expectations
+        self._expectations.pop(0)
+
+        # Go through expectations list and raise errors for non-expected items
+        if exp[0] != 'DELETE':
+            # Method is not 'DELETE'
+            raise AssertionError("Expected %s, got DELETE" % exp[0])
+
+        if path != exp[1]:
+            # path does not match expected one
+            raise AssertionError("Expected DELETE request to %s, got %s" % (exp[1], path))
+        
+        return exp[3]
