@@ -5,25 +5,6 @@
 from adam.rest_proxy import RestRequests
 from datetime import datetime
 
-# Base URL
-_URL = 'https://pro-equinox-162418.appspot.com/_ah/api/adam/v1'
-
-def _set_url_base(url):
-    """Set the base URL
-
-    This function sets the global _URL to the inputted url and returns the old global _URL.
-
-    Args:
-        url (str): the URL to set as global
-
-    Returns:
-        the old _URL (str)
-    """
-    global _URL
-    old_value = _URL
-    _URL = url
-    return old_value
-
 class Batch(object):
     """Module for a batch request
 
@@ -352,7 +333,7 @@ class Batch(object):
             data['description'] = self._description
 
         # Post request on cloud server
-        code, response = self._rest.post(_URL + '/batch', data)
+        code, response = self._rest.post('/batch', data)
 
         # Check error code
         if code != 200:
@@ -384,7 +365,7 @@ class Batch(object):
             raise KeyError("Need uuid!")
 
         # Get code and response from UUID
-        code, response = self._rest.get(_URL + '/batch/' + self._uuid)
+        code, response = self._rest.get('/batch/' + self._uuid)
 
         # Check for failed error codes and raise error if job failed
         if code == 404:    # Not found
@@ -479,9 +460,9 @@ class Batch(object):
         except KeyError:
             part = None
 
-        # If no part exists, grab part from URL
+        # If no part exists, grab part from server
         if part is None:
-            code, part = self._rest.get(_URL + '/batch/' + self._uuid + '/' + str(index))
+            code, part = self._rest.get('/batch/' + self._uuid + '/' + str(index))
 
             # Raise error if specific part submission was not successful
             if code != 200:

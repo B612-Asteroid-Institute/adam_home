@@ -1,5 +1,4 @@
 from adam import Batch
-from adam.batch import _set_url_base
 from adam.rest_proxy import _RestProxyForTest
 import unittest
 
@@ -7,15 +6,6 @@ class BatchTest(unittest.TestCase):
     """Unit tests for running batch job
 
     """
-
-    def setUp(self):
-        """"Set up base URL
-
-        This function sets up the base URL to a dummy URL.
-
-        """
-        self._base = "http://BASE"
-        _set_url_base(self._base)
 
     def test_good_submit(self):
         """Test a good/passing batch submit
@@ -76,7 +66,7 @@ class BatchTest(unittest.TestCase):
             return True
 
         # Set expected 'POST' request (good)
-        rest.expect_post(self._base + "/batch", check_input, 200, {'calc_state' : 'PENDING', 'uuid' : 'BLAH'})
+        rest.expect_post("/batch", check_input, 200, {'calc_state' : 'PENDING', 'uuid' : 'BLAH'})
 
         # Initiate Batch class
         batch = Batch()
@@ -140,7 +130,7 @@ class BatchTest(unittest.TestCase):
             return True
 
         # Set expected 'POST' request (good)
-        rest.expect_post(self._base + "/batch", check_custom_inputs, 200, {'calc_state': 'PENDING', 'uuid': 'BLAH'})
+        rest.expect_post("/batch", check_custom_inputs, 200, {'calc_state': 'PENDING', 'uuid': 'BLAH'})
 
         # Initiate Batch class
         batch = Batch()
@@ -205,7 +195,7 @@ class BatchTest(unittest.TestCase):
         rest = _RestProxyForTest()
 
         # Set expected 'POST' request with 404 error
-        rest.expect_post(self._base + '/batch', lambda x : True, 404, {})
+        rest.expect_post('/batch', lambda x : True, 404, {})
 
         # Initiate Batch class
         batch = Batch()
@@ -277,7 +267,7 @@ class BatchTest(unittest.TestCase):
         rest = _RestProxyForTest()
 
         # Set expected 'GET' request with 404 error
-        rest.expect_get(self._base + '/batch/' + uuid, 404, {})
+        rest.expect_get('/batch/' + uuid, 404, {})
 
         # Initiate Batch class
         batch = Batch()
@@ -305,7 +295,7 @@ class BatchTest(unittest.TestCase):
         rest = _RestProxyForTest()
 
         # Set expected 'GET' request with 500 error (fail)
-        rest.expect_get(self._base + '/batch/' + uuid, 500, {})
+        rest.expect_get('/batch/' + uuid, 500, {})
 
         # Initiate Batch class
         batch = Batch()
@@ -355,7 +345,7 @@ class BatchTest(unittest.TestCase):
         rest = _RestProxyForTest()
 
         # Set expected 'GET' request with calc_state as 'RUNNING'
-        rest.expect_get(self._base + '/batch/' + uuid, 200, {'calc_state' : 'RUNNING', 'parts_count': 5})
+        rest.expect_get('/batch/' + uuid, 200, {'calc_state' : 'RUNNING', 'parts_count': 5})
 
         # Initiate Batch class
         batch = Batch()
@@ -386,7 +376,7 @@ class BatchTest(unittest.TestCase):
         rest = _RestProxyForTest()
 
         # Set expected 'GET' request with calc_state as 'COMPLETED'
-        rest.expect_get(self._base + '/batch/' + uuid, 200,
+        rest.expect_get('/batch/' + uuid, 200,
                         {'calc_state': 'COMPLETED', 'parts_count': 42, 'summary': "ZQZ",
                          'error': 'No error!'})
 
@@ -422,7 +412,7 @@ class BatchTest(unittest.TestCase):
         rest = _RestProxyForTest()
 
         # Set expected 'GET' request with calc_state as 'FAILED'
-        rest.expect_get(self._base + '/batch/' + uuid, 200,
+        rest.expect_get('/batch/' + uuid, 200,
                         {'calc_state': 'FAILED', 'parts_count': 42, 'summary': "ZQZ",
                          'error': 'No error!'})
 
@@ -459,7 +449,7 @@ class BatchTest(unittest.TestCase):
         rest = _RestProxyForTest()
 
         # Set expected 'GET' request with calc_state as 'COMPLETED' for specific part
-        rest.expect_get(self._base + '/batch/' + uuid + '/' + str(part), 200,
+        rest.expect_get('/batch/' + uuid + '/' + str(part), 200,
                             {'calc_state': 'COMPLETED', 'error': 'No error!', 'stk_ephemeris': 'something',
                              'part_index': part})
 
@@ -501,7 +491,7 @@ class BatchTest(unittest.TestCase):
         rest = _RestProxyForTest()
 
         # Set expected 'GET' request with calc_state as 'RUNNING'
-        rest.expect_get(self._base + '/batch/' + uuid + '/' + str(part), 200,
+        rest.expect_get('/batch/' + uuid + '/' + str(part), 200,
                         {'calc_state': 'RUNNING', 'part_index': part})
 
         # Initiate Batch class
@@ -534,7 +524,7 @@ class BatchTest(unittest.TestCase):
         rest = _RestProxyForTest()
 
         # Set expected 'GET' request with calc_state as 'FAILED'
-        rest.expect_get(self._base + '/batch/' + uuid + '/' + str(part), 200,
+        rest.expect_get('/batch/' + uuid + '/' + str(part), 200,
                         {'calc_state': 'FAILED', 'error': 'Some error', 'part_index': part})
 
         # Initiate Batch class
@@ -601,7 +591,7 @@ class BatchTest(unittest.TestCase):
         rest = _RestProxyForTest()
 
         # Set expected 'GET' request with 404 error
-        rest.expect_get(self._base + '/batch/' + uuid + '/' + str(part), 404, {})
+        rest.expect_get('/batch/' + uuid + '/' + str(part), 404, {})
 
         # Initiate Batch class
         batch = Batch()
