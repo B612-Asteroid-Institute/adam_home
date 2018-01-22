@@ -1,1 +1,4 @@
 .ipynb_checkpoints
+token.txt
+.cache/
+*.pyc

@@ -1,5 +1,30 @@
+from adam import Auth
 from adam import Batch
 import time
+import os
+
+auth = Auth()
+tokenFile = os.getcwd() + '/token.txt'
+# Opening with "a+" instead of "r" creates the file if it doesn't exist.
+with open(tokenFile, "a+") as f:
+    f.seek(0)
+    token = f.read()
+
+try:
+    if not auth.authorize(token):
+        if auth.initial_authorization():
+            with open(tokenFile, "w") as f:
+                f.write(auth.get_token())
+except RuntimeError as e:
+    print('Encountered server error while attempting to authorize: ' + str(e))
+
+if auth.get_token() == "":
+    print('Could not authorize user.')
+else:
+    print('Welcome, ' + auth.get_user())
+    
+# If non-empty, auth.get_token() can now be used to authorize calls to other API methods.
+# TODO(laura): once Batch supports authorization, demonstrate use of token here.
 
 state_vec = [130347560.13690618,
              -74407287.6018632,
