@@ -7,7 +7,7 @@ from adam import LoggingRestProxy
 import time
 import os
 
-rest = RestRequests("http://localhost:8080/_ah/api/adam/v1")
+rest = RestRequests("http://pro-equinox-162418.appspot.com/_ah/api/adam/v1")
 auth = Auth(rest)
 tokenFile = os.getcwd() + '/token.txt'
 # Opening with "a+" instead of "r" creates the file if it doesn't exist.
@@ -51,22 +51,22 @@ state_vec = [130347560.13690618,
 
 batch_run = Batch()
 batch_run.set_start_time('2017-10-04T00:00:00Z')
-batch_run.set_end_time('2067-10-04T00:00:00Z')
+batch_run.set_end_time('2017-10-11T00:00:00Z')
 batch_run.set_state_vector('2017-10-04T00:00:00.000Z', state_vec)
 
 # Optional parameters (uncomment to use)
-batch_run.set_propagator_uuid("00000000-0000-0000-0000-000000000002")    # Only Sun as point mass, nothing else
-batch_run.set_step_size(3600, 'min')
-batch_run.set_mass(500.5)
-batch_run.set_solar_rad_area(25.2)
-batch_run.set_solar_rad_coeff(1.2)
-batch_run.set_drag_area(33.3)
-batch_run.set_drag_coeff(2.5)
-batch_run.set_originator('Robot')
-batch_run.set_object_name('TestObj')
-batch_run.set_object_id('test1234')
-batch_run.set_description('some description')
-#Total GET response size [https://pro-equinox-162418.appspot.com/_ah/api/adam/v1/batch/df246aca-f861-4d4b-8f45-1dd86725fb01/1]: 1764
+# batch_run.set_propagator_uuid("00000000-0000-0000-0000-000000000002")    # Only Sun as point mass, nothing else
+# batch_run.set_step_size(3600, 'min')
+# batch_run.set_mass(500.5)
+# batch_run.set_solar_rad_area(25.2)
+# batch_run.set_solar_rad_coeff(1.2)
+# batch_run.set_drag_area(33.3)
+# batch_run.set_drag_coeff(2.5)
+# batch_run.set_originator('Robot')
+# batch_run.set_object_name('TestObj')
+# batch_run.set_object_id('test1234')
+# batch_run.set_description('some description')
+
 print("Initial state %s" % batch_run)
 print
 print(batch_run.generate_opm())
@@ -75,11 +75,10 @@ print
 print("Final state %s" % batch_run)
 
 while not batch_run.is_ready():
-    print("State %s" % batch_run)
-    time.sleep(1)
+    time.sleep(5)
 
 part_count = batch_run.get_parts_count()
 print("Final state %s, part count %s" % (batch_run.get_calc_state(), part_count))
 eph = batch_run.get_part_ephemeris(1)
 print("Ephemeris")
-print(eph[:1000])
+print(eph)
