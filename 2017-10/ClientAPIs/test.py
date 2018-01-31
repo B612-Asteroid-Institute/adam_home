@@ -8,7 +8,8 @@ import time
 import os
 
 rest = RestRequests("http://pro-equinox-162418.appspot.com/_ah/api/adam/v1")
-auth = Auth(rest)
+auth = Auth()
+auth.set_rest_accessor(rest)
 tokenFile = os.getcwd() + '/token.txt'
 # Opening with "a+" instead of "r" creates the file if it doesn't exist.
 with open(tokenFile, "a+") as f:
