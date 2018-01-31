@@ -2,18 +2,18 @@
     auth.py
 """
 
-from adam.rest_proxy import RestRequests
 import adam
 
 class Auth(object):
     """Module for generating, validating, and using authentication tokens
 
     """
-    def __init__(self):
-        """Initializes attributes
+    def __init__(self, rest):
+        """Expects a RestProxy that it will use to communicate with the server for
+        authentication.
 
         """
-        self._rest = RestRequests()   # rest request option (requests package or proxy)
+        self._rest = rest
         self.__clear_attributes__()
 
     def __repr__(self):
@@ -25,19 +25,6 @@ class Auth(object):
             A string describing the contents of this authorization object.
         """
         return "Auth [token=" + self._token + ",email=" + self._email + "]"
-
-    def set_rest_accessor(self, proxy):
-        """Override network access methods
-
-        This function overrides network access and sets the rest request to a proxy
-
-        Args:
-            proxy (class)
-
-        Returns:
-            None
-        """
-        self._rest = proxy
     
     def get_token(self):
         """Accessor for token.

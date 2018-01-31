@@ -10,11 +10,9 @@ class AuthTest(unittest.TestCase):
     """
         
     def test_successful_authorization(self):
-        auth = Auth()
-
         # Use REST proxy for testing
         rest = _RestProxyForTest()
-        auth.set_rest_accessor(rest)
+        auth = Auth(rest)
         
         # Before authorizing, auth should reflect not logged in.
         self.assertEqual(auth.get_token(), '')
@@ -31,11 +29,9 @@ class AuthTest(unittest.TestCase):
         self.assertEqual(auth.get_logged_in(), True)
         
     def test_unsuccessful_authorization(self):
-        auth = Auth()
-
         # Use REST proxy for testing
         rest = _RestProxyForTest()
-        auth.set_rest_accessor(rest)
+        auth = Auth(rest)
         
         # Authorize in order to fill in email/logged_in/token so that next test
         # can verify that these are cleared.
@@ -71,11 +67,9 @@ class AuthTest(unittest.TestCase):
         self.assertEqual(auth.get_logged_in(), False)
         
     def test_authorization_empty_token(self):
-        auth = Auth()
-
         # Use REST proxy for testing
         rest = _RestProxyForTest()
-        auth.set_rest_accessor(rest)
+        auth = Auth(rest)
         
         # Authorize in order to fill in email/logged_in/token so that next test
         # can verify that these are cleared.
@@ -93,11 +87,9 @@ class AuthTest(unittest.TestCase):
         self.assertEqual(auth.get_logged_in(), False)
         
     def test_authorization_server_error(self):
-        auth = Auth()
-
         # Use REST proxy for testing
         rest = _RestProxyForTest()
-        auth.set_rest_accessor(rest)
+        auth = Auth(rest)
         
         # Authorize in order to fill in email/logged_in/token so that next test
         # can verify that these are not cleared.

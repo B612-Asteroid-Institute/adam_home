@@ -5,13 +5,41 @@
 from adam.rest_proxy import RestRequests
 from datetime import datetime
 
+class Batches(object):
+    def __init__(self, rest):
+        self._rest = rest
+    
+    def __repr__(self):
+        return "Batches module"
+        
+    def delete_batch(self, uuid):
+        code = self._rest.delete('/batch/' + uuid)
+        
+        if code != 204:
+            raise RuntimeError("Server status code: %s" % (code))
+    
+    def _get_batches(self):
+        code, response = self._rest.get('/batch')
+        
+        if code != 200:
+            raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
+        
+        return response['items']
+    
+    def get_batch_states(self):
+        batches = {} 
+        for b in self._get_batches():
+            batches[b['uuid']] = b['calc_state']
+        
+        return batches
+
 class Batch(object):
     """Module for a batch request
 
     This class is used for creating batch runs on the cloud
 
     """
-    def __init__(self):
+    def __init__(self, rest=None):
         """Initializes attributes
 
         """
@@ -24,7 +52,9 @@ class Batch(object):
         self._uuid = None             # uuid associated with run
         self._parts_count = 0         # number of parts count
         self._loaded_parts = {}       # parts that have already been loaded
-        self._rest = RestRequests()   # rest request option (requests package or proxy)
+        self._rest = rest
+        if self._rest is None:
+            self._rest = RestRequests()   # rest request option (requests package or proxy)
 
         # Object properties
         self._mass = 1000             # mass, kg
@@ -41,6 +71,7 @@ class Batch(object):
         self._object_name = 'dummy'
         self._object_id = '001'
         self._description = None
+        self._project = None
 
     def __repr__(self):
         """Printable representation of returned values from job run
@@ -266,6 +297,9 @@ class Batch(object):
             None
         """
         self._propagator_uuid = propagator_uuid
+    
+    def set_project(self, project_uuid):
+        self._project = project_uuid
 
     def generate_opm(self):
         """Generate an OPM string
@@ -327,7 +361,8 @@ class Batch(object):
                 'step_duration_sec': self._step_size,
                 'end_time': self._end_time,
                 'opm_string': self.generate_opm(),
-                'propagator_uuid': self._propagator_uuid}
+                'propagator_uuid': self._propagator_uuid,
+                'project': self._project}
 
         if self._description is not None:
             data['description'] = self._description
