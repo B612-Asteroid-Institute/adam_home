@@ -50,6 +50,13 @@ state_vec = [130347560.13690618,
              27.146279819258538,
              10.346605942591514]
 
+covariance = [3.331349476038534e-04, + \
+              4.618927349220216e-04, 6.782421679971363e-04, + \
+             -3.070007847730449e-04, -4.221234189514228e-04, 3.231931992380369e-04, + \
+             -3.349365033922630e-07, -4.686084221046758e-07, 2.484949578400095e-07, 4.296022805587290e-10, + \
+             -2.211832501084875e-07, -2.864186892102733e-07, 1.798098699846038e-07, 2.608899201686016e-10, 1.767514756338532e-10, + \
+             -3.041346050686871e-07, -4.989496988610662e-07, 3.540310904497689e-07, 1.869263192954590e-10, 1.008862586240695e-10, 6.224444338635500e-10]
+
 batch_run = Batch()
 batch_run.set_start_time('2017-10-04T00:00:00Z')
 batch_run.set_end_time('2017-10-11T00:00:00Z')
@@ -58,6 +65,7 @@ batch_run.set_state_vector('2017-10-04T00:00:00.000Z', state_vec)
 # Optional parameters (uncomment to use)
 # batch_run.set_propagator_uuid("00000000-0000-0000-0000-000000000002")    # Only Sun as point mass, nothing else
 # batch_run.set_step_size(3600, 'min')
+# batch_run.set_covariance(covariance, 'FACES', 3)
 # batch_run.set_mass(500.5)
 # batch_run.set_solar_rad_area(25.2)
 # batch_run.set_solar_rad_coeff(1.2)
