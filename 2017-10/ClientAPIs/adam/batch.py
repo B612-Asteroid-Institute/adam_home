@@ -20,6 +20,9 @@ class Batch(object):
         self._start_time = None       # start time of run
         self._end_time = None         # end time of run
         self._step_size = 86400       # step size in seconds (defaulted to 1 day)
+        self._covariance = None       # covariance
+        self._hypercube = None        # hypercube type (e.g. FACES, CORNERS)
+        self._perturbation = None     # perturbation sigma on state vector
         self._calc_state = None       # status on run (e.g. RUNNING, COMPLETED)
         self._uuid = None             # uuid associated with run
         self._parts_count = 0         # number of parts count
@@ -126,8 +129,8 @@ class Batch(object):
         This function sets the epoch and cartesian state vector (position and velocity)
 
         Args:
-            epoch (str) - the epoch associated with the state vector (IS0-8601 format)
-            state_vector (list) - an array with 6 elements [rx, ry, rz, vx, vy, vz]
+            epoch (str): the epoch associated with the state vector (IS0-8601 format)
+            state_vector (list): an array with 6 elements [rx, ry, rz, vx, vy, vz]
 
         Returns:
             None
@@ -187,6 +190,24 @@ class Batch(object):
 
         # Set step size
         self._step_size = step_size
+
+    def set_covariance(self, covariance, hypercube, perturbation):
+        """Set covariance
+
+        This function sets the state vector error covariance (6x6 lower triangular form)
+        None or all of the parameters must be given
+
+        Args:
+            covariance (list): an array with 21 elements corresponding to a 6x6 lower triangle
+            hypercube (str): hypercube propagation type (e.g. 'FACES' or 'CORNERS')
+            perturbation (int): sigma perturbation
+
+        Returns:
+            None
+        """
+        self._covariance = covariance
+        self._hypercube = hypercube
+        self._perturbation = perturbation
 
     def set_mass(self, mass):
         """Set object mass
@@ -278,27 +299,55 @@ class Batch(object):
         Returns:
             OPM (str)
         """
-        return "CCSDS_OPM_VERS = 2.0\n" + \
-               ("CREATION_DATE = %s\n" % datetime.utcnow()) + \
-               ("ORIGINATOR = %s\n" % self._originator) + \
-               "COMMENT Cartesian coordinate system\n" + \
-               ("OBJECT_NAME = %s\n" % self._object_name) + \
-               ("OBJECT_ID = %s\n" % self._object_id) + \
-               "CENTER_NAME = SUN\n" + \
-               "REF_FRAME = ITRF-97\n" + \
-               "TIME_SYSTEM = UTC\n" + \
-               ("EPOCH = %s\n" % self._epoch) + \
-               ("X = %s\n" % (self._state_vector[0])) + \
-               ("Y = %s\n" % (self._state_vector[1])) + \
-               ("Z = %s\n" % (self._state_vector[2])) + \
-               ("X_DOT = %s\n" % (self._state_vector[3])) + \
-               ("Y_DOT = %s\n" % (self._state_vector[4])) + \
-               ("Z_DOT = %s\n" % (self._state_vector[5])) + \
-               ("MASS = %s\n" % self._mass) + \
-               ("SOLAR_RAD_AREA = %s\n" % self._solar_rad_area) + \
-               ("SOLAR_RAD_COEFF = %s\n" % self._solar_rad_coeff) + \
-               ("DRAG_AREA = %s\n" % self._drag_area) + \
-               ("DRAG_COEFF = %s" % self._drag_coeff)
+        base_opm =  "CCSDS_OPM_VERS = 2.0\n" + \
+                    ("CREATION_DATE = %s\n" % datetime.utcnow()) + \
+                    ("ORIGINATOR = %s\n" % self._originator) + \
+                    "COMMENT Cartesian coordinate system\n" + \
+                    ("OBJECT_NAME = %s\n" % self._object_name) + \
+                    ("OBJECT_ID = %s\n" % self._object_id) + \
+                    "CENTER_NAME = SUN\n" + \
+                    "REF_FRAME = ITRF-97\n" + \
+                    "TIME_SYSTEM = UTC\n" + \
+                    ("EPOCH = %s\n" % self._epoch) + \
+                    ("X = %s\n" % (self._state_vector[0])) + \
+                    ("Y = %s\n" % (self._state_vector[1])) + \
+                    ("Z = %s\n" % (self._state_vector[2])) + \
+                    ("X_DOT = %s\n" % (self._state_vector[3])) + \
+                    ("Y_DOT = %s\n" % (self._state_vector[4])) + \
+                    ("Z_DOT = %s\n" % (self._state_vector[5])) + \
+                    ("MASS = %s\n" % self._mass) + \
+                    ("SOLAR_RAD_AREA = %s\n" % self._solar_rad_area) + \
+                    ("SOLAR_RAD_COEFF = %s\n" % self._solar_rad_coeff) + \
+                    ("DRAG_AREA = %s\n" % self._drag_area) + \
+                    ("DRAG_COEFF = %s" % self._drag_coeff)
+
+        if self._covariance is None:
+            return base_opm
+        else:
+            covariance = ("\nCX_X = %s\n" % (self._covariance[0])) + \
+                         ("CY_X = %s\n" % (self._covariance[1])) + \
+                         ("CY_Y = %s\n" % (self._covariance[2])) + \
+                         ("CZ_X = %s\n" % (self._covariance[3])) + \
+                         ("CZ_Y = %s\n" % (self._covariance[4])) + \
+                         ("CZ_Z = %s\n" % (self._covariance[5])) + \
+                         ("CX_DOT_X = %s\n" % (self._covariance[6])) + \
+                         ("CX_DOT_Y = %s\n" % (self._covariance[7])) + \
+                         ("CX_DOT_Z = %s\n" % (self._covariance[8])) + \
+                         ("CX_DOT_X_DOT = %s\n" % (self._covariance[9])) + \
+                         ("CY_DOT_X = %s\n" % (self._covariance[10])) + \
+                         ("CY_DOT_Y = %s\n" % (self._covariance[11])) + \
+                         ("CY_DOT_Z = %s\n" % (self._covariance[12])) + \
+                         ("CY_DOT_X_DOT = %s\n" % (self._covariance[13])) + \
+                         ("CY_DOT_Y_DOT = %s\n" % (self._covariance[14])) + \
+                         ("CZ_DOT_X = %s\n" % (self._covariance[15])) + \
+                         ("CZ_DOT_Y = %s\n" % (self._covariance[16])) + \
+                         ("CZ_DOT_Z = %s\n" % (self._covariance[17])) + \
+                         ("CZ_DOT_X_DOT = %s\n" % (self._covariance[18])) + \
+                         ("CZ_DOT_Y_DOT = %s\n" % (self._covariance[19])) + \
+                         ("CZ_DOT_Z_DOT = %s\n" % (self._covariance[20])) + \
+                         ("USER_DEFINED_ADAM_INITIAL_PERTURBATION = %s [sigma]\n" % self._perturbation) + \
+                         ("USER_DEFINED_ADAM_HYPERCUBE = %s\n" % self._hypercube)
+            return base_opm + covariance
 
     def submit(self):
         """Submit a job to the cloud

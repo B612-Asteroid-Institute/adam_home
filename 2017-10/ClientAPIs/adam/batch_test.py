@@ -102,6 +102,9 @@ class BatchTest(unittest.TestCase):
             Checks input data for custom inputs by asserting the following:
                 - propagator uuid = 00000000-0000-0000-0000-000000000002
                 - step size = 216000
+                - covariance = [0, 1, 2, ... , 20]
+                - perturbation = 3
+                - hypercube = FACES
                 - object mass = 500.5
                 - object solar radiation area = 25.2
                 - object solar radiation coefficient = 1.2
@@ -127,6 +130,29 @@ class BatchTest(unittest.TestCase):
             self.assertIn('SOLAR_RAD_COEFF = 1.2', opm)
             self.assertIn('DRAG_AREA = 33.3', opm)
             self.assertIn('DRAG_COEFF = 2.5', opm)
+            self.assertIn('CX_X = 0', opm)
+            self.assertIn('CY_X = 1', opm)
+            self.assertIn('CY_Y = 2', opm)
+            self.assertIn('CZ_X = 3', opm)
+            self.assertIn('CZ_Y = 4', opm)
+            self.assertIn('CZ_Z = 5', opm)
+            self.assertIn('CX_DOT_X = 6', opm)
+            self.assertIn('CX_DOT_Y = 7', opm)
+            self.assertIn('CX_DOT_Z = 8', opm)
+            self.assertIn('CX_DOT_X_DOT = 9', opm)
+            self.assertIn('CY_DOT_X = 10', opm)
+            self.assertIn('CY_DOT_Y = 11', opm)
+            self.assertIn('CY_DOT_Z = 12', opm)
+            self.assertIn('CY_DOT_X_DOT = 13', opm)
+            self.assertIn('CY_DOT_Y_DOT = 14', opm)
+            self.assertIn('CZ_DOT_X = 15', opm)
+            self.assertIn('CZ_DOT_Y = 16', opm)
+            self.assertIn('CZ_DOT_Z = 17', opm)
+            self.assertIn('CZ_DOT_X_DOT = 18', opm)
+            self.assertIn('CZ_DOT_Y_DOT = 19', opm)
+            self.assertIn('CZ_DOT_Z_DOT = 20', opm)
+            self.assertIn('USER_DEFINED_ADAM_INITIAL_PERTURBATION = 3 [sigma]', opm)
+            self.assertIn('USER_DEFINED_ADAM_HYPERCUBE = FACES', opm)
             return True
 
         # Set expected 'POST' request (good)
@@ -143,6 +169,7 @@ class BatchTest(unittest.TestCase):
         # Set custom inputs
         batch.set_propagator_uuid("00000000-0000-0000-0000-000000000002")
         batch.set_step_size(3600, 'min')
+        batch.set_covariance([x for x in range(0, 21)], 'FACES', 3)
         batch.set_mass(500.5)
         batch.set_solar_rad_area(25.2)
         batch.set_solar_rad_coeff(1.2)
