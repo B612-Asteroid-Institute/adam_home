@@ -14,7 +14,7 @@ tokenFile = os.getcwd() + '/token.txt'
 # Opening with "a+" instead of "r" creates the file if it doesn't exist.
 with open(tokenFile, "a+") as f:
     f.seek(0)
-    token = f.read()
+    token = f.readline().replace('\n', '')
 
 try:
     if not auth.authorize(token):
