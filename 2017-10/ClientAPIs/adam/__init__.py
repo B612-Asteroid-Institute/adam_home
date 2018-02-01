@@ -7,3 +7,4 @@ from adam.batch import Batch
 from adam.project import Projects
 from adam.rest_proxy import RestRequests
 from adam.rest_proxy import AuthorizingRestProxy
+from adam.rest_proxy import LoggingRestProxy
