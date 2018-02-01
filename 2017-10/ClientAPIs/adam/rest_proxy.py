@@ -12,6 +12,7 @@
 import json
 import requests
 import urllib
+import datetime
 
 class RestProxy(object):
     """Interface for accessing the server
@@ -99,6 +100,56 @@ class AuthorizingRestProxy(RestProxy):
         path = self._add_token_to_path(path)
         return self._rest_proxy.delete(path)
 
+class LoggingRestProxy(RestProxy):
+    """ Rest proxy implementation that wraps another rest proxy and adds logging of
+    interesting information such as timing and request size to each call.
+    
+    """
+    
+    def __init__(self, rest_proxy):
+        self._rest_proxy = rest_proxy
+
+    # From https://stackoverflow.com/questions/1094841/reusable-library-to-get-human-readable-version-of-file-size
+    def _sizeof_fmt(self, num, suffix='B'):
+        for unit in ['','Ki','Mi','Gi','Ti','Pi','Ei','Zi']:
+            if abs(num) < 1024.0:
+                return "%3.1f%s%s" % (num, unit, suffix)
+            num /= 1024.0
+        return "%.1f%s%s" % (num, 'Yi', suffix)
+    
+    def post(self, path, data_dict):
+        print("--------------------------------------------------------")
+        print("| Post to " + path)
+        start = datetime.datetime.now()
+        code, response = self._rest_proxy.post(path, data_dict)
+        end = datetime.datetime.now()
+        print("|    Request size: " + self._sizeof_fmt(len(json.dumps(data_dict))))
+        print("|    Response size: " + self._sizeof_fmt(len(str(response))))
+        print("|    Call duration: " + str(end - start))
+        print("--------------------------------------------------------")
+        return code, response
+
+    def get(self, path):
+        print("--------------------------------------------------------")
+        print("| Get to " + path)
+        start = datetime.datetime.now()
+        code, response = self._rest_proxy.get(path)
+        end = datetime.datetime.now()
+        print("|    Response size: " + self._sizeof_fmt(len(str(response))))
+        print("|    Call duration: " + str(end - start))
+        print("--------------------------------------------------------")
+        return code, response
+
+    def delete(self, path):
+        print("--------------------------------------------------------")
+        print("| Delete to " + path)
+        start = datetime.datetime.now()
+        code = self._rest_proxy.delete(path)
+        end = datetime.datetime.now()
+        print("|    Call duration: " + str(end - start))
+        print("--------------------------------------------------------")
+        return code
+
 class RestRequests(RestProxy):
     """Implementation using requests package
 
@@ -134,7 +185,7 @@ class RestRequests(RestProxy):
             req_json = req.json()
         except ValueError:
             # TODO(laura): make the rest server return json responses, always
-            print("Received non-JSON response from API: " + str(req.status_code) + ", " + req.content)
+            print("Received non-JSON response from API: " + str(req.status_code) + ", " + str(req.content))
         return req.status_code, req_json
 
     def get(self, path):
@@ -154,7 +205,7 @@ class RestRequests(RestProxy):
             req_json = req.json()
         except ValueError:
             # TODO(laura): make the rest server return json responses, always
-            print("Received non-JSON response from API: " + str(req.status_code) + ", " +  req.content)
+            print("Received non-JSON response from API: " + str(req.status_code) + ", " +  str(req.content))
         return req.status_code, req_json
 
     def delete(self, path):
