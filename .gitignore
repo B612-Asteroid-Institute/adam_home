@@ -2,3 +2,5 @@
 token.txt
 .cache/
 *.pyc
+*.ini
+*.spyproject*

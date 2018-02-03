@@ -5,6 +5,8 @@
 from adam.rest_proxy import RestRequests
 from datetime import datetime
 
+M2KM = 1E-3  # meters to kilometers
+
 class Batch(object):
     """Module for a batch request
 
@@ -608,3 +610,34 @@ class Batch(object):
             return part['stk_ephemeris']
         except KeyError:
             return None
+
+    def get_end_state_vector(self):
+        """Get the end state vector as a 6d list in [km, km/s]
+
+        This function first grabs the STK ephemeris from the final part
+        The final state entry is returned as an array
+
+        Args:
+
+        Returns:
+            state_vector (list) - an array with 6 elements [rx, ry, rz, vx, vy, vz]
+                                  [km, km/s]
+        """
+
+        # get final ephemeris part
+        stk_ephemeris = self.get_part_ephemeris(self._parts_count)
+        if stk_ephemeris is None:
+            return None
+    
+        split_ephem = stk_ephemeris.splitlines()
+        state_vectors = []
+        for line in split_ephem:
+            split_line  = line.split()
+            # It's a state if it has more than 7 elements
+            if len(split_line) >= 7:
+                state_vector = [(float(i) * M2KM) for i in split_line]
+                # Ignore time
+                state_vectors.append(state_vector[1:7])     
+        
+        # We want the last element
+        return state_vectors[-1]
