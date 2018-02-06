@@ -16,9 +16,8 @@ import datetime
 
 class Service():
     """Module wrapping the REST API and associated client libraries. The goal of this
-    module is to make it very easy and readable to do basic operations against a 
-    dev setup. As such, it is not usable for production client code, but can serve as
-    an example for clients to follow.
+    module is to make it very easy and readable to do basic operations against a prod or
+    dev setup.
 
     """
     def __init__(self):
