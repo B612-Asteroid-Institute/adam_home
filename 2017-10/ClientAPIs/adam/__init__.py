@@ -9,7 +9,6 @@ from adam.batch_runner import BatchRunner
 from adam.group import Groups
 from adam.project import Projects
 from adam.service import Service
-from adam.timer import Timer
 from adam.rest_proxy import RestRequests
 from adam.rest_proxy import AuthorizingRestProxy
 from adam.rest_proxy import LoggingRestProxy
