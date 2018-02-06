@@ -12,11 +12,14 @@ from multiprocessing.dummy import Pool as ThreadPool
 
 
 class BatchRunner():
-    def __init__(self, batches):
+    # All batches are run in the given project.
+    def __init__(self, batches, project):
         self.batches = batches
+        self.project = project
         self.batch_runs = []
     
     def add_batch(self, batch_run):
+        batch_run.set_project(self.project.get_uuid())
         self.batch_runs.append(batch_run)
     
     def get_batches_status(self):
@@ -39,7 +42,7 @@ class BatchRunner():
     
     def _submit_batches(self, threads):
         def submit_batch(i):
-            self.batch_runs[i].submit()
+            self.batches.new_batch(self.batch_runs[i])
         
         pool = ThreadPool(threads)
         results = pool.map(submit_batch, [i for i in range(len(self.batch_runs))])
@@ -62,7 +65,7 @@ class BatchRunner():
         timer.start("Waiting for running")
         any_are_running = False
         batch_runs_by_state = self.get_batches_status()
-        while not _all_are_complete(batch_runs_by_state):
+        while not self._all_are_complete(batch_runs_by_state):
             # Update timing.
             if self._any_non_pending(batch_runs_by_state):
                 if not any_are_running:

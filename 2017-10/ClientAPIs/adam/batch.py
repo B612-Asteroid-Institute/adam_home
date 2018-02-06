@@ -12,6 +12,10 @@ class Batches(object):
     
     def __repr__(self):
         return "Batches module"
+    
+    def new_batch(self, batch):
+        batch.set_rest_accessor(self._rest)
+        batch.submit()
         
     def delete_batch(self, uuid):
         code = self._rest.delete('/batch/' + uuid)
@@ -19,25 +23,22 @@ class Batches(object):
         if code != 204:
             raise RuntimeError("Server status code: %s" % (code))
     
-    def _get_batches(self, project=None):
-        if project is None:
-            code, response = self._rest.get('/batch')
-        else:
-            code, response = self._rest.get('/batch?project=' + project)
+    def _get_batches(self, project):
+        code, response = self._rest.get('/batch?project_uuid=' + project)
             
         if code != 200:
             raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
         
         return response['items']
     
-    def get_batch_states(self, project=None):
+    def get_batch_states(self, project):
         batches = {} 
         for b in self._get_batches(project):
             batches[b['uuid']] = b['calc_state']
         
         return batches
     
-    def print_batches(self, project=None):
+    def print_batches(self, project):
         batches = self._get_batches(project)
         
         print(tabulate(batches, headers="keys", tablefmt="fancy_grid"))
@@ -124,6 +125,9 @@ class Batch(object):
             None
         """
         self._description = description
+    
+    def set_project(self, project):
+        self._project = project
 
     def set_originator(self, originator):
         """Sets the originator of the run
