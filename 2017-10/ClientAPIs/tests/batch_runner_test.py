@@ -30,7 +30,7 @@ class BatchRunnerTest(unittest.TestCase):
         now = datetime.datetime.utcnow()
         later = now + datetime.timedelta(days_to_propagate)
         
-        batch_run = Batch()
+        batch_run = Batch(self.service.get_rest())
         batch_run.set_start_time(now.isoformat() + 'Z')
         batch_run.set_end_time(later.isoformat() + 'Z')
 
