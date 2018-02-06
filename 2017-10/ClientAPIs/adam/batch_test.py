@@ -69,15 +69,12 @@ class BatchTest(unittest.TestCase):
         rest.expect_post("/batch", check_input, 200, {'calc_state' : 'PENDING', 'uuid' : 'BLAH'})
 
         # Initiate Batch class
-        batch = Batch()
+        batch = Batch(rest)
 
         # Set start time, end time, and state vector with epoch
         batch.set_start_time("AAA")
         batch.set_end_time("BBB")
         batch.set_state_vector('CCC', [1, 2, 3, 4, 5, 6])
-
-        # Override network access with proxy
-        batch.set_rest_accessor(rest)
 
         # Submit job
         batch.submit()
@@ -159,7 +156,7 @@ class BatchTest(unittest.TestCase):
         rest.expect_post("/batch", check_custom_inputs, 200, {'calc_state': 'PENDING', 'uuid': 'BLAH'})
 
         # Initiate Batch class
-        batch = Batch()
+        batch = Batch(rest)
 
         # Set start time, end time, and state vector with epoch
         batch.set_start_time("AAA")
@@ -180,9 +177,6 @@ class BatchTest(unittest.TestCase):
         batch.set_object_id('test1234')
         batch.set_description('some description')
 
-        # Override network access with proxy
-        batch.set_rest_accessor(rest)
-
         # Submit job
         batch.submit()
 
@@ -201,7 +195,7 @@ class BatchTest(unittest.TestCase):
         rest = _RestProxyForTest()
 
         # Initiate Batch class
-        batch = Batch()
+        batch = Batch(rest)
 
         # Set start time, end time, and state vector with epoch
         batch.set_start_time("AAA")
@@ -225,15 +219,12 @@ class BatchTest(unittest.TestCase):
         rest.expect_post('/batch', lambda x : True, 404, {})
 
         # Initiate Batch class
-        batch = Batch()
+        batch = Batch(rest)
 
         # Set start time, end time, and state vector with epoch
         batch.set_start_time("AAA")
         batch.set_end_time("BBB")
         batch.set_state_vector('CCC', [1, 2, 3, 4, 5, 6])
-
-        # Override network access with proxy
-        batch.set_rest_accessor(rest)
 
         # Assert that the error code raises a RuntimeError with batch submission
         with self.assertRaises(RuntimeError):
@@ -252,15 +243,12 @@ class BatchTest(unittest.TestCase):
         rest = _RestProxyForTest()
 
         # Initiate Batch class
-        batch = Batch()
+        batch = Batch(rest)
 
         # Set start time, end time, and state vector with epoch
         batch.set_start_time("AAA")
         batch.set_end_time("BBB")
         batch.set_state_vector('CCC', [1, 2, 3, 4, 5, 6])
-
-        # Override network access with proxy
-        batch.set_rest_accessor(rest)
 
         # Set batch attribute (field) to None
         setattr(batch, field, None)
@@ -297,13 +285,10 @@ class BatchTest(unittest.TestCase):
         rest.expect_get('/batch/' + uuid, 404, {})
 
         # Initiate Batch class
-        batch = Batch()
+        batch = Batch(rest)
 
         # Set UUID
         batch._uuid = uuid
-
-        # Override network access with proxy
-        batch.set_rest_accessor(rest)
 
         # Assert that the job does not show as ready
         self.assertFalse(batch.is_ready())
@@ -325,13 +310,10 @@ class BatchTest(unittest.TestCase):
         rest.expect_get('/batch/' + uuid, 500, {})
 
         # Initiate Batch class
-        batch = Batch()
+        batch = Batch(rest)
 
         # Set UUID
         batch._uuid = uuid
-
-        # Override network access with proxy
-        batch.set_rest_accessor(rest)
 
         # Assert that a RuntimeError is raised when checking if it is ready
         with self.assertRaises(RuntimeError):
@@ -348,10 +330,7 @@ class BatchTest(unittest.TestCase):
         rest = _RestProxyForTest()
 
         # Initiate Batch class
-        batch = Batch()
-
-        # Override network access with proxy
-        batch.set_rest_accessor(rest)
+        batch = Batch(rest)
 
         # Assert that a KeyError is raised when checking if it is ready
         with self.assertRaises(KeyError):
@@ -375,13 +354,10 @@ class BatchTest(unittest.TestCase):
         rest.expect_get('/batch/' + uuid, 200, {'calc_state' : 'RUNNING', 'parts_count': 5})
 
         # Initiate Batch class
-        batch = Batch()
+        batch = Batch(rest)
 
         # Set UUID
         batch._uuid = uuid
-
-        # Override network access with proxy
-        batch.set_rest_accessor(rest)
 
         # Assert that checking if the batch is ready will return False
         self.assertFalse(batch.is_ready())
@@ -408,13 +384,10 @@ class BatchTest(unittest.TestCase):
                          'error': 'No error!'})
 
         # Initiate Batch class
-        batch = Batch()
+        batch = Batch(rest)
 
         # Set UUID
         batch._uuid = uuid
-
-        # Override network access with proxy
-        batch.set_rest_accessor(rest)
 
         # Assert that checking if the batch is ready will return True
         self.assertTrue(batch.is_ready())
@@ -444,13 +417,10 @@ class BatchTest(unittest.TestCase):
                          'error': 'No error!'})
 
         # Initiate Batch class
-        batch = Batch()
+        batch = Batch(rest)
 
         # Set UUID
         batch._uuid = uuid
-
-        # Override network access with proxy
-        batch.set_rest_accessor(rest)
 
         # Assert that checking if the batch is ready will return True
         self.assertTrue(batch.is_ready())
@@ -481,15 +451,12 @@ class BatchTest(unittest.TestCase):
                              'part_index': part})
 
         # Initiate Batch class
-        batch = Batch()
+        batch = Batch(rest)
 
         # Set UUID, parts count, and overall calc state (as 'COMPLETED')
         batch._uuid = uuid
         batch._parts_count = 10
         batch._calc_state = 'COMPLETED'
-
-        # Override network access with proxy
-        batch.set_rest_accessor(rest)
 
         # Assert that an overall calc state as 'COMPLETED' will return the expected ephemeris
         self.assertEqual(batch.get_part_ephemeris(part), 'something')
@@ -522,15 +489,12 @@ class BatchTest(unittest.TestCase):
                         {'calc_state': 'RUNNING', 'part_index': part})
 
         # Initiate Batch class
-        batch = Batch()
+        batch = Batch(rest)
 
         # Set UUID, parts count, and overall calc state (as 'RUNNING')
         batch._uuid = uuid
         batch._parts_count = 10
         batch._calc_state = 'RUNNING'
-
-        # Override network access with proxy
-        batch.set_rest_accessor(rest)
 
         # Assert that checking if the part is ready will return False
         self.assertFalse(batch.is_ready_part(part))
@@ -555,15 +519,12 @@ class BatchTest(unittest.TestCase):
                         {'calc_state': 'FAILED', 'error': 'Some error', 'part_index': part})
 
         # Initiate Batch class
-        batch = Batch()
+        batch = Batch(rest)
 
         # Set UUID, parts count, and overall calc state (as 'FAILED')
         batch._uuid = uuid
         batch._parts_count = 10
         batch._calc_state = 'FAILED'
-
-        # Override network access with proxy
-        batch.set_rest_accessor(rest)
 
         # Assert that the calc state for the specific part's run is as expected
         self.assertEqual(batch.get_part_state(part), 'FAILED')
@@ -588,15 +549,12 @@ class BatchTest(unittest.TestCase):
         rest = _RestProxyForTest()
 
         # Initiate Batch class
-        batch = Batch()
+        batch = Batch(rest)
 
         # Set UUID, parts count, and overall calc state (as 'RUNNING')
         batch._uuid = uuid
         batch._parts_count = 10
         batch._calc_state = 'COMPLETED'
-
-        # Override network access with proxy
-        batch.set_rest_accessor(rest)
 
         # Assert that a part outside its range will return an IndexError
         with self.assertRaises(IndexError):
@@ -621,15 +579,12 @@ class BatchTest(unittest.TestCase):
         rest.expect_get('/batch/' + uuid + '/' + str(part), 404, {})
 
         # Initiate Batch class
-        batch = Batch()
+        batch = Batch(rest)
 
         # Set UUID, parts count, and overall calc state (as 'RUNNING')
         batch._uuid = uuid
         batch._parts_count = 10
         batch._calc_state = 'COMPLETED'
-
-        # Override network access with proxy
-        batch.set_rest_accessor(rest)
 
         # Assert that a 404 error code will raise a RuntimeError
         with self.assertRaises(RuntimeError):

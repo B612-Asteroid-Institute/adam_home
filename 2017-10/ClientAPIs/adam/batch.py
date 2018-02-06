@@ -52,7 +52,7 @@ class Batch(object):
     This class is used for creating batch runs on the cloud
 
     """
-    def __init__(self, rest=None):
+    def __init__(self, rest):
         """Initializes attributes
 
         """
@@ -69,8 +69,6 @@ class Batch(object):
         self._parts_count = 0         # number of parts count
         self._loaded_parts = {}       # parts that have already been loaded
         self._rest = rest
-        if self._rest is None:
-            self._rest = RestRequests()   # rest request option (requests package or proxy)
 
         # Object properties
         self._mass = 1000             # mass, kg
@@ -101,19 +99,6 @@ class Batch(object):
             Printable representation of uuid and calc state (str)
         """
         return "Batch %s, %s" % (self._uuid, self._calc_state)
-
-    def set_rest_accessor(self, proxy):
-        """Override network access methods
-
-        This function overrides network access and sets the rest request to a proxy
-
-        Args:
-            proxy (class)
-
-        Returns:
-            None
-        """
-        self._rest = proxy
 
     def set_description(self, description):
         """Sets the description of the run

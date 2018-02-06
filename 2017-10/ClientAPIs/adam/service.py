@@ -86,4 +86,10 @@ class Service():
     
     def get_batch_runner(self):
         return self.batch_runner
+    
+    def get_rest(self):
+        # Note, this is only necessary because batches are currently more than pure data
+        # objects and therefore need a rest accessor (and aren't built here).
+        # Please don't use this extensively.
+        return self.rest
         
