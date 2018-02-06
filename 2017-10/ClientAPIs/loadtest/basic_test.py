@@ -13,16 +13,18 @@ class BasicTest(unittest.TestCase):
         with open(os.getcwd() + '/token.txt', "r") as f:
             self.token = f.read()
         self.service = Service()
-        self.assertTrue(self.service.setup("https://adam-dev-193118.appspot.com/_ah/api/adam/v1", self.token))
+        self.assertTrue(self.service.setup(
+            "https://adam-dev-193118.appspot.com/_ah/api/adam/v1", self.token))
+        #self.assertTrue(self.service.setup("http://localhost:8080/_ah/api/adam/v1", self.token))
 
     def tearDown(self):
         self.service.teardown()
         
     def test_basic(self):
-        for i in range(30):
-            self.service.add_dummy_batch(365 * 50)  # 50 years
+        for i in range(1000):
+            self.service.get_batch_runner().add_dummy_batch(365 * 100)  # 100 years
         
-        self.service.run_batches(False)
+        self.service.get_batch_runner().run_batches(10)
         
 
 if __name__ == '__main__':

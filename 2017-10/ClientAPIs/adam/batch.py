@@ -4,6 +4,7 @@
 
 from adam.rest_proxy import RestRequests
 from datetime import datetime
+from tabulate import tabulate
 
 class Batches(object):
     def __init__(self, rest):
@@ -18,20 +19,29 @@ class Batches(object):
         if code != 204:
             raise RuntimeError("Server status code: %s" % (code))
     
-    def _get_batches(self):
-        code, response = self._rest.get('/batch')
-        
+    def _get_batches(self, project=None):
+        if project is None:
+            code, response = self._rest.get('/batch')
+        else:
+            code, response = self._rest.get('/batch?project=' + project)
+            
         if code != 200:
             raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
         
         return response['items']
     
-    def get_batch_states(self):
+    def get_batch_states(self, project=None):
         batches = {} 
-        for b in self._get_batches():
+        for b in self._get_batches(project):
             batches[b['uuid']] = b['calc_state']
         
         return batches
+    
+    def print_batches(self, project=None):
+        batches = self._get_batches(project)
+        
+        print(tabulate(batches, headers="keys", tablefmt="fancy_grid"))
+        
 
 class Batch(object):
     """Module for a batch request

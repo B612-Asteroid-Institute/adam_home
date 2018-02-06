@@ -1,9 +1,12 @@
 from adam import Auth
+from adam import RestRequests
 from adam import Batch
 import time
 import os
 
-auth = Auth()
+url = "https://pro-equinox-162418.appspot.com/_ah/api/adam/v1"
+rest = RestRequests(url)
+auth = Auth(rest)
 tokenFile = os.getcwd() + '/token.txt'
 # Opening with "a+" instead of "r" creates the file if it doesn't exist.
 with open(tokenFile, "a+") as f:
@@ -24,7 +27,6 @@ else:
     print('Welcome, ' + auth.get_user())
     
 # If non-empty, auth.get_token() can now be used to authorize calls to other API methods.
-# TODO(laura): once Batch supports authorization, demonstrate use of token here.
 
 state_vec = [130347560.13690618,
              -74407287.6018632,
