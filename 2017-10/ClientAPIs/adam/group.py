@@ -35,7 +35,7 @@ class GroupMember(object):
         return self._uuid
     
     def get_type(self):
-        return self_type
+        return self._type
 
 class Groups(object):
     """Module for managing groups.
