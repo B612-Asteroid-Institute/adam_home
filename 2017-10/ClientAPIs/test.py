@@ -4,7 +4,7 @@ from adam import Batch
 import time
 import os
 
-url = "https://adam-dev-193118.appspot.com/_ah/api/adam/v1"
+url = "https://pro-equinox-162418.appspot.com/_ah/api/adam/v1"
 rest = RestRequests(url)
 auth = Auth(rest)
 tokenFile = os.getcwd() + '/token.txt'
