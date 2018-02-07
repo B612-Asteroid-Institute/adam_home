@@ -14,7 +14,6 @@ class Batches(object):
         return "Batches module"
     
     def new_batch(self, batch):
-        batch.set_rest_accessor(self._rest)
         batch.submit()
         
     def delete_batch(self, uuid):
