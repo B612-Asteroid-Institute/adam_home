@@ -3,7 +3,6 @@ from adam import Batch
 from adam import Projects
 from adam import RestRequests
 from adam import AuthorizingRestProxy
-from adam import LoggingRestProxy
 import time
 import os
 
@@ -30,18 +29,15 @@ else:
     print('Welcome, ' + auth.get_user())
     
 # auth.get_token() can now be used to authorize calls to other API methods.
-auth_rest = AuthorizingRestProxy(LoggingRestProxy(rest), auth.get_token())
+auth_rest = AuthorizingRestProxy(rest, auth.get_token())
 
 projects = Projects(auth_rest)
-projects.print_projects()
 project = projects.new_project('ffffffff-ffff-ffff-ffff-ffffffffffff', None, "parent")
-projects.print_projects()
 child = projects.new_project(project.get_uuid(), None, "child")
+print('Current projects, including newly-created parent and child:')
 projects.print_projects()
 projects.delete_project(child.get_uuid())
-projects.print_projects()
 projects.delete_project(project.get_uuid())
-projects.print_projects()
 
 state_vec = [130347560.13690618,
              -74407287.6018632,
