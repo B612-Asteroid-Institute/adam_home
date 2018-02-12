@@ -26,8 +26,8 @@ class GroupMemberTest(unittest.TestCase):
     """
     
     def test_get_methods(self):
-        member = GroupMember("uuid", "USER")
-        self.assertEqual("uuid", member.get_uuid())
+        member = GroupMember("id", "USER")
+        self.assertEqual("id", member.get_id())
         self.assertEqual("USER", member.get_type())
 
 class GroupsTest(unittest.TestCase):
@@ -88,29 +88,29 @@ class GroupsTest(unittest.TestCase):
             self.assertEqual(expected_data, data_dict)
             return True
             
-        expected_data = {'member_uuid': "aaa", 'member_type': "USER"}
-        rest.expect_post("/group_member/g1", check_input, 200, {})
+        expected_data = {'member_id': "aaa", 'member_type': "USER"}
+        rest.expect_post("/group/g1/member", check_input, 200, {})
         groups.add_user_to_group('aaa', 'g1')
             
-        expected_data = {'member_uuid': "bbb", 'member_type': "GROUP"}
-        rest.expect_post("/group_member/g1", check_input, 200, {})
+        expected_data = {'member_id': "bbb", 'member_type': "GROUP"}
+        rest.expect_post("/group/g1/member", check_input, 200, {})
         groups.add_group_to_group('bbb', 'g1')
     
     def test_delete_group_member(self):
         rest = _RestProxyForTest()
         groups = Groups(rest)
             
-        rest.expect_delete("/group_member/g1?member_uuid=aaa&member_type=USER", 204)
+        rest.expect_delete("/group/g1/member?member_id=aaa&member_type=USER", 204)
         groups.remove_user_from_group('aaa', 'g1')
             
-        rest.expect_delete("/group_member/g1?member_uuid=aaa&member_type=GROUP", 204)
+        rest.expect_delete("/group/g1/member?member_id=aaa&member_type=GROUP", 204)
         groups.remove_group_from_group('aaa', 'g1')
             
-        rest.expect_delete("/group_member/g1?member_uuid=aaa&member_type=USER", 404)
+        rest.expect_delete("/group/g1/member?member_id=aaa&member_type=USER", 404)
         with self.assertRaises(RuntimeError):
             groups.remove_user_from_group('aaa', 'g1')
             
-        rest.expect_delete("/group_member/g1?member_uuid=aaa&member_type=GROUP", 404)
+        rest.expect_delete("/group/g1/member?member_id=aaa&member_type=GROUP", 404)
         with self.assertRaises(RuntimeError):
             groups.remove_group_from_group('aaa', 'g1')
         
@@ -141,17 +141,17 @@ class GroupsTest(unittest.TestCase):
         rest = _RestProxyForTest()
         groups = Groups(rest)
         
-        rest.expect_get('/group_member/g1', 200, {'items': []})
+        rest.expect_get('/group/g1/member', 200, {'items': []})
         members = groups.get_group_members('g1')
         self.assertTrue(len(members) == 0)
         
-        rest.expect_get('/group_member/g1', 200,
-            {'items': [{'member_uuid': 'u1', 'member_type': 'USER'},
-                       {'member_uuid': 'g2', 'member_type': 'GROUP'}]})
+        rest.expect_get('/group/g1/member', 200,
+            {'items': [{'member_id': 'u1', 'member_type': 'USER'},
+                       {'member_id': 'g2', 'member_type': 'GROUP'}]})
         members = groups.get_group_members('g1')
         self.assertTrue(len(members) == 2)
-        self.assertTrue('u1' in [g.get_uuid() for g in members if g.get_type() == 'USER'])
-        self.assertTrue('g2' in [g.get_uuid() for g in members if g.get_type() == 'GROUP'])
+        self.assertTrue('u1' in [g.get_id() for g in members if g.get_type() == 'USER'])
+        self.assertTrue('g2' in [g.get_id() for g in members if g.get_type() == 'GROUP'])
 
 
 if __name__ == '__main__':

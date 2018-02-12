@@ -15,7 +15,7 @@ class ProjectsTest(unittest.TestCase):
     """
     def setUp(self):
         self.service = Service()
-        self.assertTrue(self.service.setup_with_test_account())
+        self.assertTrue(self.service.setup_with_test_account(prod=False))
 
     def delete_children(self, project):
         projects = self.service.get_projects_module().get_projects()
