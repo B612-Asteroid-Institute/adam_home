@@ -24,15 +24,15 @@ class Group(object):
         return self._description
 
 class GroupMember(object):
-    def __init__(self, uuid, type):
-        self._uuid = uuid
+    def __init__(self, id, type):
+        self._id = id
         self._type = type
     
     def __repr__(self):
-        return "Group member %s [%s]" % (self._uuid, self._type)
+        return "Group member %s [%s]" % (self._id, self._type)
     
-    def get_uuid(self):
-        return self._uuid
+    def get_id(self):
+        return self._id
     
     def get_type(self):
         return self._type
@@ -64,33 +64,33 @@ class Groups(object):
             raise RuntimeError("Server status code: %s" % (code))
     
     def add_user_to_group(self, user, group):
-        code, response = self._rest.post('/group_member/' + group,
-            {'member_uuid': user, 'member_type': 'USER'})
+        code, response = self._rest.post('/group/' + group + '/member',
+            {'member_id': user, 'member_type': 'USER'})
         
         if code != 200:
             raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
     
     def remove_user_from_group(self, user, group):
-        code = self._rest.delete('/group_member/' + group + '?member_uuid=' + user + '&member_type=USER')
+        code = self._rest.delete('/group/' + group + '/member?member_id=' + user + '&member_type=USER')
         
         if code != 204:
             raise RuntimeError("Server status code: %s" % (code))
     
     def add_group_to_group(self, group1, group2):
-        code, response = self._rest.post('/group_member/' + group2,
-            {'member_uuid': group1, 'member_type': 'GROUP'})
+        code, response = self._rest.post('/group/' + group2 + '/member',
+            {'member_id': group1, 'member_type': 'GROUP'})
         
         if code != 200:
             raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
     
     def remove_group_from_group(self, group1, group2):
-        code = self._rest.delete('/group_member/' + group2 + '?member_uuid=' + group1 + '&member_type=GROUP')
+        code = self._rest.delete('/group/' + group2 + '/member?member_id=' + group1 + '&member_type=GROUP')
         
         if code != 204:
             raise RuntimeError("Server status code: %s" % (code))
     
     def _get_group_members(self, group):
-        code, response = self._rest.get('/group_member/' + group)
+        code, response = self._rest.get('/group/' + group + '/member')
         
         if code != 200:
             raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
@@ -98,7 +98,7 @@ class Groups(object):
         return response['items']
     
     def get_group_members(self, group):
-        return [GroupMember(m['member_uuid'], m['member_type']) for m in self._get_group_members(group)]
+        return [GroupMember(m['member_id'], m['member_type']) for m in self._get_group_members(group)]
     
     def print_group_members(self, group):
         members = self._get_group_members(group)

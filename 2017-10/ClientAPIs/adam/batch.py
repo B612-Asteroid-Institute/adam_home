@@ -15,6 +15,25 @@ class Batches(object):
     
     def new_batch(self, batch):
         batch.submit()
+    
+    def new_batches(self, batches):
+        batch_dicts = []
+        
+        for b in batches:
+            batch_dicts.append(b.generate_data_dict())
+        
+        code, response = self._rest.post('/batches/', 
+            {'requests': batch_dicts})
+
+        # Check error code
+        if code != 200:
+            raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
+
+        # Store UUID and calc states
+        for i in range(len(response['requests'])):
+            item = response['requests'][i]
+            batch = batches[i]
+            batch.update_from_response(item)
         
     def delete_batch(self, uuid):
         code = self._rest.delete('/batch/' + uuid)
@@ -383,18 +402,7 @@ class Batch(object):
                          ("USER_DEFINED_ADAM_HYPERCUBE = %s\n" % self._hypercube)
             return base_opm + covariance
 
-    def submit(self):
-        """Submit a job to the cloud
-
-        This function submits a job to the cloud. If the submission was successful, it stores the uuid and calc_state.
-        If parameters are missing, it will raise a key error associated with that parameter. If the submission failed
-        on the server side, it will return the server status code and associated response.
-
-        Raises:
-            KeyErrors: if any of the following are not provided:
-                       start_time, end_time, epoch, or state_vector
-        """
-
+    def generate_data_dict(self):
         # Raise KeyErrors for missing parameters
         if self._start_time is None:
             raise KeyError('Need start_time!')
@@ -415,6 +423,27 @@ class Batch(object):
 
         if self._description is not None:
             data['description'] = self._description
+        
+        return data
+    
+    def update_from_response(self, response):
+        # Store UUID and calc state
+        self._uuid = response['uuid']
+        self._calc_state = response['calc_state']
+    
+    def submit(self):
+        """Submit a job to the cloud
+
+        This function submits a job to the cloud. If the submission was successful, it stores the uuid and calc_state.
+        If parameters are missing, it will raise a key error associated with that parameter. If the submission failed
+        on the server side, it will return the server status code and associated response.
+
+        Raises:
+            KeyErrors: if any of the following are not provided:
+                       start_time, end_time, epoch, or state_vector
+        """
+
+        data = self.generate_data_dict()
 
         # Post request on cloud server
         code, response = self._rest.post('/batch', data)
@@ -423,9 +452,7 @@ class Batch(object):
         if code != 200:
             raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
 
-        # Store UUID and calc state
-        self._uuid = response['uuid']
-        self._calc_state = response['calc_state']
+        self.update_from_response(response)
 
     def _load_state(self):
         """Load job state from UUID

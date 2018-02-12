@@ -17,6 +17,7 @@ class BatchRunnerTest(unittest.TestCase):
     """
     def setUp(self):
         self.service = Service()
+#         self.assertTrue(self.service.setup("http://localhost:8080/_ah/api/adam/v1", "1KT0bImQ83b2vEhDwPF0PZevYu92"))
         self.assertTrue(self.service.setup_with_test_account(prod=False))
 
     def tearDown(self):
@@ -58,13 +59,14 @@ class BatchRunnerTest(unittest.TestCase):
         self.service.get_batch_runner().add_batch(batch_run)
         
     def test_small_batch(self):
-        num_batches = 5
-        num_threads = 3
+        num_batches = 5000
+        num_threads = 10
         
         for i in range(num_batches):
             self.add_dummy_batch(365 * 50)  # 50 years
         
-        self.service.get_batch_runner().run_batches(num_threads)
+        runner = self.service.get_batch_runner()
+        runner.run_batches(num_threads)
         
 
 if __name__ == '__main__':
