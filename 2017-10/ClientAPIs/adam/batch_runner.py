@@ -41,39 +41,45 @@ class BatchRunner():
         return total
     
     def _submit_batches(self, threads):
-        def submit_batch(i):
-            self.batches.new_batch(self.batch_runs[i])
+        step = 500
+        def submit(i):
+            self.batches.new_batches(self.batch_runs[i:i+step])
         
         pool = ThreadPool(threads)
-        results = pool.map(submit_batch, [i for i in range(len(self.batch_runs))])
+        results = pool.map(submit, [i for i in range(0, len(self.batch_runs), step)])
         pool.close()
         pool.join()
     
     def _all_are_complete(self, batch_runs_by_state):
         return self._runs_in_states(batch_runs_by_state, ['COMPLETED', 'FAILED']) == len(self.batch_runs)
     
-    def _any_non_pending(self, batch_runs_by_state):
-        return self._runs_in_states(
-            batch_runs_by_state, ['COMPLETED', 'FAILED', 'RUNNING']) > 0
-    
-    def run_batches(self, threads=1):
+    def _all_are_pending(self, batch_runs_by_state):
+        return self._runs_in_states(batch_runs_by_state, ['PENDING']) == len(self.batch_runs)
+        
+    def submit_batches(self, threads=1):
         timer = Timer()
         timer.start("Submitting " + str(len(self.batch_runs)) + " batches")
         self._submit_batches(threads)
         timer.stop()
-        
+    
+    def wait_for_running(self):
+        timer = Timer()
         timer.start("Waiting for running")
-        any_are_running = False
+        batch_runs_by_state = self.get_batches_status()
+        while self._all_are_pending(batch_runs_by_state):
+            batch_runs_by_state = self.get_batches_status()
+        timer.stop()
+    
+    def wait_for_finished(self):
+        timer = Timer()
+        timer.start("Running")
         batch_runs_by_state = self.get_batches_status()
         while not self._all_are_complete(batch_runs_by_state):
-            # Update timing.
-            if self._any_non_pending(batch_runs_by_state):
-                if not any_are_running:
-                    any_are_running = True
-                    timer.stop()
-                    timer.start("Running")
-                    
             batch_runs_by_state = self.get_batches_status()
-            
         timer.stop()
+    
+    def run_batches(self, threads=1):
+        self.submit_batches(threads)
+        self.wait_for_running()
+        self.wait_for_finished()
         
