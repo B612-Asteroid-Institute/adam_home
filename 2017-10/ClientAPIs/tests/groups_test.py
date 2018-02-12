@@ -43,10 +43,10 @@ class GroupsTest(unittest.TestCase):
         groups.delete_group(group.get_uuid())
     
     def _get_user_member_ids(self, members):
-        return [member.get_uuid() for member in members if member.get_type() == "USER"]
+        return [member.get_id() for member in members if member.get_type() == "USER"]
         
     def _get_group_member_ids(self, members):
-        return [member.get_uuid() for member in members if member.get_type() == "GROUP"]
+        return [member.get_id() for member in members if member.get_type() == "GROUP"]
     
     def test_membership_management(self):
         groups = self.service.get_groups_module()
