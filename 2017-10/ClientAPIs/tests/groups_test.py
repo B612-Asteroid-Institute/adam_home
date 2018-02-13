@@ -24,7 +24,7 @@ class GroupsTest(unittest.TestCase):
     
     def setUp(self):
         self.service = Service()
-        self.assertTrue(self.service.setup_with_test_account(prod=False))
+        self.assertTrue(self.service.setup_with_test_account())
         self.me = "b612.adam.test@gmail.com"
         self._clean_up()
 
