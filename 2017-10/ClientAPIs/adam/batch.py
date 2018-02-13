@@ -4,6 +4,44 @@
 
 from adam.rest_proxy import RestRequests
 from datetime import datetime
+from tabulate import tabulate
+
+class Batches(object):
+    def __init__(self, rest):
+        self._rest = rest
+    
+    def __repr__(self):
+        return "Batches module"
+    
+    def new_batch(self, batch):
+        batch.submit()
+        
+    def delete_batch(self, uuid):
+        code = self._rest.delete('/batch/' + uuid)
+        
+        if code != 204:
+            raise RuntimeError("Server status code: %s" % (code))
+    
+    def _get_batches(self, project):
+        code, response = self._rest.get('/batch?project_uuid=' + project)
+            
+        if code != 200:
+            raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
+        
+        return response['items']
+    
+    def get_batch_states(self, project):
+        batches = {} 
+        for b in self._get_batches(project):
+            batches[b['uuid']] = b['calc_state']
+        
+        return batches
+    
+    def print_batches(self, project):
+        batches = self._get_batches(project)
+        
+        print(tabulate(batches, headers="keys", tablefmt="fancy_grid"))
+        
 
 M2KM = 1E-3  # meters to kilometers
 
@@ -13,7 +51,7 @@ class Batch(object):
     This class is used for creating batch runs on the cloud
 
     """
-    def __init__(self):
+    def __init__(self, rest):
         """Initializes attributes
 
         """
@@ -29,7 +67,7 @@ class Batch(object):
         self._uuid = None             # uuid associated with run
         self._parts_count = 0         # number of parts count
         self._loaded_parts = {}       # parts that have already been loaded
-        self._rest = RestRequests()   # rest request option (requests package or proxy)
+        self._rest = rest
 
         # Object properties
         self._mass = 1000             # mass, kg
@@ -46,6 +84,7 @@ class Batch(object):
         self._object_name = 'dummy'
         self._object_id = '001'
         self._description = None
+        self._project = None
 
     def __repr__(self):
         """Printable representation of returned values from job run
@@ -60,19 +99,6 @@ class Batch(object):
         """
         return "Batch %s, %s" % (self._uuid, self._calc_state)
 
-    def set_rest_accessor(self, proxy):
-        """Override network access methods
-
-        This function overrides network access and sets the rest request to a proxy
-
-        Args:
-            proxy (class)
-
-        Returns:
-            None
-        """
-        self._rest = proxy
-
     def set_description(self, description):
         """Sets the description of the run
 
@@ -85,6 +111,9 @@ class Batch(object):
             None
         """
         self._description = description
+    
+    def set_project(self, project):
+        self._project = project
 
     def set_originator(self, originator):
         """Sets the originator of the run
@@ -289,6 +318,9 @@ class Batch(object):
             None
         """
         self._propagator_uuid = propagator_uuid
+    
+    def set_project(self, project_uuid):
+        self._project = project_uuid
 
     def generate_opm(self):
         """Generate an OPM string
@@ -378,7 +410,8 @@ class Batch(object):
                 'step_duration_sec': self._step_size,
                 'end_time': self._end_time,
                 'opm_string': self.generate_opm(),
-                'propagator_uuid': self._propagator_uuid}
+                'propagator_uuid': self._propagator_uuid,
+                'project': self._project}
 
         if self._description is not None:
             data['description'] = self._description

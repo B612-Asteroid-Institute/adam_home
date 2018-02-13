@@ -1,4 +1,5 @@
 from adam import Auth
+from adam import RestRequests
 from adam import Batch
 from adam import Projects
 from adam import RestRequests
@@ -6,9 +7,9 @@ from adam import AuthorizingRestProxy
 import time
 import os
 
-rest = RestRequests("http://pro-equinox-162418.appspot.com/_ah/api/adam/v1")
-auth = Auth()
-auth.set_rest_accessor(rest)
+url = "https://pro-equinox-162418.appspot.com/_ah/api/adam/v1"
+rest = RestRequests(url)
+auth = Auth(rest)
 tokenFile = os.getcwd() + '/token.txt'
 # Opening with "a+" instead of "r" creates the file if it doesn't exist.
 with open(tokenFile, "a+") as f:
@@ -53,7 +54,7 @@ covariance = [3.331349476038534e-04, + \
              -2.211832501084875e-07, -2.864186892102733e-07, 1.798098699846038e-07, 2.608899201686016e-10, 1.767514756338532e-10, + \
              -3.041346050686871e-07, -4.989496988610662e-07, 3.540310904497689e-07, 1.869263192954590e-10, 1.008862586240695e-10, 6.224444338635500e-10]
 
-batch_run = Batch()
+batch_run = Batch(rest)
 batch_run.set_start_time('2017-10-04T00:00:00Z')
 batch_run.set_end_time('2017-10-11T00:00:00Z')
 batch_run.set_state_vector('2017-10-04T00:00:00.000Z', state_vec)
