@@ -17,7 +17,7 @@ class BatchRunnerTest(unittest.TestCase):
     """
     def setUp(self):
         self.service = Service()
-        self.assertTrue(self.service.setup_with_test_account(prod=False))
+        self.assertTrue(self.service.setup_with_test_account())
 
     def tearDown(self):
         self.service.teardown()
