@@ -47,7 +47,7 @@ class StmPropagationModule(object):
         Assume state epoch is the same as integration start time
 
         Args:
-            sate_vectors (list of lists) - list of lists with 6 elements 
+            state_vectors (list of lists) - list of lists with 6 elements 
                                             [rx, ry, rz, vx, vy, vz]  [km, km/s]
             epoch_time (datetime.datetime) - epoch of state (UTC datetime)
             end_time (datetime.datetime) - time at which to end the simulation

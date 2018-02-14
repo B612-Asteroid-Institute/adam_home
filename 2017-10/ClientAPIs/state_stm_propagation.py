@@ -11,7 +11,9 @@ import numdifftools as nd
 import numpy as np
 
 # Adam related imports
-from adam import Batch2
+from adam import Batch
+from adam import RestRequests
+from adam import Service
 
 # Constants
 ISO8601Z = "%Y-%m-%dT%H:%M:%SZ"
@@ -99,11 +101,16 @@ def propagate_states(state_vectors, epoch_time, end_time):
     
     # Create batches from statevectors
     batches = []
+#     url = "https://pro-equinox-162418.appspot.com/_ah/api/adam/v1"
+#     rest = RestRequests(url)
+    s = Service()
+    s.setup_with_test_account(prod=False)
     for state_vector in state_vectors:
-        batch = Batch()
+        batch = Batch(s.get_rest())
         batch.set_state_vector(epoch_time_str, state_vector)
         batch.set_start_time(start_time_str)
         batch.set_end_time(end_time_str)
+        batch.set_project(s.get_working_project().get_uuid())
         batches.append(batch)
 
     # submit batches and wait till they finish running   
@@ -209,7 +216,7 @@ def main():
     print("State: ")
     print(end_state)
     print("STM: ")
-    print(stm)
+    print(stm.getA())
 
     return 0
 
