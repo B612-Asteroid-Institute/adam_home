@@ -1,5 +1,5 @@
 """
-    batch_runner.py
+    batch_run_manager.py
 """
 
 import adam
@@ -29,7 +29,7 @@ class BatchRunManager(object):
     or run() is ongoing.
     """
     
-    def __init__(self, batches_module, batch_runs, do_timing=True):
+    def __init__(self, batches_module, batch_runs, do_timing=True, multi_threaded=True):
         self.batches_module = batches_module
         
         # Store the batch runs and check that they all belong to the same project.
@@ -45,6 +45,8 @@ class BatchRunManager(object):
         self.do_timing = do_timing
         if self.do_timing:
             self.timer = Timer()
+        
+        self.multi_threaded = multi_threaded
         
         # Cache the overall status here. Lock access so that state can be retrieved while
         # waiting for completion.
@@ -102,8 +104,11 @@ class BatchRunManager(object):
         
         # Use as many threads as we have batches to submit, up to an arbitrary maximum
         # of 10, which allows us to submit 5000 batches in parallel.
-        num_batches = round(len(self.batch_runs) / submission_batch_size) + 1
-        threads = min(num_batches, 10)
+        if self.multi_threaded:
+            num_batches = round(len(self.batch_runs) / submission_batch_size) + 1
+            threads = min(num_batches, 10)
+        else:
+            threads = 1
         
         def _submit_batches(i):
             # Grab all the creation parameters from the batch objects.
@@ -185,7 +190,10 @@ class BatchRunManager(object):
             results = self.batches_module.get_propagation_results(b.get_state_summary())
             b.set_results(results)
         
-        threads = 10
+        if self.multi_threaded:
+            threads = 10
+        else:
+            threads = 1
         pool = ThreadPool(threads)
         pool.map(_get_results, [i for i in range(len(self.batch_runs))])
         pool.close()

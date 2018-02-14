@@ -13,23 +13,23 @@ class Batches(object):
     def __repr__(self):
         return "Batches module"
     
-    def _build_batch_creation_data(self, batch_params, opm_params):
-        data = {'start_time': batch_params.get_start_time(),
-                'end_time': batch_params.get_end_time(),
-                'step_duration_sec': batch_params.get_step_size(),
-                'propagator_uuid': batch_params.get_propagator_uuid(),
-                'project': batch_params.get_project_uuid(),
+    def _build_batch_creation_data(self, propagation_params, opm_params):
+        data = {'start_time': propagation_params.get_start_time(),
+                'end_time': propagation_params.get_end_time(),
+                'step_duration_sec': propagation_params.get_step_size(),
+                'propagator_uuid': propagation_params.get_propagator_uuid(),
+                'project': propagation_params.get_project_uuid(),
                 'opm_string': opm_params.generate_opm()}
 
-        if batch_params.get_description() is not None:
-            data['description'] = batch_params.get_description()
+        if propagation_params.get_description() is not None:
+            data['description'] = propagation_params.get_description()
         
         return data
     
     def new_batch(self, propagation_params, opm_params):
         data = self._build_batch_creation_data(propagation_params, opm_params)
         
-        code, response = self._rest.post('/batch/', data)
+        code, response = self._rest.post('/batch', data)
         
         if code != 200:
             raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
@@ -44,7 +44,7 @@ class Batches(object):
         for pair in param_pairs:
             batch_dicts.append(self._build_batch_creation_data(pair[0], pair[1]))
         
-        code, response = self._rest.post('/batches/', {'requests': batch_dicts})
+        code, response = self._rest.post('/batches', {'requests': batch_dicts})
 
         # Check error code
         if code != 200:
@@ -65,6 +65,16 @@ class Batches(object):
         
         if code != 204:
             raise RuntimeError("Server status code: %s" % (code))
+    
+    def get_summary(self, uuid):
+        code, response = self._rest.get('/batch/' + uuid)
+        
+        if code == 404:
+            return None
+        elif code != 200:
+            raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
+        
+        return StateSummary(response)
     
     def _get_summaries(self, project):
         code, response = self._rest.get('/batch?project_uuid=' + project)
@@ -95,7 +105,7 @@ class Batches(object):
         if code != 200:
             raise RuntimeError("Server status code: %s" % (code))
 
-        return PropagationPart(part_json)
+        return PropagationResultPart(part_json)
         
     def get_propagation_results(self, state_summary):
         """ Returns a PropagationResults object with as many PropagationPart objects as 
@@ -112,20 +122,21 @@ class Batches(object):
             for i in range(state_summary.get_parts_count())]
         return PropagationResults(parts)
 
-class PropagationPart(object):
+class PropagationResultPart(object):
     def __init__(self, part):
         self._calc_state = part['calc_state']
-        if self._calc_state in ['COMPLETED', 'FAILED']:
-            self._ephemeris = part['stk_ephemeris']
-        else:
-            self._ephemeris = None
-        self._error = part.get('error') or ''
+        self._part_index = part['part_index']
+        self._ephemeris = part.get('stk_ephemeris')
+        self._error = part.get('error')
     
     def __repr__(self):
         return "PropagationPart [%s]" % (self._calc_state)
     
     def get_calc_state(self):
         return self._calc_state
+    
+    def get_part_index(self):
+        return self._part_index
     
     def get_error(self):
         return self._error
@@ -149,10 +160,6 @@ class PropagationResults(object):
     
     def get_parts(self):
         return self._parts
-    
-    def get_ephemerides(self):
-        # Fills in None ephemerides for None parts
-        return [p.get_ephemeris() if p is not None else None for p in self._parts]
     
     def get_end_state_vector(self):
         """Get the end state vector as a 6d list in [km, km/s]
@@ -195,16 +202,16 @@ class PropagationResults(object):
 class StateSummary(object):
     def __init__(self, json):
         self._uuid = json['uuid']
+        self._calc_state = json['calc_state']
         self._step_size = json.get('step_duration_sec')
         self._create_time = json.get('create_time')
         self._execute_time = json.get('execute_time')
         self._complete_time = json.get('complete_time')
-        self._project = json.get('project')
+        self._project_uuid = json.get('project')
         self._parts_count = json.get('parts_count')
-        self._calc_state = json.get('calc_state')
 
     def __repr__(self):
-        return "Batch %s" % (self._uuid)
+        return "State summary for %s: %s" % (self._uuid, self._calc_state)
     
     def get_uuid(self):
         return self._uuid
@@ -221,8 +228,8 @@ class StateSummary(object):
     def get_complete_time(self):
         return self._complete_time
         
-    def get_project(self):
-        return self._project
+    def get_project_uuid(self):
+        return self._project_uuid
         
     def get_parts_count(self):
         return self._parts_count
@@ -274,8 +281,7 @@ class PropagationParams(object):
     
     def get_description(self):
         return self._description
-        
-    
+
 class OpmParams(object):
     def __init__(self, params):
         """
@@ -385,42 +391,48 @@ class OpmParams(object):
                          ("USER_DEFINED_ADAM_HYPERCUBE = %s\n" % self._hypercube)
             return base_opm + covariance
     
-class Batch(object):
+class Batch2(object):
     def __init__(self, propagation_params, opm_params):
-        self.propagation_params = propagation_params
-        self.opm_params = opm_params
-        self.state_summary = None
-        self.results = None
+        self._propagation_params = propagation_params
+        self._opm_params = opm_params
+        self._state_summary = None
+        self._results = None
+        
+    def __repr__(self):
+        return "Batch %s, %s" % (self.get_uuid(), self.get_calc_state())
     
     def get_propagation_params(self):
-        return self.propagation_params
+        return self._propagation_params
     
     def get_opm_params(self):
-        return self.opm_params
+        return self._opm_params
     
     def get_state_summary(self):
-        return self.state_summary
+        return self._state_summary
     
     def set_state_summary(self, state_summary):
-        self.state_summary = state_summary
+        self._state_summary = state_summary
     
     def get_results(self):
-        return self.results
+        return self._results
     
     def set_results(self, results):
-        self.results = results
+        self._results = results
     
     # Convenience method to get batch uuid.
     def get_uuid(self):
-        if self.state_summary is None: return None
-        return self.state_summary.get_uuid()
+        if self._state_summary is None: return None
+        return self._state_summary.get_uuid()
         
     # Convenience method to get batch calculation state.
     def get_calc_state(self):
-        if self.state_summary is None: return None
-        return self.state_summary.get_calc_state()
+        if self._state_summary is None: return None
+        return self._state_summary.get_calc_state()
 
-class BatchOld(object):
+
+M2KM = 1E-3  # meters to kilometers
+
+class Batch(object):
     """Module for a batch request
 
     This class is used for creating batch runs on the cloud
@@ -430,36 +442,18 @@ class BatchOld(object):
         """Initializes attributes
 
         """
-        self._state_vector = None     # position and velocity state vector
-        self._epoch = None            # epoch associated with state vector
-        self._start_time = None       # start time of run
-        self._end_time = None         # end time of run
-        self._step_size = 86400       # step size in seconds (defaulted to 1 day)
-        self._covariance = None       # covariance
-        self._hypercube = None        # hypercube type (e.g. FACES, CORNERS)
-        self._perturbation = None     # perturbation sigma on state vector
-        self._calc_state = None       # status on run (e.g. RUNNING, COMPLETED)
-        self._uuid = None             # uuid associated with run
-        self._parts_count = 0         # number of parts count
-        self._loaded_parts = {}       # parts that have already been loaded
-        self._rest = rest
-
-        # Object properties
-        self._mass = 1000             # mass, kg
-        self._solar_rad_area = 20     # solar radiation area, m^2
-        self._solar_rad_coeff = 1     # solar radiation coefficient
-        self._drag_area = 20          # drag area, m^2
-        self._drag_coeff = 2.2        # drag coefficient
-
-        # Propagator settings (default is the Sun, all planets, and the Moon as point masses [no asteroids])
-        self._propagator_uuid = "00000000-0000-0000-0000-000000000001"
-
-        # Header and metadata information
-        self._originator = 'ADAM_User'
-        self._object_name = 'dummy'
-        self._object_id = '001'
-        self._description = None
-        self._project = None
+        propagation_params = PropagationParams({
+            # Bit of a hack so that we can deal with start_time and end_time being
+            # set separately later (before use).
+            'start_time': None,
+            'end_time': None
+        })
+        opm_params = OpmParams({
+            'epoch': None,
+            'state_vector': None
+        })
+        self._batch = Batch2(propagation_params, opm_params)
+        self._batch_module = Batches(rest)
 
     def __repr__(self):
         """Printable representation of returned values from job run
@@ -472,8 +466,251 @@ class BatchOld(object):
         Returns:
             Printable representation of uuid and calc state (str)
         """
-        return "Batch %s, %s" % (self._uuid, self._calc_state)
+        return repr(self._batch)
         
+    def set_description(self, description):
+        """Sets the description of the run
+        This function sets the description of the propagated run
+        Args:
+            description (str): description of the run
+        Returns:
+            None
+        """
+        self._batch.get_propagation_params()._description = description
+    
+    def set_project(self, project):
+        self._batch.get_propagation_params()._project_uuid = project
+
+    def set_originator(self, originator):
+        """Sets the originator of the run
+        This function sets the originator of the propagated run
+        Args:
+            originator (str): responsible entity for run
+        Returns:
+            None
+        """
+        self._batch.get_opm_params()._originator = originator
+
+    def set_object_name(self, object_name):
+        """Sets the object name
+        This function sets the object's name for the propagation
+        Args:
+            object_name (str): name of object
+        Returns:
+            None
+        """
+        self._batch.get_opm_params()._object_name = object_name
+
+    def set_object_id(self, object_id):
+        """Sets the object ID
+        This function sets the object's ID for the propagation
+        Args:
+            object_id (str): identification of object
+        Returns:
+            None
+        """
+        self._batch.get_opm_params()._object_id = object_id
+
+    def set_state_vector(self, epoch, state_vector):
+        """Set epoch and state vector
+        This function sets the epoch and cartesian state vector (position and velocity)
+        Args:
+            epoch (str): the epoch associated with the state vector (IS0-8601 format)
+            state_vector (list): an array with 6 elements [rx, ry, rz, vx, vy, vz]
+        Returns:
+            None
+        """
+        self._batch.get_opm_params()._epoch = epoch
+        self._batch.get_opm_params()._state_vector = state_vector
+
+    def set_start_time(self, start_time):
+        """Set start time
+        This function sets the start time for the propagation run
+        Args:
+            start_time (str): start time in ISO-8601 format (yyyy-MM-ddTHH:mm:ssZ)
+        Returns:
+            None
+        """
+        self._batch.get_propagation_params()._start_time = start_time
+
+    def set_end_time(self, end_time):
+        """Set end time
+        This function sets the end time for the propagation run
+        Args:
+            end_time (str): end time in ISO-8601 format (yyyy-MM-ddTHH:mm:ssZ)
+        Returns:
+            None
+        """
+        self._batch.get_propagation_params()._end_time = end_time
+
+    def set_step_size(self, step_size, step_size_unit):
+        """Set step size
+        This function sets the step size for the propagator run; can be positive or negative
+        It first converts the step size to seconds given the step size unit
+        Valid units for step size are: "sec", "min", "hour", or "day"
+        Args:
+            step_size (int): step size in seconds
+            step_size_unit (str): units of time for step size
+        Returns:
+            None
+        """
+
+        # Multiplier dictionary to convert to seconds
+        multiplier = {"sec": 1, "min": 60, "hour": 3600, "day": 86400}
+
+        # Get step size; raise KeyError if unit not in dictionary
+        try:
+            step_size = round(step_size * multiplier[step_size_unit])
+        except:
+            raise KeyError('Invalid units. Options: "sec", "min", "hour", or "day"')
+
+        # Set step size
+        self._batch.get_propagation_params()._step_size = step_size
+
+    def set_covariance(self, covariance, hypercube, perturbation):
+        """Set covariance
+        This function sets the state vector error covariance (6x6 lower triangular form)
+        None or all of the parameters must be given
+        Args:
+            covariance (list): an array with 21 elements corresponding to a 6x6 lower triangle
+            hypercube (str): hypercube propagation type (e.g. 'FACES' or 'CORNERS')
+            perturbation (int): sigma perturbation
+        Returns:
+            None
+        """
+        self._batch.get_opm_params()._covariance = covariance
+        self._batch.get_opm_params()._hypercube = hypercube
+        self._batch.get_opm_params()._perturbation = perturbation
+
+    def set_mass(self, mass):
+        """Set object mass
+        This function sets the object's mass for propagation
+        Args:
+            mass (float): object mass in kilograms
+        Returns:
+            None
+        """
+        self._batch.get_opm_params()._mass = mass
+
+    def set_solar_rad_area(self, solar_rad_area):
+        """Set object solar radiation area
+        This function sets the object's solar radiation area for propagation
+        Args:
+            solar_rad_area (float): object solar radiation area in squared meters
+        Returns:
+            None
+        """
+        self._batch.get_opm_params()._solar_rad_area = solar_rad_area
+
+    def set_solar_rad_coeff(self, solar_rad_coeff):
+        """Set object solar radiation coefficient
+        This function sets the object's solar radiation coefficient for propagation
+        Args:
+            solar_rad_coeff (float): object solar radiation coefficient
+        Returns:
+            None
+        """
+        self._batch.get_opm_params()._solar_rad_coeff = solar_rad_coeff
+
+    def set_drag_area(self, drag_area):
+        """Set object drag area
+        This function sets the object's drag area for propagation
+        Args:
+            drag_area (float): object drag area in squared meters
+        Returns:
+            None
+        """
+        self._batch.get_opm_params()._drag_area = drag_area
+
+    def set_drag_coeff(self, drag_coeff):
+        """Set object drag coefficient
+        This function sets the object's drag coefficient for propagation
+        Args:
+            drag_coeff (float): object drag coefficient
+        Returns:
+            None
+        """
+        self._batch.get_opm_params()._drag_coeff = drag_coeff
+
+    def set_propagator_uuid(self, propagator_uuid):
+        """Set propagator uuid
+        This functions sets the propagator uuid for the desired force model
+        See https://pro-equinox-162418.appspot.com/_ah/api/adam/v1/config for configurations
+        Args:
+            propagator_uuid (str): configuration uuid to set for the propagator
+        Returns:
+            None
+        """
+        self._batch.get_propagation_params()._propagator_uuid = propagator_uuid
+    
+    def set_uuid_for_testing(self, uuid):
+        if self._batch.get_state_summary() is None:
+            # Hack for testing. Don't imitate this.
+            self._batch.set_state_summary(StateSummary({
+                'uuid': None,
+                'calc_state': None
+            }))
+        self._batch.get_state_summary()._uuid = uuid
+        
+    def set_calc_state_for_testing(self, calc_state):
+        if self._batch.get_state_summary() is None:
+            # Hack for testing. Don't imitate this.
+            self._batch.set_state_summary(StateSummary({
+                'uuid': None,
+                'calc_state': None
+            }))
+        self._batch.get_state_summary()._calc_state = calc_state
+    
+    def set_parts_count_for_testing(self, parts_count):
+        if self._batch.get_state_summary() is None:
+            # Hack for testing. Don't imitate this.
+            self._batch.set_state_summary(StateSummary({
+                'uuid': None,
+                'calc_state': None
+            }))
+        self._batch.get_state_summary()._parts_count = parts_count
+        
+    def set_epoch_for_testing(self, epoch):
+        self._batch.get_opm_params()._epoch = epoch
+    
+    def set_state_vector_for_testing(self, state_vector):
+        self._batch.get_opm_params()._state_vector = state_vector
+    
+    def generate_opm(self):
+        """Generate an OPM string
+        This function generates a single OPM string from defined parameters (CCSDS format)
+        Args:
+            None
+        Returns:
+            OPM (str)
+        """
+        return self._batch.get_opm_params().generate_opm()
+
+    def submit(self):
+        """Submit a job to the cloud
+        This function submits a job to the cloud. If the submission was successful, it stores the uuid and calc_state.
+        If parameters are missing, it will raise a key error associated with that parameter. If the submission failed
+        on the server side, it will return the server status code and associated response.
+        Raises:
+            KeyErrors: if any of the following are not provided:
+                       start_time, end_time, epoch, or state_vector
+        """
+
+        # Raise KeyErrors for missing parameters
+        if self._batch.get_propagation_params()._start_time is None:
+            raise KeyError('Need start_time!')
+        if self._batch.get_propagation_params()._end_time is None:
+            raise KeyError('Need end_time!')
+        if self._batch.get_opm_params()._epoch is None:
+            raise KeyError('Need epoch!')
+        if self._batch.get_opm_params()._state_vector is None:
+            raise KeyError('Need state_vector!')
+            
+        state_summary = self._batch_module.new_batch(
+            self._batch.get_propagation_params(), self._batch.get_opm_params())
+        
+        self._batch.set_state_summary(state_summary)
+
     def _load_state(self):
         """Load job state from UUID
 
@@ -492,31 +729,19 @@ class BatchOld(object):
         """
 
         # Raise error if UUID is missing
-        if self._uuid is None:
+        if self._batch.get_uuid() is None:
             raise KeyError("Need uuid!")
+            
+        self._batch.set_state_summary(
+            self._batch_module.get_summary(self._batch.get_uuid()))
 
-        # Get code and response from UUID
-        code, response = self._rest.get('/batch/' + self._uuid)
-
-        # Check for failed error codes and raise error if job failed
-        if code == 404:    # Not found
-            return False
-        elif code != 200:
-            raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
-
-        # Store/return calc state and store parts count
-        self._calc_state = response['calc_state']
-        self._parts_count = response['parts_count']
-        return self._calc_state
+        return self._batch.get_calc_state()
 
     def is_ready(self):
         """Determine if job is ready
-
         This function determines if the job has either completed or failed (i.e., not waiting).
-
         Args:
             None
-
         Returns:
             Boolean
         """
@@ -525,142 +750,95 @@ class BatchOld(object):
 
     def get_calc_state(self):
         """Get calc state
-
         This function just returns the calc state (job status)
-
         Args:
             None
-
         Returns:
             calc_state (str)
         """
-        return self._calc_state
+        return self._batch.get_calc_state()
 
     def get_parts_count(self):
         """Get parts count
-
         This function just returns the parts count
-
         Args:
             None
-
         Returns:
             parts_count (int)
         """
-        return self._parts_count
+        return self._batch.get_state_summary()._parts_count
 
     def get_uuid(self):
         """Grab the UUID
-
         This function just returns the UUID of the run
-
         Args:
             None
-
         Returns:
             uuid (str)
         """
-        return self._uuid
+        return self._batch.get_uuid()
 
+    def _load_results(self):
+        if self._batch.get_results() is not None:
+            # Already loaded the results. They won't change.
+            return
+
+        results = self._batch_module.get_propagation_results(
+            self._batch.get_state_summary())
+        for i in range(len(results.get_parts())):
+            if results.get_parts()[i] is None:
+                raise RuntimeError("Could not retrieve result part %s" % (i + 1))
+        self._batch.set_results(results)
+    
     def _load_part(self, index):
         """Load part
-
         This function attempts to load the part and store it in the loaded parts. It will first try to check if the run
         has completed and if the index value is valid. It will then check if the part already exists and return it
         if it does. Otherwise, it will attempt to grab the part from the run on the server and return 'None' if the job
         has not returned a successful code error.
-
         Args:
             index (int): part index of job (1 for regular job, > 1 for jobs with covariance)
-
         Returns:
-            part (dict): json response structure of specific part run
-
+            part (PropagationResultPart): specific part run
         Raises:
-            KeyError: if calc_state of overall run is not 'COMPLETED' or if part is 'None'
+            KeyError: if part is 'None'
             IndexError: if provided index is out of bounds
         """
-
-        # Check to see if index is out of bounds
-        if index < 1 or index > self._parts_count:
+        if index < 1 or index > self._batch.get_state_summary()._parts_count:
             raise IndexError
-
-        # Check if part exists and get it if it does
-        try:
-            part = self._loaded_parts[index]
-        except KeyError:
-            part = None
-
-        # If no part exists, grab part from server
-        if part is None:
-            code, part = self._rest.get('/batch/' + self._uuid + '/' + str(index))
-
-            # Raise error if specific part submission was not successful
-            if code != 200:
-                raise RuntimeError("Server status code: %s" % (code))
-
-            # Get the status of the submitted job and grab the part if it is either 'COMPLETED' or 'FAILED'
-            status = part['calc_state']
-            if status == 'COMPLETED' or status == 'FAILED':
-                self._loaded_parts[index] = part
-
-        # If still no part, raise KeyError
-        if part is None:
-            raise KeyError
-
-        # Return the part (json dict response for each specific part)
-        return part
-
+        
+        self._load_results()
+        return self._batch.get_results().get_parts()[index - 1]
+        
     def get_part_error(self, index):
         """Get error from specified part
-
         This function loads the part (json response) that is stored and grabs its code error
-
         Args:
             index (int): part index of job (1 for regular job, > 1 for jobs with covariance)
-
         Returns:
             Either the part error (str) or None
         """
 
         # Load the part from the given index
-        part = self._load_part(index)
-
-        # Try to return the error for that part; return None otherwise
-        try:
-            return part['error']
-        except KeyError:
-            return None
+        return self._load_part(index).get_error()
 
     def get_part_state(self, index):
         """Get calc state from specified part
-
         This function loads the part (json response) that is stored and grabs its calc state
-
         Args:
             index (int): part index of job (1 for regular job, > 1 for jobs with covariance)
-
         Returns:
             Either the calc state (str) or None
         """
 
         # Load the part from the given index
-        part = self._load_part(index)
-
-        # Try to return the calc state for that part; return None otherwise
-        try:
-            return part['calc_state']
-        except KeyError:
-            return None
+        return self._load_part(index).get_calc_state()
 
     def is_ready_part(self, index):
         """Determine if a part is ready
-
         This function determines if the job for a specified part has either completed or failed (i.e., not waiting).
-
         Args:
             index (int): part index of job (1 for regular job, > 1 for jobs with covariance)
-
         Returns:
             Boolean
         """
@@ -672,52 +850,23 @@ class BatchOld(object):
 
     def get_part_ephemeris(self, index):
         """Get ephemeris from specified part
-
         This function loads the part (json response) that is stored and grabs its STK ephemeris
-
         Args:
             index (int): part index of job (1 for regular job, > 1 for jobs with covariance)
-
         Returns:
             Either the STK ephemeris (str) or None
         """
 
         # Load the part from the given index
-        part = self._load_part(index)
-
-        # Try to return the ephemeris for that part; return None otherwise
-        try:
-            return part['stk_ephemeris']
-        except KeyError:
-            return None
+        return self._load_part(index).get_ephemeris()
 
     def get_end_state_vector(self):
         """Get the end state vector as a 6d list in [km, km/s]
-
         This function first grabs the STK ephemeris from the final part
         The final state entry is returned as an array
-
         Args:
-
         Returns:
             state_vector (list) - an array with 6 elements [rx, ry, rz, vx, vy, vz]
                                   [km, km/s]
         """
-
-        # get final ephemeris part
-        stk_ephemeris = self.get_part_ephemeris(self._parts_count)
-        if stk_ephemeris is None:
-            return None
-    
-        split_ephem = stk_ephemeris.splitlines()
-        state_vectors = []
-        for line in split_ephem:
-            split_line  = line.split()
-            # It's a state if it has more than 7 elements
-            if len(split_line) >= 7:
-                state_vector = [(float(i) * M2KM) for i in split_line]
-                # Ignore time
-                state_vectors.append(state_vector[1:7])     
-        
-        # We want the last element
-        return state_vectors[-1]
+        return self._batch.get_results().get_end_state_vector()

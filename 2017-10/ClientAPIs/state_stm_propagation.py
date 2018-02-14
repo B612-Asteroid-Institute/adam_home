@@ -11,7 +11,7 @@ import numdifftools as nd
 import numpy as np
 
 # Adam related imports
-from adam import Batch
+from adam import Batch2
 
 # Constants
 ISO8601Z = "%Y-%m-%dT%H:%M:%SZ"
