@@ -5,7 +5,6 @@
 from adam.auth import Auth
 from adam.batch import Batch
 from adam.batch import Batches
-from adam.batch_runner import BatchRunner
 from adam.group import Groups
 from adam.project import Projects
 from adam.timer import Timer
@@ -64,8 +63,6 @@ class Service():
             "Test project created at " + str(datetime.datetime.now()))
         print("Set up project with uuid " + self.project.get_uuid())
         
-        self.batch_runner = BatchRunner(self.batches, self.project)
-        
         timer.stop()
         return True
         
@@ -79,7 +76,8 @@ class Service():
         for p in self.projects.get_projects():
             if (not p.get_uuid() == "00000000-0000-0000-0000-000000000001" and
                 not p.get_uuid() == "88e2152d-e37e-437d-af88-65bca9374f34" and
-                not p.get_uuid() == "61c25677-c328-45c4-af22-a0a4d5e54826"):
+                not p.get_uuid() == "61c25677-c328-45c4-af22-a0a4d5e54826" and
+                not p.get_uuid() == "ffffffff-ffff-ffff-ffff-ffffffffffff"):
                 print("Deleting project " + p.get_uuid())
                 try:
                     self.projects.delete_project(p.get_uuid())
@@ -97,9 +95,6 @@ class Service():
     
     def get_groups_module(self):
         return self.groups
-    
-    def get_batch_runner(self):
-        return self.batch_runner
     
     def get_rest(self):
         # Note, this is only necessary because batches are currently more than pure data
