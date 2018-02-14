@@ -4,7 +4,7 @@
 
 import adam
 from adam.timer import Timer
-from adam.batch import Batches
+from adam import Batches
 
 import datetime
 from enum import Enum

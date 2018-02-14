@@ -1,9 +1,9 @@
 from adam.batch_run_manager import BatchRunManager
-from adam.batch import Batch2
-from adam.batch import PropagationParams
-from adam.batch import OpmParams
-from adam.batch import StateSummary
-from adam.batch import PropagationResults
+from adam.batch2 import Batch2
+from adam.batch2 import PropagationParams
+from adam.batch2 import OpmParams
+from adam.batch2 import StateSummary
+from adam.batch2 import PropagationResults
 
 import unittest
     
@@ -85,7 +85,7 @@ class BatchRunnerTest(unittest.TestCase):
         running_state = StateSummary({'uuid': 'b1', 'calc_state': 'RUNNING'})
         completed_state = StateSummary({'uuid': 'b1', 'calc_state': 'COMPLETED'})
         failed_state = StateSummary({'uuid': 'b1', 'calc_state': 'FAILED'})
-        results = PropagationResults([])
+        results = PropagationResults([None])
         
         batches.expect_new_batch(b1, pending_state)
         batches.expect_get_summaries("p1", {"b1": completed_state})

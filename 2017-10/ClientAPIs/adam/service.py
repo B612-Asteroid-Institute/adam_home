@@ -3,8 +3,7 @@
 """
 
 from adam.auth import Auth
-from adam.batch import Batch
-from adam.batch import Batches
+from adam.batch2 import Batches
 from adam.group import Groups
 from adam.project import Projects
 from adam.timer import Timer
