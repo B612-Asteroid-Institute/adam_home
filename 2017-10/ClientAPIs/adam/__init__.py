@@ -4,10 +4,11 @@
 
 from adam.auth import Auth
 from adam.batch import Batch
+from adam.batch import Batch2
 from adam.batch import PropagationParams
 from adam.batch import OpmParams
 from adam.batch import Batches
-from adam.batch_runner import BatchRunManager
+from adam.batch_run_manager import BatchRunManager
 from adam.group import Groups
 from adam.project import Projects
 from adam.service import Service

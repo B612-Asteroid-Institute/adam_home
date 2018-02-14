@@ -10,7 +10,6 @@ from adam.project import Projects
 from adam.timer import Timer
 from adam.rest_proxy import RestRequests
 from adam.rest_proxy import AuthorizingRestProxy
-from adam.rest_proxy import LoggingRestProxy
 
 import datetime
 
@@ -71,18 +70,6 @@ class Service():
         timer.start("Teardown")
         self.projects.delete_project(self.project.get_uuid())
         timer.stop()
-    
-    def careful_clean_up_projects(self):
-        for p in self.projects.get_projects():
-            if (not p.get_uuid() == "00000000-0000-0000-0000-000000000001" and
-                not p.get_uuid() == "88e2152d-e37e-437d-af88-65bca9374f34" and
-                not p.get_uuid() == "61c25677-c328-45c4-af22-a0a4d5e54826" and
-                not p.get_uuid() == "ffffffff-ffff-ffff-ffff-ffffffffffff"):
-                print("Deleting project " + p.get_uuid())
-                try:
-                    self.projects.delete_project(p.get_uuid())
-                except:
-                    print("Failed to delete project " + p.get_uuid() + ". Moving on...")
     
     def get_working_project(self):
         return self.project

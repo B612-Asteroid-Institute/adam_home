@@ -3,10 +3,10 @@ import sys
 sys.path.append('..')
 
 from adam import Service
-from adam import Batch
+from adam import Batch2
 from adam import PropagationParams
 from adam import OpmParams
-from adam.batch_runner import BatchRunManager
+from adam import BatchRunManager
 
 import json
 import unittest
@@ -63,7 +63,7 @@ class BatchRunnerTest(unittest.TestCase):
             'object_id': 'TestObjId',
         })
         
-        return Batch(propagation_params, opm_params)
+        return Batch2(propagation_params, opm_params)
         
     def test_small_batch(self):
         num_batches = 3

@@ -4,7 +4,6 @@
 
 from datetime import datetime
 from tabulate import tabulate
-from adam.timer import Timer
 
 class Project(object):
     def __init__(self, uuid, parent=None, name=None, description=None):
@@ -56,8 +55,6 @@ class Projects(object):
         return projects
         
     def print_projects(self):
-        t = Timer()
-        t.start("print projects")
         projects = self._get_projects()
         
         for p in projects:
@@ -65,7 +62,6 @@ class Projects(object):
                 p['description'] = p['description'][:50] + "..."
         
         print(tabulate(projects, headers="keys", tablefmt="fancy_grid"))
-        t.stop()
 
     def get_project(self, uuid):
         if uuid is None:
