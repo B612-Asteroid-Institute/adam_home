@@ -123,6 +123,10 @@ class BatchRunnerTest(unittest.TestCase):
         self.assertEqual(b1.get_results(), results)
         
         batches.clear_expectations()
+    
+    def test_get_latest_statuses(self):
+        # TODO
+        pass
 
 if __name__ == '__main__':
     unittest.main()

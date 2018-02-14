@@ -869,4 +869,5 @@ class Batch(object):
             state_vector (list) - an array with 6 elements [rx, ry, rz, vx, vy, vz]
                                   [km, km/s]
         """
+        self._load_results()
         return self._batch.get_results().get_end_state_vector()
