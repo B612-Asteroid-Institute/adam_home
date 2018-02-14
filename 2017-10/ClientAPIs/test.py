@@ -1,6 +1,9 @@
 from adam import Auth
 from adam import RestRequests
 from adam import Batch
+from adam import Projects
+from adam import RestRequests
+from adam import AuthorizingRestProxy
 import time
 import os
 
@@ -11,7 +14,7 @@ tokenFile = os.getcwd() + '/token.txt'
 # Opening with "a+" instead of "r" creates the file if it doesn't exist.
 with open(tokenFile, "a+") as f:
     f.seek(0)
-    token = f.read()
+    token = f.readline().replace('\n', '')
 
 try:
     if not auth.authorize(token):
@@ -26,8 +29,16 @@ if auth.get_token() == "":
 else:
     print('Welcome, ' + auth.get_user())
     
-# If non-empty, auth.get_token() can now be used to authorize calls to other API methods.
-# TODO(laura): once Batch supports authorization, demonstrate use of token here.
+# auth.get_token() can now be used to authorize calls to other API methods.
+auth_rest = AuthorizingRestProxy(rest, auth.get_token())
+
+projects = Projects(auth_rest)
+project = projects.new_project('ffffffff-ffff-ffff-ffff-ffffffffffff', None, "parent")
+child = projects.new_project(project.get_uuid(), None, "child")
+print('Current projects, including newly-created parent and child:')
+projects.print_projects()
+projects.delete_project(child.get_uuid())
+projects.delete_project(project.get_uuid())
 
 state_vec = [130347560.13690618,
              -74407287.6018632,
