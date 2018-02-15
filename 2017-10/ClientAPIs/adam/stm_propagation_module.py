@@ -4,80 +4,43 @@
 """
 
 # General imports
-import time
-from datetime import datetime
 from copy import deepcopy
 import numdifftools as nd
 import numpy as np
 
 # Adam related imports
 from adam import Batch2
-from adam import PropagationParams
-from adam import OpmParams
 from adam import BatchRunManager
 
-# Constants
-ISO8601Z = "%Y-%m-%dT%H:%M:%SZ"
-DECIMAL_ISO8601 = "%Y-%m-%dT%H:%M:%S.%f"
-
 class StmPropagationModule(object):
-    def __init__(self, batches_module, project):
+    def __init__(self, batches_module):
         self.batches_module = batches_module
-        self.project = project
     
     def __repr__(self):
-        return "StmPropagationModule in project %s" % (self.project)
+        return "StmPropagationModule"
 
-    def _batch_time_string_from_datetime(self, dtobj):
-        """Convert a datetime object into the format required  by ADAM batch
-    
-        Args:
-            dtobj (datetime.datetime) - a datetime in UTC
-
-        Returns:
-            decimal_iso_Z (str) - e.g. 2017-10-04T00:00:00.123456Z
-        """
-
-        decimal_iso_Z = dtobj.strftime(DECIMAL_ISO8601) + 'Z'
-        return decimal_iso_Z
-
-    def _propagate_states(self, state_vectors, epoch_time, end_time):
-        """Propagate states from one time to another
-
-        Assume state epoch is the same as integration start time
+    def _propagate_states(self, state_vectors, propagation_params, opm_params_templ):
+        """Propagate states using many initial state vectors.
 
         Args:
-            state_vectors (list of lists) - list of lists with 6 elements 
-                                            [rx, ry, rz, vx, vy, vz]  [km, km/s]
-            epoch_time (datetime.datetime) - epoch of state (UTC datetime)
-            end_time (datetime.datetime) - time at which to end the simulation
-                                            (UTC datetime)
+            state_vectors (list of lists):
+                list of lists with 6 elements [rx, ry, rz, vx, vy, vz]  [km, km/s]
+            propagation_params (PropagationParams):
+                propagation-related parameters to be used for all propagations
+            opm_params_templ (OpmParams):
+                opm-related parameters to be used for all propagations, once with each
+                of the given state vectors.
 
         Returns:
-            end_state_vectors (list of lists) - states at end of integration
-                                                [rx, ry, rz, vx, vy, vz]  [km, km/s]
+            end_state_vectors (list of lists):
+                states at end of integration [rx, ry, rz, vx, vy, vz]  [km, km/s]
         """
-    
-        # Convert times to strings    
-        epoch_time_str = self._batch_time_string_from_datetime(epoch_time)
-        start_time_str = epoch_time_str
-        end_time_str = self._batch_time_string_from_datetime(end_time)
-        print("Propagating %i states to propagate from %s to %s" %
-              (len(state_vectors), start_time_str, end_time_str))
-    
+
         # Create batches from state vectors
-        propagation_params = PropagationParams({
-            'start_time': start_time_str,
-            'end_time': end_time_str,
-            'project_uuid': self.project,
-        })
-        
         batches = []
         for state_vector in state_vectors:
-            opm_params = OpmParams({
-                'epoch': epoch_time_str,
-                'state_vector': state_vector,
-            })
+            opm_params = deepcopy(opm_params_templ)
+            opm_params.set_state_vector(state_vector)
             batches.append(Batch2(propagation_params, opm_params))
 
         # submit batches and wait till they finish running  
@@ -148,9 +111,31 @@ class StmPropagationModule(object):
 
         return (yk, dy_dx_matrix)
     
-    def run_stm_propagation(self, state_vec, start_time, end_time):
+    def run_stm_propagation(self, propagation_params, opm_params):
+        """ Generates a state transition matrix for the propagation described by the
+            given parameters. Does so by nudging the state vector given in opm_params
+            in several different directions and combining the results of propagating
+            with the slightly different state vectors.
+            
+            Args:
+                propagation_params (PropagationParams):
+                    Propagation-related parameters for the STM propagations
+                opm_params (OpmParams):
+                    OPM-related parameters for the propagations, including the nominal
+                    state vector that will be varied.
+            
+            Returns:
+                end_state (list):
+                    Final state vector of nominal propagation [rx, ry, rz, vx, vy, vz] 
+                    [km, km/s]
+                stm (matrix):
+                    STM describing effect of changes to initial state on final state
+        """
         end_state, stm = self._evaluate_func_with_derivative(
-            state_vec, self._propagate_states, start_time, end_time
+            opm_params.get_state_vector(),
+            self._propagate_states,
+            propagation_params,
+            opm_params
         )
         
         return end_state, stm

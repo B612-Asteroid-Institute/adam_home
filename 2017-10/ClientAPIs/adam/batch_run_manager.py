@@ -88,12 +88,13 @@ class BatchRunManager(object):
         self.cached_status = status
         self.status_lock.release()
     
-    def submit(self):
+    def _submit(self):
         if self.do_timing:
             self.timer.start("Submitting %s runs." % (len(self.batch_runs)))
         
         if not self.state == State.INITIALIZED:
             print("Error: runs already submitted, cannot resubmit.")
+            self.timer.stop()
             return
         
         # Batch runs are most efficient when submitted in a single call because of the
@@ -138,7 +139,7 @@ class BatchRunManager(object):
         
         self.state = State.SUBMITTED
 
-    def update_state(self):
+    def _update_state(self):
         """ Updates the state of all batch runs managed by this object. When finished
             updating batch run state, sets the state of this object to COMPLETED if all
             managed runs are in a final state (COMPLETED or FAILED).
@@ -167,7 +168,7 @@ class BatchRunManager(object):
         
         self._update_cached_status()
     
-    def wait_for_completion(self):
+    def _wait_for_completion(self):
         """ Waits for the completion of all the batches managed by this object. When this 
             returns, all managed batches are guaranteed to be in a final state 
             (COMPLETED or FAILED).
@@ -176,12 +177,12 @@ class BatchRunManager(object):
             self.timer.start("Running.")
             
         while self.state != State.COMPLETED:
-            self.update_state()
+            self._update_state()
         
         if self.do_timing:
             self.timer.stop()
     
-    def get_results(self):
+    def _get_results(self):
         if self.do_timing:
             self.timer.start("Retrieving propagation results.")
         
@@ -203,8 +204,8 @@ class BatchRunManager(object):
             self.timer.stop()
             
     def run(self):
-        self.submit()
-        self.wait_for_completion()
-        self.get_results()
+        self._submit()
+        self._wait_for_completion()
+        self._get_results()
 
         
