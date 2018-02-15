@@ -159,6 +159,12 @@ class OpmParams(object):
     def __repr__(self):
         return "OpmParams: %s" % self.generate_opm()
     
+    def get_state_vector(self):
+        return self._state_vector
+    
+    def set_state_vector(self, state_vector):
+        self._state_vector = state_vector
+    
     def generate_opm(self):
         """Generate an OPM string
 

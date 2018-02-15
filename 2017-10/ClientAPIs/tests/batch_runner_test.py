@@ -20,7 +20,6 @@ class BatchRunnerTest(unittest.TestCase):
     """
     def setUp(self):
         self.service = Service()
-#         self.assertTrue(self.service.setup("http://localhost:8080/_ah/api/adam/v1", "1KT0bImQ83b2vEhDwPF0PZevYu92"))
         self.assertTrue(self.service.setup_with_test_account(prod=False))
 
     def tearDown(self):

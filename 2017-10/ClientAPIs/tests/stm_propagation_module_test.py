@@ -2,6 +2,8 @@
 import sys
 sys.path.append('..')
 
+from adam import PropagationParams
+from adam import OpmParams
 from adam import Service
 from adam import StmPropagationModule
 
@@ -18,9 +20,7 @@ class StmPropagationModuleTest(unittest.TestCase):
     def setUp(self):
         self.service = Service()
         self.assertTrue(self.service.setup_with_test_account(prod=False))
-        self.stm_module = StmPropagationModule(
-            self.service.get_batches_module(), 
-            self.service.get_working_project().get_uuid())
+        self.stm_module = StmPropagationModule(self.service.get_batches_module())
 
     def tearDown(self):
         self.service.teardown()
@@ -35,10 +35,21 @@ class StmPropagationModuleTest(unittest.TestCase):
     
         start_time = datetime.datetime(2017, 10, 4, 0, 0, 0 , 123456)
         end_time = datetime.datetime(2018, 10, 4, 0, 0, 0 , 123456)
-
+        
+        propagation_params = PropagationParams({
+            'start_time': start_time.isoformat() + 'Z',
+            'end_time': end_time.isoformat() + 'Z',
+            'project_uuid': self.service.get_working_project().get_uuid(),
+            'description': 'Created by test at ' + start_time.isoformat() + 'Z'
+        })
+        
+        opm_params = OpmParams({
+            'epoch': start_time.isoformat() + 'Z',
+            'state_vector': state_vec,
+        })
         
         end_state, stm = self.stm_module.run_stm_propagation(
-            state_vec, start_time, end_time)
+            propagation_params, opm_params)
 
         # Taken from printed output of ../state_stm_propagation.py
         expected_end_state = np.array([-37523497.931654416, 492950622.8491298, 204482176.63445434, -11.336957217854795, 7.18499733419028, 3.3597496059480085])
