@@ -16,8 +16,6 @@ class PermissionsTest(unittest.TestCase):
     
     """
     def _clean_up(self):
-        permissions = self.service.get_permissions_module()
-        
         # Clean up all the groups. This should automatically clean up any permissions
         # associated with them.
         groups = self.service.get_groups_module()
@@ -204,7 +202,7 @@ class PermissionsTest(unittest.TestCase):
         
         # Can't inspect nonexistent things either.
         with self.assertRaises(RuntimeError):
-            permission.get_group_permissions('not a group')
+            permissions.get_group_permissions('not a group')
         
         groups.delete_group(group1.get_uuid())
 
