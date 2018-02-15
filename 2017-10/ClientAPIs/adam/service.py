@@ -7,6 +7,7 @@ from adam.batch import Batch
 from adam.batch import Batches
 from adam.batch_runner import BatchRunner
 from adam.group import Groups
+from adam.permission import Permissions
 from adam.project import Projects
 from adam.timer import Timer
 from adam.rest_proxy import RestRequests
@@ -55,6 +56,7 @@ class Service():
         self.projects = Projects(self.rest)
         self.batches = Batches(self.rest)
         self.groups = Groups(self.rest)
+        self.permissions = Permissions(self.rest)
         
         # Also sets up a project to work in.
         self.project = self.projects.new_project(parent_project, None,
@@ -83,6 +85,9 @@ class Service():
     
     def get_groups_module(self):
         return self.groups
+    
+    def get_permissions_module(self):
+        return self.permissions
     
     def get_batch_runner(self):
         return self.batch_runner
