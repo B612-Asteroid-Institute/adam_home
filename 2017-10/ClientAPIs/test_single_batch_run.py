@@ -44,7 +44,7 @@ projects.delete_project(project.get_uuid())
 
 # Example inputs
 
-# 6x1 state vector (position, velocity)
+# 6x1 state vector (position [km], velocity [km/s])
 state_vec = [130347560.13690618,
              -74407287.6018632,
              -35247598.541470632,
@@ -80,7 +80,7 @@ batch_run.set_state_vector('2017-10-04T00:00:00.000Z', state_vec)       # set ep
 # batch_run.set_object_id('test1234')                                      # set object ID
 # batch_run.set_description('some description')                            # set description of run
 
-# Generate OPM from set parameters above and submit job
+# Generate OPM and submit batch
 print("\n")
 print("Initial state: %s\n" % batch_run)
 print
@@ -95,10 +95,13 @@ while not batch_run.is_ready():
     print("Waiting...")
     time.sleep(5)
 
-# Get final parts count and ephemeris of first part
+# Get final parts count
 part_count = batch_run.get_parts_count()
 print("Final state %s, part count %s\n" % (batch_run.get_calc_state(), part_count))
-eph = batch_run.get_part_ephemeris(1)
+
+# Get ephemeris of specified part
+part_to_get = 1
+eph = batch_run.get_part_ephemeris(part_to_get)
 print("Ephemeris:")
 print(eph)
 
