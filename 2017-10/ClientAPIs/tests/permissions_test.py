@@ -204,6 +204,10 @@ class PermissionsTest(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             permissions.get_group_permissions('not a group')
         
+        # Not permitted to inspect other users.
+        with self.assertRaises(RuntimeError):
+            permissions.get_my_permissions(user_superuser_only="some other user")
+        
         groups.delete_group(group1.get_uuid())
 
 

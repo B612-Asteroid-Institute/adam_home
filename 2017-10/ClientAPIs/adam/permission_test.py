@@ -115,6 +115,16 @@ class PermissionsTest(unittest.TestCase):
         ps = permissions.get_my_permissions()
         self.assertEqual(ps, {'': [Permission('ADMIN', 'PROJECT', 'id')]})
             
+    def test_get_your_permissions(self):
+        rest = _RestProxyForTest()
+        permissions = Permissions(rest)
+        
+        rest.expect_get('/user_permission/other_user?recursive=true', 200,
+            {'': [{'right': 'ADMIN', 'target_type': 'PROJECT', 'target_id': 'id'}]})
+        
+        ps = permissions.get_my_permissions(user_superuser_only='other_user')
+        self.assertEqual(ps, {'': [Permission('ADMIN', 'PROJECT', 'id')]})
+            
     def test_get_group_permissions(self):
         rest = _RestProxyForTest()
         permissions = Permissions(rest)

@@ -95,8 +95,12 @@ class Permissions(object):
         if code != 204:
             raise RuntimeError("Server status code: %s" % (code))
         
-    def get_my_permissions(self):
-        code, response = self._rest.get("/user_permission?recursive=true")
+    def get_my_permissions(self, user_superuser_only=None):
+        url = "/user_permission?recursive=true"
+        if user_superuser_only is not None:
+            url = "/user_permission/%s?recursive=true" % (user_superuser_only)
+            
+        code, response = self._rest.get(url)
         
         if code != 200:
             raise RuntimeError("Server status code: %s" % (code))
@@ -107,8 +111,8 @@ class Permissions(object):
         
         return permissions
     
-    def print_my_permissions(self):
-        permissions = self.get_my_permissions()
+    def print_my_permissions(self, user_superuser_only=None):
+        permissions = self.get_my_permissions(user_superuser_only)
         
         table = []
         for k in permissions:
