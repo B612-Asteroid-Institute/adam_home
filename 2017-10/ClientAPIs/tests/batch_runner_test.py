@@ -12,7 +12,7 @@ import json
 import unittest
 import datetime
 
-import os
+import numpy.testing as npt
 
 class BatchRunnerTest(unittest.TestCase):
     """Integration test of batch running.
@@ -71,9 +71,24 @@ class BatchRunnerTest(unittest.TestCase):
         batches = [self.new_dummy_batch(duration) for i in range(num_batches)]
         
         runner = BatchRunManager(self.service.get_batches_module(), batches)
-        print(runner)
         runner.run()
-        print(runner.get_latest_statuses())
+        statuses = runner.get_latest_statuses()
+        self.assertEqual(0, len(statuses['PENDING']))
+        self.assertEqual(0, len(statuses['RUNNING']))
+        self.assertEqual(num_batches, len(statuses['COMPLETED']))
+        self.assertEqual(0, len(statuses['FAILED']))
+        
+        end_state_vec = [-37535741.96415495,
+                         492953227.1713997,
+                         204483503.94517875,
+                         -11.337510170756701,
+                         7.185009462698965,
+                         3.3597614338244766]
+        for batch in batches:
+            npt.assert_allclose(end_state_vec,
+                                batch.get_results().get_end_state_vector(),
+                                rtol=1e-6,
+                                atol=0)
         
 
 if __name__ == '__main__':

@@ -48,7 +48,7 @@ class Batch(object):
             Printable representation of uuid and calc state (str)
         """
         return repr(self._batch)
-        
+
     def set_description(self, description):
         """Sets the description of the run
         This function sets the description of the propagated run
@@ -224,31 +224,24 @@ class Batch(object):
         """
         self._batch.get_propagation_params()._propagator_uuid = propagator_uuid
     
-    def set_uuid_for_testing(self, uuid):
+    def _ensure_state_summary_for_testing(self):
         if self._batch.get_state_summary() is None:
             # Hack for testing. Don't imitate this.
             self._batch.set_state_summary(StateSummary({
                 'uuid': None,
                 'calc_state': None
             }))
+
+    def set_uuid_for_testing(self, uuid):
+        self._ensure_state_summary_for_testing()
         self._batch.get_state_summary()._uuid = uuid
         
     def set_calc_state_for_testing(self, calc_state):
-        if self._batch.get_state_summary() is None:
-            # Hack for testing. Don't imitate this.
-            self._batch.set_state_summary(StateSummary({
-                'uuid': None,
-                'calc_state': None
-            }))
+        self._ensure_state_summary_for_testing()
         self._batch.get_state_summary()._calc_state = calc_state
     
     def set_parts_count_for_testing(self, parts_count):
-        if self._batch.get_state_summary() is None:
-            # Hack for testing. Don't imitate this.
-            self._batch.set_state_summary(StateSummary({
-                'uuid': None,
-                'calc_state': None
-            }))
+        self._ensure_state_summary_for_testing()
         self._batch.get_state_summary()._parts_count = parts_count
         
     def set_epoch_for_testing(self, epoch):
