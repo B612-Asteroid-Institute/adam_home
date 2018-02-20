@@ -251,7 +251,7 @@ class BatchTest(unittest.TestCase):
         batch.set_state_vector('CCC', [1, 2, 3, 4, 5, 6])
 
         # Set batch attribute (field) to None
-        setattr(batch, field, None)
+        getattr(batch, 'set' + field)(None)
 
         # Assert that a missing field will return a KeyError with batch submission
         with self.assertRaises(KeyError):
@@ -265,7 +265,7 @@ class BatchTest(unittest.TestCase):
         """
 
         # Loop through all batch attributes and verify each raises a KeyError
-        for f in ['_start_time', '_end_time', '_epoch', '_state_vector']:
+        for f in ['_start_time', '_end_time', '_epoch_for_testing', '_state_vector_for_testing']:
             self._verify_params(f)
 
     def test_is_ready_not_found(self):
@@ -288,7 +288,7 @@ class BatchTest(unittest.TestCase):
         batch = Batch(rest)
 
         # Set UUID
-        batch._uuid = uuid
+        batch.set_uuid_for_testing(uuid)
 
         # Assert that the job does not show as ready
         self.assertFalse(batch.is_ready())
@@ -313,7 +313,7 @@ class BatchTest(unittest.TestCase):
         batch = Batch(rest)
 
         # Set UUID
-        batch._uuid = uuid
+        batch.set_uuid_for_testing(uuid)
 
         # Assert that a RuntimeError is raised when checking if it is ready
         with self.assertRaises(RuntimeError):
@@ -351,13 +351,13 @@ class BatchTest(unittest.TestCase):
         rest = _RestProxyForTest()
 
         # Set expected 'GET' request with calc_state as 'RUNNING'
-        rest.expect_get('/batch/' + uuid, 200, {'calc_state' : 'RUNNING', 'parts_count': 5})
+        rest.expect_get('/batch/' + uuid, 200, {'uuid': uuid, 'calc_state' : 'RUNNING', 'parts_count': 5})
 
         # Initiate Batch class
         batch = Batch(rest)
 
         # Set UUID
-        batch._uuid = uuid
+        batch.set_uuid_for_testing(uuid)
 
         # Assert that checking if the batch is ready will return False
         self.assertFalse(batch.is_ready())
@@ -380,14 +380,13 @@ class BatchTest(unittest.TestCase):
 
         # Set expected 'GET' request with calc_state as 'COMPLETED'
         rest.expect_get('/batch/' + uuid, 200,
-                        {'calc_state': 'COMPLETED', 'parts_count': 42, 'summary': "ZQZ",
-                         'error': 'No error!'})
+                        {'uuid': uuid, 'calc_state': 'COMPLETED', 'parts_count': 42, 'summary': "ZQZ", 'error': 'No error!'})
 
         # Initiate Batch class
         batch = Batch(rest)
 
         # Set UUID
-        batch._uuid = uuid
+        batch.set_uuid_for_testing(uuid)
 
         # Assert that checking if the batch is ready will return True
         self.assertTrue(batch.is_ready())
@@ -413,14 +412,13 @@ class BatchTest(unittest.TestCase):
 
         # Set expected 'GET' request with calc_state as 'FAILED'
         rest.expect_get('/batch/' + uuid, 200,
-                        {'calc_state': 'FAILED', 'parts_count': 42, 'summary': "ZQZ",
-                         'error': 'No error!'})
+                        {'uuid': uuid, 'calc_state': 'FAILED', 'parts_count': 42, 'summary': "ZQZ", 'error': 'No error!'})
 
         # Initiate Batch class
         batch = Batch(rest)
 
         # Set UUID
-        batch._uuid = uuid
+        batch.set_uuid_for_testing(uuid)
 
         # Assert that checking if the batch is ready will return True
         self.assertTrue(batch.is_ready())
@@ -441,22 +439,23 @@ class BatchTest(unittest.TestCase):
         # Dummy UUID and part number for testing
         uuid = 'BLAH'
         part = 3
+        num_parts = 10
 
         # Use REST proxy for testing
         rest = _RestProxyForTest()
 
         # Set expected 'GET' request with calc_state as 'COMPLETED' for specific part
-        rest.expect_get('/batch/' + uuid + '/' + str(part), 200,
-                            {'calc_state': 'COMPLETED', 'error': 'No error!', 'stk_ephemeris': 'something',
-                             'part_index': part})
+        for i in range(1, num_parts + 1):
+            rest.expect_get('/batch/' + uuid + '/' + str(i), 200,
+                                {'calc_state': 'COMPLETED', 'error': 'No error!', 'stk_ephemeris': 'something', 'part_index': i})
 
         # Initiate Batch class
         batch = Batch(rest)
 
         # Set UUID, parts count, and overall calc state (as 'COMPLETED')
-        batch._uuid = uuid
-        batch._parts_count = 10
-        batch._calc_state = 'COMPLETED'
+        batch.set_uuid_for_testing(uuid)
+        batch.set_parts_count_for_testing(num_parts)
+        batch.set_calc_state_for_testing('COMPLETED')
 
         # Assert that an overall calc state as 'COMPLETED' will return the expected ephemeris
         self.assertEqual(batch.get_part_ephemeris(part), 'something')
@@ -480,21 +479,23 @@ class BatchTest(unittest.TestCase):
         # Dummy UUID and part number for testing
         uuid = 'BLAH'
         part = 3
+        num_parts = 10
 
         # Use REST proxy for testing
         rest = _RestProxyForTest()
 
-        # Set expected 'GET' request with calc_state as 'RUNNING'
-        rest.expect_get('/batch/' + uuid + '/' + str(part), 200,
-                        {'calc_state': 'RUNNING', 'part_index': part})
+        # Set expected 'GET' requests with calc_states as 'RUNNING'
+        for i in range(1, num_parts + 1):
+            rest.expect_get('/batch/' + uuid + '/' + str(i), 200,
+                            {'calc_state': 'RUNNING', 'part_index': i})
 
         # Initiate Batch class
         batch = Batch(rest)
 
         # Set UUID, parts count, and overall calc state (as 'RUNNING')
-        batch._uuid = uuid
-        batch._parts_count = 10
-        batch._calc_state = 'RUNNING'
+        batch.set_uuid_for_testing(uuid)
+        batch.set_parts_count_for_testing(num_parts)
+        batch.set_calc_state_for_testing('RUNNING')
 
         # Assert that checking if the part is ready will return False
         self.assertFalse(batch.is_ready_part(part))
@@ -510,21 +511,23 @@ class BatchTest(unittest.TestCase):
         # Dummy UUID and part number for testing
         uuid = 'BLAH'
         part = 3
+        num_parts = 10
 
         # Use REST proxy for testing
         rest = _RestProxyForTest()
 
-        # Set expected 'GET' request with calc_state as 'FAILED'
-        rest.expect_get('/batch/' + uuid + '/' + str(part), 200,
-                        {'calc_state': 'FAILED', 'error': 'Some error', 'part_index': part})
+        # Set expected 'GET' requests with calc_state as 'FAILED'
+        for i in range(1, num_parts + 1):
+            rest.expect_get('/batch/' + uuid + '/' + str(i), 200,
+                            {'calc_state': 'FAILED', 'error': 'Some error', 'part_index': i})
 
         # Initiate Batch class
         batch = Batch(rest)
 
         # Set UUID, parts count, and overall calc state (as 'FAILED')
-        batch._uuid = uuid
-        batch._parts_count = 10
-        batch._calc_state = 'FAILED'
+        batch.set_uuid_for_testing(uuid)
+        batch.set_parts_count_for_testing(num_parts)
+        batch.set_calc_state_for_testing('FAILED')
 
         # Assert that the calc state for the specific part's run is as expected
         self.assertEqual(batch.get_part_state(part), 'FAILED')
@@ -544,6 +547,7 @@ class BatchTest(unittest.TestCase):
         # Dummy UUID and part number for testing
         uuid = 'BLAH'
         part = 15
+        num_parts = 10
 
         # Use REST proxy for testing
         rest = _RestProxyForTest()
@@ -552,9 +556,9 @@ class BatchTest(unittest.TestCase):
         batch = Batch(rest)
 
         # Set UUID, parts count, and overall calc state (as 'RUNNING')
-        batch._uuid = uuid
-        batch._parts_count = 10
-        batch._calc_state = 'COMPLETED'
+        batch.set_uuid_for_testing(uuid)
+        batch.set_parts_count_for_testing(10)
+        batch.set_calc_state_for_testing('COMPLETED')
 
         # Assert that a part outside its range will return an IndexError
         with self.assertRaises(IndexError):
@@ -571,20 +575,22 @@ class BatchTest(unittest.TestCase):
         # Dummy UUID and part number for testing
         uuid = 'BLAH'
         part = 3
+        num_parts = 10
 
         # Use REST proxy for testing
         rest = _RestProxyForTest()
 
-        # Set expected 'GET' request with 404 error
-        rest.expect_get('/batch/' + uuid + '/' + str(part), 404, {})
+        # Set expected 'GET' requests with 404 error
+        for i in range(1, num_parts + 1):
+            rest.expect_get('/batch/' + uuid + '/' + str(i), 404, {})
 
         # Initiate Batch class
         batch = Batch(rest)
 
         # Set UUID, parts count, and overall calc state (as 'RUNNING')
-        batch._uuid = uuid
-        batch._parts_count = 10
-        batch._calc_state = 'COMPLETED'
+        batch.set_uuid_for_testing(uuid)
+        batch.set_parts_count_for_testing(10)
+        batch.set_calc_state_for_testing('COMPLETED')
 
         # Assert that a 404 error code will raise a RuntimeError
         with self.assertRaises(RuntimeError):
