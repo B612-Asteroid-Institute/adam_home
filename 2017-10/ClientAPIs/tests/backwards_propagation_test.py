@@ -71,7 +71,6 @@ class BatchRunnerTest(unittest.TestCase):
         batch = self.make_batch(state_vec, now, later)
         runner = BatchRunManager(self.service.get_batches_module(), [batch])
         runner.run()
-        print(runner.get_latest_statuses())
         forward_end_state = batch.get_results().get_end_state_vector()
         print("Final state at %s" % forward_end_state)
         
@@ -79,7 +78,6 @@ class BatchRunnerTest(unittest.TestCase):
         batch = self.make_batch(forward_end_state, later, now)
         runner = BatchRunManager(self.service.get_batches_module(), [batch])
         runner.run()
-        print(runner.get_latest_statuses())
         backwards_end_state = batch.get_results().get_end_state_vector()
         print("Final state at %s" % backwards_end_state)
         
