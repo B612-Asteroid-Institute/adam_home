@@ -87,7 +87,7 @@ class BatchRunnerTest(unittest.TestCase):
         for batch in batches:
             npt.assert_allclose(end_state_vec,
                                 batch.get_results().get_end_state_vector(),
-                                rtol=1e-6,
+                                rtol=1e-5,
                                 atol=0)
         
 
