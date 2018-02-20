@@ -23,10 +23,9 @@ class BatchRunManager(object):
     Class for managing the state and propagation of a set of batch propagations.
     Responsible for submitting them, tracking and exposing their status during 
     propagation, and retrieving their results.
-            
+
     WARNING: this module is not thread-safe. The only supported simultaneous operation
-    is calling get_latest_statuses() while a call to update_state(), wait_for_completion()
-    or run() is ongoing.
+    is calling get_latest_statuses() while a call to run() is ongoing.
     """
     
     def __init__(self, batches_module, batch_runs, do_timing=True, multi_threaded=True):
