@@ -10,6 +10,8 @@ from adam.batch2 import OpmParams
 from adam.batch2 import Batches
 from adam.batch_run_manager import BatchRunManager
 from adam.group import Groups
+from adam.permission import Permission
+from adam.permission import Permissions
 from adam.project import Projects
 from adam.service import Service
 from adam.rest_proxy import RestRequests
