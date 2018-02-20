@@ -11,7 +11,11 @@ import numdifftools as nd
 import numpy as np
 
 # Adam related imports
+from adam import Batches
 from adam import Batch
+from adam import PropagationParams
+from adam import OpmParams
+from adam import BatchRunManager
 from adam import RestRequests
 
 # Constants
@@ -30,49 +34,6 @@ def batch_time_string_from_datetime(dtobj):
 
     decimal_iso_Z = dtobj.strftime(DECIMAL_ISO8601) + 'Z'
     return decimal_iso_Z
-
-def submit_batches(batches, sleep_s=5):
-    """Submit batches and wait till they are all ready
-
-    Args:
-        batches (list) - list of adam.Batch
-        sleep_s (float) - time to wait between checks of batch readiness
-
-    Retuns:
-        True - when successful
-    """
-
-    batches_count = len(batches)
-    batches_ready = []
-
-    end_state_vectors = []
-
-    # submit all batches
-    start_timer = time.time()
-    for batch in batches:
-        batch.submit()
-    end_timer = time.time()
-    print("Submitting %i batches took %.2f seconds" %
-           (batches_count, end_timer - start_timer))
-
-    # check that they are ready
-    # TODO: There's got to be a smarter way to check...
-    start_timer = time.time()
-    while len(batches_ready) < batches_count:
-        # sleep first and then check 
-        time.sleep(sleep_s)
-        for ctr, batch in enumerate(batches):
-            # Check if this is already ready
-            if ctr in batches_ready:
-                continue
-            if batch.is_ready():
-                batches_ready.append(ctr)
-                print("Batch %i ready" % ctr)
-    end_timer = time.time()
-    print("Propagating %i batches took %.2f seconds after submission" %
-           (batches_count, end_timer - start_timer))
-
-    return True
 
 def propagate_states(state_vectors, epoch_time, end_time):
     """Propagate states from one time to another
@@ -97,26 +58,32 @@ def propagate_states(state_vectors, epoch_time, end_time):
     end_time_str = batch_time_string_from_datetime(end_time)
     print("Propagating %i states to propagate from %s to %s" %
           (len(state_vectors), start_time_str, end_time_str))
+          
+    url = "https://pro-equinox-162418.appspot.com/_ah/api/adam/v1"
+    rest = RestRequests(url)
+    batches_module = Batches(rest)
     
     # Create batches from statevectors
     batches = []
-    url = "https://pro-equinox-162418.appspot.com/_ah/api/adam/v1"
-    rest = RestRequests(url)
+    propagation_params = PropagationParams({
+        'start_time': start_time_str,
+        'end_time': end_time_str,
+        'project_uuid': 'ffffffff-ffff-ffff-ffff-ffffffffffff'
+    })
     for state_vector in state_vectors:
-        batch = Batch(rest)
-        batch.set_state_vector(epoch_time_str, state_vector)
-        batch.set_start_time(start_time_str)
-        batch.set_end_time(end_time_str)
-        batch.set_project('ffffffff-ffff-ffff-ffff-ffffffffffff')
-        batches.append(batch)
+        opm_params = OpmParams({
+            'epoch': start_time_str,
+            'state_vector': state_vector
+        })
+        batches.append(Batch(propagation_params, opm_params))
 
     # submit batches and wait till they finish running   
-    submit_batches(batches)
+    BatchRunManager(batches_module, batches).run()
 
     # Get final states
     end_state_vectors = []
     for batch in batches:
-        end_state_vectors.append(batch.get_end_state_vector())
+        end_state_vectors.append(batch.get_results().get_end_state_vector())
 
     return end_state_vectors
 
