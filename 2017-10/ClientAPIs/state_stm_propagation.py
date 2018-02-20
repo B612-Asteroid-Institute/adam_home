@@ -12,6 +12,7 @@ import numpy as np
 
 # Adam related imports
 from adam import Batch
+from adam import RestRequests
 
 # Constants
 ISO8601Z = "%Y-%m-%dT%H:%M:%SZ"
@@ -99,11 +100,14 @@ def propagate_states(state_vectors, epoch_time, end_time):
     
     # Create batches from statevectors
     batches = []
+    url = "https://pro-equinox-162418.appspot.com/_ah/api/adam/v1"
+    rest = RestRequests(url)
     for state_vector in state_vectors:
-        batch = Batch()
+        batch = Batch(rest)
         batch.set_state_vector(epoch_time_str, state_vector)
         batch.set_start_time(start_time_str)
         batch.set_end_time(end_time_str)
+        batch.set_project('ffffffff-ffff-ffff-ffff-ffffffffffff')
         batches.append(batch)
 
     # submit batches and wait till they finish running   

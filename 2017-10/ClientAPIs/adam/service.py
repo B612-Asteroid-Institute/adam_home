@@ -3,9 +3,7 @@
 """
 
 from adam.auth import Auth
-from adam.batch import Batch
-from adam.batch import Batches
-from adam.batch_runner import BatchRunner
+from adam.batch2 import Batches
 from adam.group import Groups
 from adam.permission import Permissions
 from adam.project import Projects
@@ -41,9 +39,11 @@ class Service():
         timer = Timer()
         timer.start("Setup")
         
+        self.parent_project = parent_project
+        
         rest = RestRequests(url)
         self.auth = Auth(rest)
-            
+        
         if not self.auth.authorize(token):
             # Try one more time, since often the error is a session expired error and
             # seems to work fine on the second try.
@@ -62,8 +62,6 @@ class Service():
         self.project = self.projects.new_project(parent_project, None,
             "Test project created at " + str(datetime.datetime.now()))
         print("Set up project with uuid " + self.project.get_uuid())
-        
-        self.batch_runner = BatchRunner(self.batches, self.project)
         
         timer.stop()
         return True
@@ -88,9 +86,6 @@ class Service():
     
     def get_permissions_module(self):
         return self.permissions
-    
-    def get_batch_runner(self):
-        return self.batch_runner
     
     def get_rest(self):
         # Note, this is only necessary because batches are currently more than pure data
