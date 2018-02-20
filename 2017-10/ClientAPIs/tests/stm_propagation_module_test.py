@@ -19,7 +19,7 @@ class StmPropagationModuleTest(unittest.TestCase):
     """
     def setUp(self):
         self.service = Service()
-        self.assertTrue(self.service.setup_with_test_account(prod=False))
+        self.assertTrue(self.service.setup_with_test_account())
         self.stm_module = StmPropagationModule(self.service.get_batches_module())
 
     def tearDown(self):

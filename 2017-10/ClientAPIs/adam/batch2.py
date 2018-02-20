@@ -466,7 +466,6 @@ class Batches(object):
             guaranteed to exist or to have an ephemeris.
         """
         if state_summary.get_parts_count() < 1:
-            ###### Is there a better way to communicate errors?
             print("Unable to retrieve results for batch with no parts")
             return None
             
