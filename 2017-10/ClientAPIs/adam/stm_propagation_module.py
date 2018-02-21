@@ -5,7 +5,6 @@
 
 # General imports
 from copy import deepcopy
-import numdifftools as nd
 import numpy as np
 
 # Adam related imports
