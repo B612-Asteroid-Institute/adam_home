@@ -3,7 +3,7 @@
 """
 
 from adam.auth import Auth
-from adam.batch2 import Batches
+from adam import Batches
 from adam.group import Groups
 from adam.permission import Permissions
 from adam.project import Projects
