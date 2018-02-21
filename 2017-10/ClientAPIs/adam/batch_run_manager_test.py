@@ -1,9 +1,9 @@
 from adam.batch_run_manager import BatchRunManager
-from adam.batch2 import Batch2
-from adam.batch2 import PropagationParams
-from adam.batch2 import OpmParams
-from adam.batch2 import StateSummary
-from adam.batch2 import PropagationResults
+from adam.batch import Batch
+from adam.batch import PropagationParams
+from adam.batch import OpmParams
+from adam.batch import StateSummary
+from adam.batch import PropagationResults
 
 import unittest
     
@@ -63,7 +63,7 @@ class MockBatches:
             raise AssertionError("Still expecting call to get_batch_states")
 
 def get_dummy_batch(project):
-    return Batch2(PropagationParams({
+    return Batch(PropagationParams({
         'start_time': 'today',
         'end_time': 'tomorrow',
         'project_uuid': project

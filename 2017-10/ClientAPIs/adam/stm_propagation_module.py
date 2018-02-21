@@ -9,7 +9,7 @@ import numdifftools as nd
 import numpy as np
 
 # Adam related imports
-from adam import Batch2
+from adam import Batch
 from adam import BatchRunManager
 
 class StmPropagationModule(object):
@@ -41,7 +41,7 @@ class StmPropagationModule(object):
         for state_vector in state_vectors:
             opm_params = deepcopy(opm_params_templ)
             opm_params.set_state_vector(state_vector)
-            batches.append(Batch2(propagation_params, opm_params))
+            batches.append(Batch(propagation_params, opm_params))
 
         # submit batches and wait till they finish running  
         runner = BatchRunManager(self.batches_module, batches)
