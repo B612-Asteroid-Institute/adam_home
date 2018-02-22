@@ -4,3 +4,6 @@ token.txt
 *.pyc
 *.ini
 *.spyproject*
+/*.egg-info
+/*.egg
+/dist/
