@@ -1,0 +1,5 @@
+numpy
+requests
+tabulate
+pytest
+pytest-cov
