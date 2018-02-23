@@ -1,6 +1,7 @@
 numpy
 requests
 tabulate
+pandas
 pytest
 pytest-cov
 coveralls
