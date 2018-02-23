@@ -1,4 +1,5 @@
 .ipynb_checkpoints
+.pytest_cache/
 token.txt
 .cache/
 *.pyc
