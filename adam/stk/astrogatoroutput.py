@@ -5,6 +5,8 @@
 import numpy as np
 import pandas as pd
 
+__all__ = ["AstrogatorOutput"]
+
 class AstrogatorOutput:
     """Fetches output from an STK/Astrogator MCS
     
