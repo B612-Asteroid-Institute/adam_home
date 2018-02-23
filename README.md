@@ -7,7 +7,7 @@
 
 To install pre-requisite software using anaconda: 
 
-```conda install --file requirements.txt```
+```conda install -c defaults -c conda-forge --file requirements.txt```
 
 To install pre-requisite software using pip:
 
