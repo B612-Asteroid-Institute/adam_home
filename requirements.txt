@@ -3,3 +3,4 @@ requests
 tabulate
 pytest
 pytest-cov
+coveralls
