@@ -2,5 +2,5 @@
     __init__.py
 """
 
-from stk.astrogatoroutput import AstrogatorOutput
+from .astrogatoroutput import *
 from .io import *

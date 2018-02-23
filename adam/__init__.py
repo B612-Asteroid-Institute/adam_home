@@ -17,3 +17,4 @@ from adam.rest_proxy import RestRequests
 from adam.rest_proxy import AuthorizingRestProxy
 from adam.rest_proxy import LoggingRestProxy
 from adam.stm_propagation_module import StmPropagationModule
+from adam.stk import *
