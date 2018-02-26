@@ -9,7 +9,7 @@ from adam.permission import Permissions
 from adam.project import Projects
 from adam.timer import Timer
 from adam.rest_proxy import RestRequests
-from adam.rest_proxy import AuthorizingRestProxy
+from adam.rest_proxy import AuthenticatingRestProxy
 
 import datetime
 
@@ -19,49 +19,45 @@ class Service():
     dev setup.
 
     """
-    def __init__(self):
-        self.batch_runs = []
+    def __init__(self, config):
+        self.config = config
+        self.working_projects = []
     
-    def setup_with_test_account(self, prod=True):
-        # These tokens belong to b612.adam.test@gmail.com (b612adam) which has
-        # been given the permissions necessary to carry out various operations.
-        if prod:
-            token = "42MbDS0RbvVZF83aqXvapPvY6h62"
-            url = "https://pro-equinox-162418.appspot.com/_ah/api/adam/v1"
-            parent_project = "61c25677-c328-45c4-af22-a0a4d5e54826"
+    def new_working_project(self):
+        timer = Timer()
+        timer.start("Generate working project")
+        if self.config.get_workspace() != '':
+            project = self.projects.new_project(self.config.get_workspace(), None,
+                "Test project created at " + str(datetime.datetime.now()))
+            self.working_projects.append(project)
+            print("Set up project with uuid " + project.get_uuid())
+            timer.stop()
+            return project
         else:
-            token = "1YueO0qiWOTBJSZjdIynYTmJZDG3"
-            url = "https://adam-dev-193118.appspot.com/_ah/api/adam/v1"
-            parent_project = "88e2152d-e37e-437d-af88-65bca9374f34"
-        return self.setup(url, token, parent_project)
+            print("Workspace must be configured in order to use working projects (which live in the workspace).")
+            timer.stop()
+            return None
     
-    def setup(self, url, token, parent_project = None):
+    def setup(self):
         timer = Timer()
         timer.start("Setup")
         
-        self.parent_project = parent_project
-        
-        rest = RestRequests(url)
+        rest = RestRequests(self.config.get_url())
         self.auth = Auth(rest)
         
-        if not self.auth.authorize(token):
+        if not self.auth.authenticate(self.config.get_token()):
             # Try one more time, since often the error is a session expired error and
             # seems to work fine on the second try.
-            print("Encountered error, retrying authorization")
-            if not self.auth.authorize(token):
+            print("Encountered error, retrying authentication")
+            if not self.auth.authenticate(self.config.get_token()):
                 timer.stop()
                 return False
         
-        self.rest = AuthorizingRestProxy(rest, self.auth.get_token())
+        self.rest = AuthenticatingRestProxy(rest, self.config.get_token())
         self.projects = Projects(self.rest)
         self.batches = Batches(self.rest)
         self.groups = Groups(self.rest)
         self.permissions = Permissions(self.rest)
-        
-        # Also sets up a project to work in.
-        self.project = self.projects.new_project(parent_project, None,
-            "Test project created at " + str(datetime.datetime.now()))
-        print("Set up project with uuid " + self.project.get_uuid())
         
         timer.stop()
         return True
@@ -69,11 +65,10 @@ class Service():
     def teardown(self):
         timer = Timer()
         timer.start("Teardown")
-        self.projects.delete_project(self.project.get_uuid())
+        for project in self.working_projects:
+            print("Cleaning up working project %s..." % (project.get_uuid()))
+            self.projects.delete_project(project.get_uuid())
         timer.stop()
-    
-    def get_working_project(self):
-        return self.project
             
     def get_projects_module(self):
         return self.projects
@@ -86,10 +81,4 @@ class Service():
     
     def get_permissions_module(self):
         return self.permissions
-    
-    def get_rest(self):
-        # Note, this is only necessary because batches are currently more than pure data
-        # objects and therefore need a rest accessor (and aren't built here).
-        # Please don't use this extensively.
-        return self.rest
         
