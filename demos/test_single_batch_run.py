@@ -3,16 +3,16 @@ from adam import Batches
 from adam import BatchRunManager
 from adam import PropagationParams
 from adam import OpmParams
+from adam import ConfigManager
 from adam import Projects
 from adam import RestRequests
-from adam import AuthorizingRestProxy
+from adam import AuthenticatingRestProxy
 import time
 import os
 
-url = "https://pro-equinox-162418.appspot.com/_ah/api/adam/v1"
- # Reads your token from a file in current directory. For instructions on getting a token, see auth_demo notebook.
-token = open(os.getcwd() + '/token.txt').read()
-auth_rest = AuthorizingRestProxy(RestRequests(url), token)
+# Reads your config from a file in current directory. For instructions on setting this up, see config_demo notebook.
+config = ConfigManager(os.getcwd() + '/config.json').get_config()
+auth_rest = AuthenticatingRestProxy(RestRequests(config.get_url()), config.get_token())
 
 # Example inputs
 
@@ -38,7 +38,7 @@ propagation_params = PropagationParams({
     'start_time': '2017-10-04T00:00:00Z',   # propagation start time in ISO format
     'end_time': '2017-10-11T00:00:00Z',     # propagation end time in ISO format
 
-    'project_uuid': 'ffffffff-ffff-ffff-ffff-ffffffffffff',
+    'project_uuid': config.get_workspace(),
 
 #     'step_size': 60 * 60,  # step size (seconds)
 #     'propagator_uuid': '00000000-0000-0000-0000-000000000002',  # force model

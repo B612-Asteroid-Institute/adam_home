@@ -2,16 +2,16 @@ language: python
 sudo: false
 branches:
   only:
-    - master
+  - master
 python:
-  - "3.6"
-  
+- '3.6'
 install:
-  - pip install --upgrade setuptools
-  - pip install -r requirements.txt
-
-script: 
-  - py.test adam --cov=adam
-
+- pip install --upgrade setuptools
+- pip install -r requirements.txt
+script:
+- py.test adam --cov=adam
 after_success:
-  - coveralls
+- coveralls
+before_install:
+- openssl aes-256-cbc -K $encrypted_3633a9d4c228_key -iv $encrypted_3633a9d4c228_iv
+  -in test_config.json.enc -out config.json -d

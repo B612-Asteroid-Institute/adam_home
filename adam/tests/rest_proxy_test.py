@@ -1,17 +1,17 @@
 from adam import Auth
 from adam.rest_proxy import _RestProxyForTest
-from adam.rest_proxy import AuthorizingRestProxy
+from adam.rest_proxy import AuthenticatingRestProxy
 import unittest
 
-class AuthorizingRestProxyTest(unittest.TestCase):
-    """Unit tests for authorizing rest proxy.
+class AuthenticatingRestProxyTest(unittest.TestCase):
+    """Unit tests for authenticating rest proxy.
 
     """
 
     def test_post(self):
         rest = _RestProxyForTest()
         token = 'my_token'
-        auth_rest = AuthorizingRestProxy(rest, token)
+        auth_rest = AuthenticatingRestProxy(rest, token)
 
         expected_data = {}
         def check_input(data_dict):
@@ -31,7 +31,7 @@ class AuthorizingRestProxyTest(unittest.TestCase):
     def test_get(self):
         rest = _RestProxyForTest()
         token = 'my_token'
-        auth_rest = AuthorizingRestProxy(rest, token)
+        auth_rest = AuthenticatingRestProxy(rest, token)
         
         rest.expect_get("/test?token=my_token", 200, {})
         auth_rest.get("/test")
@@ -48,7 +48,7 @@ class AuthorizingRestProxyTest(unittest.TestCase):
         rest = _RestProxyForTest()
         # All the unsafe and reserved characters
         token = '; / ? : @ = &   < > # % { } | \ ^ ~ [ ]'
-        auth_rest = AuthorizingRestProxy(rest, token)
+        auth_rest = AuthenticatingRestProxy(rest, token)
         
         rest.expect_get("/test?a=1&b=2&token=%3B+%2F+%3F+%3A+%40+%3D+%26+++%3C+%3E"
             "+%23+%25+%7B+%7D+%7C+%5C+%5E+%7E+%5B+%5D", 200, {})
@@ -58,7 +58,7 @@ class AuthorizingRestProxyTest(unittest.TestCase):
         # DELETE behaves exactly like GET, so only the basics are tested.
         rest = _RestProxyForTest()
         token = 'my_token'
-        auth_rest = AuthorizingRestProxy(rest, token)
+        auth_rest = AuthenticatingRestProxy(rest, token)
         
         rest.expect_delete("/test?token=my_token", 200)
         auth_rest.delete("/test")

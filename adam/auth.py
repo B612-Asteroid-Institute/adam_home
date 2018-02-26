@@ -22,7 +22,7 @@ class Auth(object):
             None
 
         Returns:
-            A string describing the contents of this authorization object.
+            A string describing the contents of this authentication object.
         """
         return "Auth [token=" + self._token + ",email=" + self._email + "]"
     
@@ -30,7 +30,7 @@ class Auth(object):
         """Accessor for token.
         
         Returns:
-            Stored token. If accessed before call to authorize, will be empty.
+            Stored token. If accessed before call to authenticate, will be empty.
         """
         return self._token
     
@@ -38,7 +38,7 @@ class Auth(object):
         """Accessor for user email.
         
         Returns:
-            Stored user email. If accessed before call to authorize, will be empty.
+            Stored user email. If accessed before call to authenticate, will be empty.
         """
         return self._email
     
@@ -46,7 +46,7 @@ class Auth(object):
         """Accessor for logged in.
         
         Returns:
-            Stored logged in value. If accessed before call to authorize, will be False.
+            Stored logged in value. If accessed before call to authenticate, will be False.
         """
         return self._logged_in
         
@@ -64,7 +64,7 @@ class Auth(object):
         self._logged_in = False
         self._email = ''
     
-    def authorize(self, token):
+    def authenticate(self, token):
         """Checks whether the given token is valid. If so, updates this object to 
         hold information about the token's logged in user. If not, clears information
         from this object.
@@ -96,37 +96,3 @@ class Auth(object):
         else:
             self.__clear_attributes__()
             return False
-    
-    def authorize_from_file(self, filename):
-        """Reads the contents of the file by the given name as a token, then attempts
-        to authorize using that token. If successful, updates this object to 
-        hold information about the token's logged in user. If not, clears information
-        from this object.
-        
-        Returns:
-            Whether this object now reflects a valid user session.
-        """
-        token = ""
-        try:
-            with open(filename, "r") as f:
-                token = f.read()
-        except IOError:
-            return False
-
-        return self.authorize(token)
-    
-    def initial_authorization(self):
-        """Prompts the user to log in in the browser, then paste the generated token
-        back here. If the token generated is valid, updates this object to hold
-        information about the logged in user. If not, clears information from this object.
-        
-        Returns:
-            Whether this object now reflects a valid user session.
-        """
-        message = (
-            "Please visit http://pro-equinox-162418.appspot.com/token.html "
-            "in a browser. Please choose your method of authorization, then paste the "
-            "generated token here: ")
-        token = input(message)
-        
-        return self.authorize(token)
