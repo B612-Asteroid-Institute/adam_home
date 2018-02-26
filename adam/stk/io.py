@@ -4,11 +4,17 @@ import numpy as np
 STK_VERSION = "11.1"
 VERBOSE = True
 
-__all__ = ["createVectorFile","createSensorFile", "createIntervalFile", 
-           "convertPointingsToSensorInterval", "convertPointingsToVectorInterval"]
+__all__ = ["createVectorFile", 
+           "createSensorFile",
+           "createIntervalFile", 
+           "convertPointingsToSensorInterval",
+           "convertPointingsToVectorInterval"]
 
-def createVectorFile(fileName, exposureStart, exposureEnd, 
-                     ra, dec, epochStart,
+def createVectorFile(fileName,
+                     exposureStart,
+                     exposureEnd, 
+                     ra, dec,
+                     epochStart,
                      verbose=VERBOSE):
     """
     Builds an STK vector file given a series of sensor pointings.
@@ -64,8 +70,12 @@ def createVectorFile(fileName, exposureStart, exposureEnd,
         
     return
 
-def createSensorFile(fileName, exposureStart, exposureEnd, 
-                     azimuth, elevation, epochStart,
+def createSensorFile(fileName,
+                     exposureStart,
+                     exposureEnd, 
+                     azimuth,
+                     elevation,
+                     epochStart,
                      verbose=VERBOSE):
     """
     Builds an STK sensor file given a series of sensor pointings.
@@ -120,8 +130,10 @@ def createSensorFile(fileName, exposureStart, exposureEnd,
 
     return
                          
-def createIntervalFile(fileName, exposureStart,
-                       exposureEnd, epochStart,
+def createIntervalFile(fileName,
+                       exposureStart,
+                       exposureEnd,
+                       epochStart,
                        verbose=VERBOSE):
     """
     Builds an STK interval file given a series of sensor pointing times.
@@ -169,11 +181,15 @@ def createIntervalFile(fileName, exposureStart,
         print("")
     return
                          
-def convertPointingsToSensorInterval(sensorFileName, intervalFileName, exposureStart, 
-                     azimuth, elevation, epochStart,
-                     exposureEnd=None,
-                     exposureLength=None,
-                     verbose=VERBOSE):
+def convertPointingsToSensorInterval(sensorFileName,
+                                     intervalFileName,
+                                     exposureStart, 
+                                     azimuth,
+                                     elevation,
+                                     epochStart,
+                                     exposureEnd=None,
+                                     exposureLength=None,
+                                     verbose=VERBOSE):
     """
     Builds a sensor pointing file and interval file for a series of sensor pointings. 
     
@@ -224,8 +240,12 @@ def convertPointingsToSensorInterval(sensorFileName, intervalFileName, exposureS
                          
     return
 
-def convertPointingsToVectorInterval(vectorFileName, intervalFileName, exposureStart, 
-                                     ra, dec, epochStart,
+def convertPointingsToVectorInterval(vectorFileName,
+                                     intervalFileName,
+                                     exposureStart, 
+                                     ra,
+                                     dec,
+                                     epochStart,
                                      exposureEnd=None,
                                      exposureLength=None,
                                      verbose=VERBOSE):
