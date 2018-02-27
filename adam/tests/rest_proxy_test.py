@@ -160,6 +160,7 @@ class AuthenticatingRestProxyTest(unittest.TestCase):
     def test_get_unsafe_url_characters(self):
         rest = _RestProxyForTest()
         # All the unsafe and reserved characters
+        #pylint: disable=W1401
         token = '; / ? : @ = &   < > # % { } | \ ^ ~ [ ]'
         auth_rest = AuthenticatingRestProxy(rest, token)
         
