@@ -13,14 +13,16 @@ class PermissionsTest(unittest.TestCase):
     
     """
     def _clean_up(self):
-        # Clean up all the groups. This should automatically clean up any permissions
-        # associated with them.
+        # Clean up all the groups added as part of this test. This should 
+        # automatically clean up any permissions associated with them.
         groups = self.service.get_groups_module()
-        my_groups = groups.get_my_memberships()
-        if len(my_groups) > 0:
-            print("Cleaning up " + str(len(my_groups)) + " groups...")
-        for g in my_groups:
-            groups.delete_group(g.get_uuid())
+        if len(self.added_groups) > 0:
+            print("Cleaning up " + str(len(self.added_groups)) + " groups...")
+        for g in self.added_groups:
+            try:
+                groups.delete_group(g.get_uuid())
+            except:
+                pass  # No big deal. Probably it was already deleted.
         
     
     def setUp(self):
@@ -28,7 +30,7 @@ class PermissionsTest(unittest.TestCase):
         self.service = Service(config)
         self.assertTrue(self.service.setup())
         self.me = "b612.adam.test@gmail.com"
-        self._clean_up()
+        self.added_groups = []
 
     def tearDown(self):
         self.service.teardown()
@@ -41,8 +43,11 @@ class PermissionsTest(unittest.TestCase):
         # Create three groups to grant permission to.
         groups = self.service.get_groups_module()
         group1 = groups.new_group("name1", "description1")
+        self.added_groups.append(group1)
         group2 = groups.new_group("name2", "description2")
+        self.added_groups.append(group2)
         group3 = groups.new_group("name3", "description3")
+        self.added_groups.append(group3)
         
         # All permissions lists should be empty.
         pms = permissions.get_group_permissions(group1.get_uuid())
@@ -171,6 +176,7 @@ class PermissionsTest(unittest.TestCase):
                 
         groups = self.service.get_groups_module()
         group1 = groups.new_group("name1", "description1")
+        self.added_groups.append(group1)
         
         # Recipient of permission does not exist.
         with self.assertRaises(RuntimeError):
