@@ -1,6 +1,8 @@
 .ipynb_checkpoints
 .pytest_cache/
+.coverage
 token.txt
+*config.json
 .cache/
 *.pyc
 *.ini

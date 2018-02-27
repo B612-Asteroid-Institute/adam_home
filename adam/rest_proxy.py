@@ -5,7 +5,7 @@
     
     Implementations:
         - RestRequests: makes simple calls to REST API.
-        - AuthorizingRestProxy: wraps a RestProxy and adds the auth token to all calls.
+        - AuthenticatingRestProxy: wraps a RestProxy and adds the auth token to all calls.
         - _RestProxyForTest: mocks methods and exposes extra functionality to add expectations.
 """
 
@@ -68,8 +68,8 @@ class RestProxy(object):
         raise NotImplementedError("Got interface, need implementation")
 
 
-class AuthorizingRestProxy(RestProxy):
-    """ Rest proxy implementation that wraps another rest proxy and adds the authorization
+class AuthenticatingRestProxy(RestProxy):
+    """ Rest proxy implementation that wraps another rest proxy and adds the authentication
     token to every method call.
     
     """
