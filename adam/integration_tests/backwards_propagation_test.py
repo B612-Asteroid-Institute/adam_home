@@ -1,5 +1,3 @@
-from . import adam_test_constants
-
 from adam import Service
 from adam import Batch
 from adam import PropagationParams
@@ -10,6 +8,7 @@ from adam import ConfigManager
 import json
 import unittest
 import datetime
+import os
 
 import numpy as np
 import numpy.testing as npt
@@ -19,7 +18,7 @@ class BatchRunnerTest(unittest.TestCase):
     
     """
     def setUp(self):
-        config = ConfigManager(adam_test_constants.TEST_CONFIG_FILE).get_config()
+        config = ConfigManager(os.path.dirname(__file__)+ '/config.json').get_config()
         self.service = Service(config)
         self.assertTrue(self.service.setup())
         self.working_project = self.service.new_working_project()
