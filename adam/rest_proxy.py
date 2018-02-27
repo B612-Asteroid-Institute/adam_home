@@ -150,6 +150,46 @@ class LoggingRestProxy(RestProxy):
         print("--------------------------------------------------------")
         return code
 
+class RetryingRestProxy(RestProxy):
+    """Rest proxy implementation that wraps another rest proxy and retries calls for some 
+    errors known to be retryable.
+    """
+    def __init__(self, rest_proxy, num_tries=5):
+        self._rest_proxy = rest_proxy
+        self._retry_codes = [
+            403,  # ExpiredSessionExceptions can manifest as 403s.
+            502,  # These happen periodically and are transient.
+            503,  # Usually due to ExpiredSessionExceptions. They go away on retry.
+        ]
+        self._num_tries = num_tries
+    
+    def post(self, path, data_dict):
+        for i in range(self._num_tries):
+            code, response = self._rest_proxy.post(path, data_dict)
+            if not code in self._retry_codes or i == self._num_tries - 1:
+                break
+            print("Encountered error %s calling post to %s. Retrying (attempt %s)" %
+                (code, path, i + 2))
+        return code, response
+
+    def get(self, path):
+        for i in range(self._num_tries):
+            code, response = self._rest_proxy.get(path)
+            if not code in self._retry_codes or i == self._num_tries - 1:
+                break
+            print("Encountered error %s calling get on %s. Retrying (attempt %s)" %
+                (code, path, i + 2))
+        return code, response
+
+    def delete(self, path):
+        for i in range(self._num_tries):
+            code = self._rest_proxy.delete(path)
+            if not code in self._retry_codes or i == self._num_tries - 1:
+                break
+            print("Encountered error %s calling delete on %s. Retrying (attempt %s)" %
+                (code, path, i + 2))
+        return code
+
 class RestRequests(RestProxy):
     """Implementation using requests package
 
