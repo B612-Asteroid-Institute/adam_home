@@ -1,8 +1,6 @@
 import numpy as np
 
-# Could replace these with a config class import 
-STK_VERSION = "11.1"
-VERBOSE = True
+from .config import STKConfig
 
 __all__ = ["createVectorFile", 
            "createSensorFile",
@@ -15,7 +13,7 @@ def createVectorFile(fileName,
                      exposureEnd, 
                      ra, dec,
                      epochStart,
-                     verbose=VERBOSE):
+                     verbose=STKConfig.verbose):
     """
     Builds an STK vector file given a series of sensor pointings.
     
@@ -37,7 +35,7 @@ def createVectorFile(fileName,
     Returns:
         None
     """    
-    header = ["stk.v.{}\n".format(STK_VERSION),
+    header = ["stk.v.{}\n".format(STKConfig.version),
               "Begin VectorData\n",
               "NumberOfVectorDataPoints {}\n".format(2*len(exposureStart)),
               "ScenarioEpoch {}\n".format(epochStart),
@@ -76,7 +74,7 @@ def createSensorFile(fileName,
                      azimuth,
                      elevation,
                      epochStart,
-                     verbose=VERBOSE):
+                     verbose=STKConfig.verbose):
     """
     Builds an STK sensor file given a series of sensor pointings.
     
@@ -101,7 +99,7 @@ def createSensorFile(fileName,
     Returns:
         None
     """    
-    header = ["stk.v.{}\n".format(STK_VERSION),
+    header = ["stk.v.{}\n".format(STKConfig.version),
               "Begin Attitude\n",
               "NumberofAttitudePoints {}\n".format(2*len(exposureStart)),
               "Sequence 323\n",
@@ -134,7 +132,7 @@ def createIntervalFile(fileName,
                        exposureStart,
                        exposureEnd,
                        epochStart,
-                       verbose=VERBOSE):
+                       verbose=STKConfig.verbose):
     """
     Builds an STK interval file given a series of sensor pointing times.
     
@@ -152,7 +150,7 @@ def createIntervalFile(fileName,
     Returns:
         None
     """                     
-    header = ["stk.v.{}\n".format(STK_VERSION),
+    header = ["stk.v.{}\n".format(STKConfig.version),
               "BEGIN IntervalList\n\n",
               "\tScenarioEpoch {}\n\n".format(epochStart),
               "Begin Intervals\n\n"]
@@ -189,7 +187,7 @@ def convertPointingsToSensorInterval(sensorFileName,
                                      epochStart,
                                      exposureEnd=None,
                                      exposureLength=None,
-                                     verbose=VERBOSE):
+                                     verbose=STKConfig.verbose):
     """
     Builds a sensor pointing file and interval file for a series of sensor pointings. 
     
@@ -248,7 +246,7 @@ def convertPointingsToVectorInterval(vectorFileName,
                                      epochStart,
                                      exposureEnd=None,
                                      exposureLength=None,
-                                     verbose=VERBOSE):
+                                     verbose=STKConfig.verbose):
     """
     Builds a sensor pointing file and interval file for a series of sensor pointings. 
     
@@ -295,3 +293,7 @@ def convertPointingsToVectorInterval(vectorFileName,
     createIntervalFile(intervalFileName, exposureStart, exposureEnd, epochStart, verbose=verbose)
                          
     return
+
+
+    
+        
