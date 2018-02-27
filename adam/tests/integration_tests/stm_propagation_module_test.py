@@ -16,7 +16,7 @@ class StmPropagationModuleTest(unittest.TestCase):
     
     """
     def setUp(self):
-        config = ConfigManager(os.getcwd() + '/config.json').get_config()
+        config = ConfigManager(os.getcwd() + '/test_config.json').get_config()
         self.service = Service(config)
         self.assertTrue(self.service.setup())
         self.working_project = self.service.new_working_project()
