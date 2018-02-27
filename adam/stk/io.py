@@ -9,7 +9,8 @@ __all__ = ["createVectorFile",
            "createIntervalFile", 
            "convertPointingsToSensorInterval",
            "convertPointingsToVectorInterval",
-           "readSTKOutputIntoDatabase"]
+           "readSTKOutputIntoDatabase",
+           "readPointingsIntoDatabase"]
 
 def createVectorFile(fileName,
                      observationIds,
@@ -382,7 +383,75 @@ def readSTKOutputIntoDatabase(stkOutputFile,
     
     if verbose:
         print("Saving STK output to database...")
-    stkout.to_sql("stkOutput", index=False, if_exists="append")
+    stkout.to_sql("stkOutput", con, index=False, if_exists="append")
+    
+    if verbose:
+        print("Done.")
+    return  
+
+def readPointingsIntoDatabase(pointingFile,
+                              con,
+                              readKwargs={"sep" : " "},
+                              columnMapping=STKConfig.visitTableMapping,
+                              verbose=STKConfig.verbose):
+    """
+    Read a telescope pointing file into a database. Will only select the necessary required for ADAM and STK to work. 
+    If the visits table exists, will append pointings to table, otherwise will create the visits table.
+    
+    Args:
+        pointingFile (str): Path to telescope pointing file.
+                             (e.g., "STKout.csv")
+        con (`~sqlite3.Connection`): Connection to an sqlite database.
+        
+        readKwargs (dict): Tell pandas how to read the pointing file.
+                           (e.g., {"sep" : " "})
+        columnMapping (dict): Mapping of internal column names to the column names in the pointing file. Should be specified
+                              in the `adam.stk.STKConfig` class but can otherwise be passed here. 
+                              (e.g., "{"object_ID": "objectID", ...})
+        verbose (bool): Print progress statements?
+        
+    Returns:
+        None
+    """            
+    if len(pd.read_sql("""SELECT name FROM sqlite_master WHERE type='table' AND name='visits'""", con)) == 0:
+        if verbose:
+            print("visits table doesn't exist yet. Creating table...")
+        con.execute("""
+            CREATE TABLE visits (
+                visit_ID INTEGER PRIMARY KEY,
+                field_ID INTEGER,
+                fieldRA_deg REAL,
+                fieldDec_deg REAL,
+                altitude_deg REAL,
+                azimuth_deg REAL,
+                filter VARCHAR,
+                expDate_sec REAL,
+                expMJD_mjd REAL,
+                night INTEGER,
+                visitTime_sec REAL,
+                visitExpTime_sec REAL,
+                FWHMgeom_arcsec REAL,
+                FWHMeff_arcsec REAL,
+                fiveSigmaDepth_mag REAL);
+                """)
+        con.commit()
+    
+    if verbose:
+        print("Reading pointing file...")
+    pointings = pd.read_csv(pointingFile, **readKwargs)
+    
+    if verbose:
+        print("Selecting necessary columns...")
+    pointings = pointings[list(columnMapping.values())]
+        
+    if verbose:
+        print("Mapping columns to table schema...")
+    invsMapping = {v: k for k, v in columnMapping.items()}
+    pointings.rename(columns=invsMapping, inplace=True)
+    
+    if verbose:
+        print("Saving pointings to visits table...")
+    pointings.to_sql("visits", con, index=False, if_exists="append")
     
     if verbose:
         print("Done.")
