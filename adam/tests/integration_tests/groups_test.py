@@ -12,11 +12,13 @@ class GroupsTest(unittest.TestCase):
     """
     def _clean_up(self):
         groups = self.service.get_groups_module()
-        my_groups = groups.get_my_memberships()
-        if len(my_groups) > 0:
-            print("Cleaning up " + str(len(my_groups)) + " groups...")
-        for g in my_groups:
-            groups.delete_group(g.get_uuid())
+        if len(self.added_groups) > 0:
+            print("Cleaning up " + str(len(self.added_groups)) + " groups...")
+        for g in self.added_groups:
+            try:
+                groups.delete_group(g.get_uuid())
+            except:
+                pass  # No big deal. Probably it was already deleted.
         
     
     def setUp(self):
@@ -24,7 +26,7 @@ class GroupsTest(unittest.TestCase):
         self.service = Service(config)
         self.assertTrue(self.service.setup())
         self.me = "b612.adam.test@gmail.com"
-        self._clean_up()
+        self.added_groups = []
 
     def tearDown(self):
         self.service.teardown()
@@ -34,6 +36,7 @@ class GroupsTest(unittest.TestCase):
         groups = self.service.get_groups_module()
         
         group = groups.new_group("name", "description")
+        self.added_groups.append(group)
         self.assertTrue(group.get_uuid() is not None)
         self.assertTrue(group.get_name() == "name")
         self.assertTrue(group.get_description() == "description")
@@ -53,12 +56,12 @@ class GroupsTest(unittest.TestCase):
         self.assertTrue(len(my_memberships) == 0)
         
         g1 = groups.new_group("g1", "")
+        self.added_groups.append(g1)
         
         # Current structure:
         #   me -> g1
         
         my_memberships = groups.get_my_memberships()
-        self.assertTrue(len(my_memberships) == 1)
         self.assertTrue(g1.get_uuid() in [g.get_uuid() for g in my_memberships])
         
         g1_members = groups.get_group_members(g1.get_uuid())
@@ -79,6 +82,7 @@ class GroupsTest(unittest.TestCase):
         self.assertTrue("u1" in self._get_user_member_ids(g1_members))
         
         g2 = groups.new_group("g2", "")
+        self.added_groups.append(g2)
         
         # Current structure:
         #   me -> g1
@@ -86,7 +90,6 @@ class GroupsTest(unittest.TestCase):
         #   me -> g2
         
         my_memberships = groups.get_my_memberships()
-        self.assertTrue(len(my_memberships) == 2)
         self.assertTrue(g1.get_uuid() in [g.get_uuid() for g in my_memberships])
         self.assertTrue(g2.get_uuid() in [g.get_uuid() for g in my_memberships])
         
@@ -104,7 +107,6 @@ class GroupsTest(unittest.TestCase):
         #   g1 -> g2
         
         my_memberships = groups.get_my_memberships()
-        self.assertTrue(len(my_memberships) == 2)
         self.assertTrue(g1.get_uuid() in [g.get_uuid() for g in my_memberships])
         # Should not be duplicated, even though I'm in this group two ways.
         self.assertTrue(g2.get_uuid() in [g.get_uuid() for g in my_memberships])
@@ -125,8 +127,8 @@ class GroupsTest(unittest.TestCase):
         #   u1 -> g1
         
         my_memberships = groups.get_my_memberships()
-        self.assertTrue(len(my_memberships) == 1)
         self.assertTrue(g1.get_uuid() in [g.get_uuid() for g in my_memberships])
+        self.assertFalse(g2.get_uuid() in [g.get_uuid() for g in my_memberships])
         
         g1_members = groups.get_group_members(g1.get_uuid())
         self.assertTrue(len(self._get_group_member_ids(g1_members)) == 0)
@@ -139,7 +141,8 @@ class GroupsTest(unittest.TestCase):
         # Current structure:
         
         my_memberships = groups.get_my_memberships()
-        self.assertTrue(len(my_memberships) == 0)
+        self.assertFalse(g1.get_uuid() in [g.get_uuid() for g in my_memberships])
+        self.assertFalse(g2.get_uuid() in [g.get_uuid() for g in my_memberships])
         
 
 if __name__ == '__main__':
