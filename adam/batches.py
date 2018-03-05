@@ -104,7 +104,7 @@ class Batches(object):
         if code == 404:    # Not found
             return None
         if code != 200:
-            raise RuntimeError("Server status code: %s" % (code))
+            raise RuntimeError("Server status code: %s; Response %s" % (code, part_json))
 
         return part_json
         
