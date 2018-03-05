@@ -6,7 +6,7 @@ from adam.auth import Auth
 from adam.batch import Batch
 from adam.batch import PropagationParams
 from adam.batch import OpmParams
-from adam.batch import Batches
+from adam.batches import Batches
 from adam.batch_run_manager import BatchRunManager
 from adam.config_manager import ConfigManager
 from adam.group import Groups
