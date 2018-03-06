@@ -9,6 +9,7 @@ from adam.permission import Permissions
 from adam.project import Projects
 from adam.timer import Timer
 from adam.rest_proxy import RestRequests
+from adam.rest_proxy import RetryingRestProxy
 from adam.rest_proxy import AuthenticatingRestProxy
 
 import datetime
@@ -42,16 +43,11 @@ class Service():
         timer = Timer()
         timer.start("Setup")
         
-        rest = RestRequests(self.config.get_url())
-        self.auth = Auth(rest)
-        
-        if not self.auth.authenticate(self.config.get_token()):
-            # Try one more time, since often the error is a session expired error and
-            # seems to work fine on the second try.
-            print("Encountered error, retrying authentication")
-            if not self.auth.authenticate(self.config.get_token()):
-                timer.stop()
-                return False
+        rest = RetryingRestProxy(RestRequests(self.config.get_url()))
+        auth = Auth(rest)
+        if not auth.authenticate(self.config.get_token()):
+            print("Could not authenticate.")
+            return False
         
         self.rest = AuthenticatingRestProxy(rest, self.config.get_token())
         self.projects = Projects(self.rest)

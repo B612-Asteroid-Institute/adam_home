@@ -6,7 +6,7 @@ from adam.auth import Auth
 from adam.batch import Batch
 from adam.batch import PropagationParams
 from adam.batch import OpmParams
-from adam.batch import Batches
+from adam.batches import Batches
 from adam.batch_run_manager import BatchRunManager
 from adam.config_manager import ConfigManager
 from adam.group import Groups
@@ -17,5 +17,6 @@ from adam.service import Service
 from adam.rest_proxy import RestRequests
 from adam.rest_proxy import AuthenticatingRestProxy
 from adam.rest_proxy import LoggingRestProxy
+from adam.rest_proxy import RetryingRestProxy
 from adam.stm_propagation_module import StmPropagationModule
 from adam.stk import *
