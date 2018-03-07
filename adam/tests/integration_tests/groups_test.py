@@ -29,8 +29,8 @@ class GroupsTest(unittest.TestCase):
         self.added_groups = []
 
     def tearDown(self):
-        self.service.teardown()
         self._clean_up()
+        self.service.teardown()
         
     def test_group_management(self):
         groups = self.service.get_groups_module()
@@ -51,9 +51,6 @@ class GroupsTest(unittest.TestCase):
     
     def test_membership_management(self):
         groups = self.service.get_groups_module()
-        
-        my_memberships = groups.get_my_memberships()
-        self.assertTrue(len(my_memberships) == 0)
         
         g1 = groups.new_group("g1", "")
         self.added_groups.append(g1)
