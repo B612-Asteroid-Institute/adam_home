@@ -11,14 +11,14 @@ class Permission(object):
         
         Args:
             right: must be one of "READ", "WRITE", "ADMIN", "GRANT_READ", "GRANT_WRITE"
-            target_type: must be one of "PROJECT", "BATCH", "SETTINGS", "GROUP"
+            target_type: must be one of "PROJECT", "GROUP"
             target_uuid: uuid of object to be granted permission to
         """
         accepted_rights = ["READ", "WRITE", "ADMIN", "GRANT_READ", "GRANT_WRITE"]
         if not right in accepted_rights:
             raise KeyError("Right must be one of %s." % (accepted_rights))
         
-        accepted_targets = ["PROJECT", "BATCH", "SETTINGS", "GROUP"]
+        accepted_targets = ["PROJECT", "GROUP"]
         if not target_type in accepted_targets:
             raise KeyError("Target type must be one of %s." % (accepted_targets))
         
