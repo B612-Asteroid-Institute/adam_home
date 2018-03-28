@@ -82,6 +82,42 @@ class ProjectsTest(unittest.TestCase):
         rest.expect_get("/project/aaa", 403, {})
         with self.assertRaises(RuntimeError):
             project = projects.get_project('aaa')
+    
+    def test_get_projects(self):
+        rest = _RestProxyForTest()
+        projects_module = Projects(rest)
+
+        rest.expect_get("/project", 200, {'items': [{'uuid': 'aaa'}, {'uuid': 'bbb'}]})
+        projects = projects_module.get_projects()
+        self.assertEqual(2, len(projects))
+        self.assertEqual('aaa', projects[0].get_uuid())
+        self.assertEqual('bbb', projects[1].get_uuid())
+
+    def test_get_sub_projects(self):
+        rest = _RestProxyForTest()
+        projects_module = Projects(rest)
+
+        projects_response = {'items': [
+            {'uuid': 'aaa', 'parent': 'p1'},
+            {'uuid': 'bbb', 'parent': 'p2'},
+            {'uuid': 'ccc'},
+            {'uuid': 'ddd', 'parent': 'p2'}]}
+
+        rest.expect_get("/project", 200, projects_response)
+        projects = projects_module.get_sub_projects('p1')
+        self.assertEqual(1, len(projects))
+        self.assertEqual('aaa', projects[0].get_uuid())
+            
+        rest.expect_get("/project", 200, projects_response)
+        projects = projects_module.get_sub_projects('p2')
+        self.assertEqual(2, len(projects))
+        self.assertEqual('bbb', projects[0].get_uuid())
+        self.assertEqual('ddd', projects[1].get_uuid())
+            
+        rest.expect_get("/project", 200, projects_response)
+        projects = projects_module.get_sub_projects(None)
+        self.assertEqual(1, len(projects))
+        self.assertEqual('ccc', projects[0].get_uuid())
         
     def test_delete_project(self):
         rest = _RestProxyForTest()

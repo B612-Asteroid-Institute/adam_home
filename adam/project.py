@@ -46,8 +46,14 @@ class Projects(object):
         
         return response['items']
     
+    def get_sub_projects(self, parent):
+        # For now, this just filters the returned values by parent project. We may eventually
+        # choose to implement this server-side, in which case we will call into whatever API
+        # that exposes.
+        return [p for p in self.get_projects() if p.get_parent() == parent];
+    
     def get_projects(self):
-        projects = []    
+        projects = []
         for p in self._get_projects():
             project = Project(p['uuid'], p.get('parent'), p.get('name'), p.get('description'))
             projects.append(project)
