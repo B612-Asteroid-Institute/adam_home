@@ -79,6 +79,10 @@ class AuthenticatingRestProxy(RestProxy):
         self._token = token
     
     def _add_token_to_path(self, path):
+        if self._token == "":
+            # No addition needed.
+            return path
+
         parsed = list(urllib.parse.urlparse(path))
         query = urllib.parse.parse_qs(parsed[4])
         query['token'] = self._token
