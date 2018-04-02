@@ -103,10 +103,24 @@ class OpmParams(object):
         """
         Param options are:
             
-            --- epoch and state_vector are required! ---
+            --- epoch is required! ---
             epoch (str): the epoch associated with the state vector (IS0-8601 format)
+
+            --- either state_vector or keplerian_elements is required! ---
+            --- note that if keplerian_elements are provided, state_vector will be ignored 
+            --- by server side even if also provided. ---
             state_vector (list): an array with 6 elements [rx, ry, rz, vx, vy, vz] 
-                representing the position and velocity vector of the object.
+                representing the cartesian coordinates (the position and velocity vector)
+                of the object.
+            keplerian_elements (list): an array with 7 elements representing the
+                keplerian coordinates of the object. The elements are:
+                    0: semi_major_axis (float): Semimajor axis (km)
+                    1: eccentricity (float): Eccentricity of orbit
+                    2: inclination (float): Inclination of orbit (deg)
+                    3: ra_of_asc_node (float): Right ascension of ascending node (deg)
+                    4: arg_of_pericenter (float): Argument of pericenter (deg)
+                    5: true_anomaly (float): True anomaly (deg)
+                    6: gm (float): Gravitational constant (km^3/s^2)
         
             originator (str): responsible entity for run (default: 'ADAM_User')
             object_name (str): name of object (default: 'dummy')
@@ -132,13 +146,17 @@ class OpmParams(object):
         """
         # Make this a bit easier to get right by checking for parameters by unexpected
         # names.
-        supported_params = {'epoch', 'state_vector', 'originator', 'object_name', 'object_id', 'mass', 'solar_rad_area', 'solar_rad_coeff', 'drag_area', 'drag_coeff', 'covariance', 'perturbation', 'hypercube'}
+        supported_params = {'epoch', 'state_vector', 'keplerian_elements', 'originator', 'object_name', 'object_id', 'mass', 'solar_rad_area', 'solar_rad_coeff', 'drag_area', 'drag_coeff', 'covariance', 'perturbation', 'hypercube'}
         extra_params = params.keys() - supported_params
         if len(extra_params) > 0:
             raise KeyError("Unexpected parameters provided: %s" % (extra_params))
         
         self._epoch = params['epoch']  # Required.
-        self._state_vector = params['state_vector']  # Required.
+
+        if 'state_vector' not in params and 'keplerian_elements' not in params:
+            raise KeyError("Either state_vector or keplerian_elements must be provided.")
+        self._state_vector = params.get('state_vector') or [0, 0, 0, 0, 0, 0]  # Required in OPM.
+        self._keplerian_elements = params.get('keplerian_elements')
         
         self._originator = params.get('originator') or 'ADAM_User'
         self._object_name = params.get('object_name') or 'dummy'
@@ -189,17 +207,29 @@ class OpmParams(object):
                     ("Z = %s\n" % (self._state_vector[2])) + \
                     ("X_DOT = %s\n" % (self._state_vector[3])) + \
                     ("Y_DOT = %s\n" % (self._state_vector[4])) + \
-                    ("Z_DOT = %s\n" % (self._state_vector[5])) + \
-                    ("MASS = %s\n" % self._mass) + \
-                    ("SOLAR_RAD_AREA = %s\n" % self._solar_rad_area) + \
-                    ("SOLAR_RAD_COEFF = %s\n" % self._solar_rad_coeff) + \
-                    ("DRAG_AREA = %s\n" % self._drag_area) + \
-                    ("DRAG_COEFF = %s" % self._drag_coeff)
+                    ("Z_DOT = %s\n" % (self._state_vector[5]))
+        
+        keplerian_elements = ""
+        if self._keplerian_elements is not None:
+            keplerian_elements = \
+                ("SEMI_MAJOR_AXIS = %s\n" % (self._keplerian_elements[0])) + \
+                ("ECCENTRICITY = %s\n" % (self._keplerian_elements[1])) + \
+                ("INCLINATION = %s\n" % (self._keplerian_elements[2])) + \
+                ("RA_OF_ASC_NODE = %s\n" % (self._keplerian_elements[3])) + \
+                ("ARG_OF_PERICENTER = %s\n" % (self._keplerian_elements[4])) + \
+                ("TRUE_ANOMALY = %s\n" % (self._keplerian_elements[5])) + \
+                ("GM = %s\n" % (self._keplerian_elements[6]))
 
-        if self._covariance is None:
-            return base_opm
-        else:
-            covariance = ("\nCX_X = %s\n" % (self._covariance[0])) + \
+        spacecraft_params = \
+            ("MASS = %s\n" % self._mass) + \
+            ("SOLAR_RAD_AREA = %s\n" % self._solar_rad_area) + \
+            ("SOLAR_RAD_COEFF = %s\n" % self._solar_rad_coeff) + \
+            ("DRAG_AREA = %s\n" % self._drag_area) + \
+            ("DRAG_COEFF = %s\n" % self._drag_coeff)
+
+        covariance = ""
+        if self._covariance is not None:
+            covariance = ("CX_X = %s\n" % (self._covariance[0])) + \
                          ("CY_X = %s\n" % (self._covariance[1])) + \
                          ("CY_Y = %s\n" % (self._covariance[2])) + \
                          ("CZ_X = %s\n" % (self._covariance[3])) + \
@@ -222,7 +252,8 @@ class OpmParams(object):
                          ("CZ_DOT_Z_DOT = %s\n" % (self._covariance[20])) + \
                          ("USER_DEFINED_ADAM_INITIAL_PERTURBATION = %s [sigma]\n" % self._perturbation) + \
                          ("USER_DEFINED_ADAM_HYPERCUBE = %s\n" % self._hypercube)
-            return base_opm + covariance
+
+        return base_opm + keplerian_elements + spacecraft_params + covariance
         
 class StateSummary(object):
     def __init__(self, json):

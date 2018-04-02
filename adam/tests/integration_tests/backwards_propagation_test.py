@@ -13,8 +13,8 @@ import os
 import numpy as np
 import numpy.testing as npt
 
-class BatchRunnerTest(unittest.TestCase):
-    """Integration test of batch running.
+class BackwardsPropagationTest(unittest.TestCase):
+    """Integration test of backwards propagation.
     
     """
     def setUp(self):
