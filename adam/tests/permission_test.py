@@ -9,9 +9,9 @@ class PermissionTest(unittest.TestCase):
     """
     
     def test_get_methods(self):
-        permission = Permission("GRANT_READ", "SETTINGS", "uuid")
+        permission = Permission("GRANT_READ", "PROJECT", "uuid")
         self.assertEqual("GRANT_READ", permission.get_right())
-        self.assertEqual("SETTINGS", permission.get_target_type())
+        self.assertEqual("PROJECT", permission.get_target_type())
         self.assertEqual("uuid", permission.get_target_uuid())
 
     def test_bad_inputs(self):
