@@ -11,10 +11,11 @@ import numpy as np
 from adam import Batch
 from adam import BatchRunManager
 
+
 class StmPropagationModule(object):
     def __init__(self, batches_module):
         self.batches_module = batches_module
-    
+
     def __repr__(self):
         return "StmPropagationModule"
 
@@ -42,7 +43,7 @@ class StmPropagationModule(object):
             opm_params.set_state_vector(state_vector)
             batches.append(Batch(propagation_params, opm_params))
 
-        # submit batches and wait till they finish running  
+        # submit batches and wait till they finish running
         runner = BatchRunManager(self.batches_module, batches)
         runner.run()
 
@@ -109,23 +110,23 @@ class StmPropagationModule(object):
         dy_dx_matrix = np.matrix(dy_dx)
 
         return (yk, dy_dx_matrix)
-    
+
     def run_stm_propagation(self, propagation_params, opm_params):
         """ Generates a state transition matrix for the propagation described by the
             given parameters. Does so by nudging the state vector given in opm_params
             in several different directions and combining the results of propagating
             with the slightly different state vectors.
-            
+
             Args:
                 propagation_params (PropagationParams):
                     Propagation-related parameters for the STM propagations
                 opm_params (OpmParams):
                     OPM-related parameters for the propagations, including the nominal
                     state vector that will be varied.
-            
+
             Returns:
                 end_state (list):
-                    Final state vector of nominal propagation [rx, ry, rz, vx, vy, vz] 
+                    Final state vector of nominal propagation [rx, ry, rz, vx, vy, vz]
                     [km, km/s]
                 stm (matrix):
                     STM describing effect of changes to initial state on final state
@@ -136,6 +137,5 @@ class StmPropagationModule(object):
             propagation_params,
             opm_params
         )
-        
+
         return end_state, stm
-    

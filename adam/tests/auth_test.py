@@ -3,42 +3,43 @@ from adam.rest_proxy import _RestProxyForTest
 import json
 import unittest
 
+
 class AuthTest(unittest.TestCase):
     """Unit tests for auth module
 
     """
-        
+
     def test_successful_authentication(self):
         # Use REST proxy for testing
         rest = _RestProxyForTest()
         auth = Auth(rest)
-        
+
         # Before authenticating, auth should reflect not logged in.
         self.assertEqual(auth.get_token(), '')
         self.assertEqual(auth.get_user(), '')
         self.assertEqual(auth.get_logged_in(), False)
-        
+
         # A successful authentication should store token and set user to returned value.
         good_token = 'good'
         rest.expect_get('/me?token=' + good_token, 200,
-            {'email': 'a@b.com', 'loggedIn': True})
+                        {'email': 'a@b.com', 'loggedIn': True})
         auth.authenticate(good_token)
         self.assertEqual(auth.get_token(), good_token)
         self.assertEqual(auth.get_user(), 'a@b.com')
         self.assertEqual(auth.get_logged_in(), True)
-        
+
     def test_unsuccessful_authentication(self):
         # Use REST proxy for testing
         rest = _RestProxyForTest()
         auth = Auth(rest)
-        
+
         # Authenticate in order to fill in email/logged_in/token so that next test
         # can verify that these are cleared.
         good_token = 'good'
         rest.expect_get('/me?token=' + good_token, 200,
-            {'email': 'a@b.com', 'loggedIn': True})
+                        {'email': 'a@b.com', 'loggedIn': True})
         auth.authenticate(good_token)
-        
+
         # An unsuccessful authentication should clear token and other values.
         bad_token = 'bad'
         # An example of the few ways that the server might reject a user. Others look
@@ -59,24 +60,24 @@ class AuthTest(unittest.TestCase):
             }
             """
         rest.expect_get('/me?token=' + bad_token, 503,
-            json.loads(server_error_on_bad_token))
+                        json.loads(server_error_on_bad_token))
         auth.authenticate(bad_token)
         self.assertEqual(auth.get_token(), '')
         self.assertEqual(auth.get_user(), '')
         self.assertEqual(auth.get_logged_in(), False)
-        
+
     def test_authentication_empty_token(self):
         # Use REST proxy for testing
         rest = _RestProxyForTest()
         auth = Auth(rest)
-        
+
         # Authenticate in order to fill in email/logged_in/token so that next test
         # can verify that these are cleared.
         good_token = 'good'
         rest.expect_get('/me?token=' + good_token, 200,
-            {'email': 'a@b.com', 'loggedIn': True})
+                        {'email': 'a@b.com', 'loggedIn': True})
         auth.authenticate(good_token)
-        
+
         # Authentication with an empty token should be no problem and result in an empty
         # auth object.
         rest.expect_get('/me', 200, {"loggedIn": False})
@@ -84,19 +85,19 @@ class AuthTest(unittest.TestCase):
         self.assertEqual(auth.get_token(), '')
         self.assertEqual(auth.get_user(), '')
         self.assertEqual(auth.get_logged_in(), False)
-        
+
     def test_authentication_server_error(self):
         # Use REST proxy for testing
         rest = _RestProxyForTest()
         auth = Auth(rest)
-        
+
         # Authenticate in order to fill in email/logged_in/token so that next test
         # can verify that these are not cleared.
         good_token = 'good'
         rest.expect_get('/me?token=' + good_token, 200,
-            {'email': 'a@b.com', 'loggedIn': True})
+                        {'email': 'a@b.com', 'loggedIn': True})
         auth.authenticate(good_token)
-        
+
         # Authentication should throw on a non-200 response and leave auth contents
         # unchanged.
         rest.expect_get('/me?token=problematic_token', 404, {})
@@ -106,6 +107,6 @@ class AuthTest(unittest.TestCase):
         self.assertEqual(auth.get_user(), 'a@b.com')
         self.assertEqual(auth.get_logged_in(), True)
 
+
 if __name__ == '__main__':
     unittest.main()
-        

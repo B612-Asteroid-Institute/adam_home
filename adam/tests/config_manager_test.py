@@ -3,6 +3,7 @@ import json
 import unittest
 import tempfile
 
+
 class ConfigManagerTest(unittest.TestCase):
     """Unit tests for config manager
 
@@ -13,7 +14,7 @@ class ConfigManagerTest(unittest.TestCase):
         config_manager = ConfigManager(file_name=None, raw_config=config)
 
         self.assertIsNone(config_manager.get_config())
-    
+
     def test_no_default(self):
         config = {
             'env_configs': [
@@ -47,7 +48,7 @@ class ConfigManagerTest(unittest.TestCase):
         config_manager = ConfigManager(file_name=None, raw_config=config)
         self.assertIsNotNone(config_manager.get_config(environment='a'))
         self.assertIsNone(config_manager.get_config(environment='b'))
-        
+
     def test_read_config(self):
         config = {
             'default_env': 'a',
@@ -114,4 +115,3 @@ class ConfigManagerTest(unittest.TestCase):
             config_manager.to_file(f.name)
             written_config = json.load(f)
             self.assertDictEqual(config_manager.raw_config, written_config)
-
