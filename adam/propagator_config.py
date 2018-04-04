@@ -2,6 +2,7 @@
     propagator_config.py
 """
 
+
 class PropagatorConfig(object):
     def __init__(self, config_json):
         """Initializes a propagator config from the given JSON, pulling out a few important fields.
