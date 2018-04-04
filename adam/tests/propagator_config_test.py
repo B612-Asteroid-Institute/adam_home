@@ -67,6 +67,10 @@ class PropagatorConfigTest(unittest.TestCase):
         self.assertEqual("everything", config.get_description())
         self.assertEqual(FULL_CONFIG_JSON_OUTPUT, config.get_config_json())
 
+        # Too much config.
+        with self.assertRaises(KeyError):
+            config = PropagatorConfig({'this is not a field': 'wat'})
+
 
 class PropagatorConfigsTest(unittest.TestCase):
     """Unit tests for PropagatorConfigs module
