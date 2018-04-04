@@ -45,7 +45,7 @@ class Service():
 
     def setup(self):
         timer = Timer()
-        timer.start("Setup")
+        timer.start("Setup")    
 
         rest = RetryingRestProxy(RestRequests(self.config.get_url()))
         auth = Auth(rest)
