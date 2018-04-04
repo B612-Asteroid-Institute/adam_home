@@ -1,12 +1,12 @@
 from adam import PropagationParams
 from adam import OpmParams
 from adam.batch import StateSummary
-from adam.batch import PropagationResults
 from adam import Batches
 
 from adam.rest_proxy import _RestProxyForTest
 
 import unittest
+
 
 class BatchesTest(unittest.TestCase):
     """Unit tests for batches module
@@ -82,17 +82,16 @@ class BatchesTest(unittest.TestCase):
         batches = Batches(rest)
 
         # A successful run.
-        rest.expect_post("/batch", self._check_input, 200, {'calc_state' : 'PENDING', 'uuid' : '1'})
+        rest.expect_post("/batch", self._check_input, 200, {'calc_state': 'PENDING', 'uuid': '1'})
 
         state = batches.new_batch(self.dummy_propagation_params, self.dummy_opm_params)
         self.assertEqual('1', state.get_uuid())
         self.assertEqual('PENDING', state.get_calc_state())
 
         # Unsuccessful run.
-        rest.expect_post("/batch", self._check_input, 400, {'calc_state' : 'PENDING', 'uuid' : '1'})
+        rest.expect_post("/batch", self._check_input, 400, {'calc_state': 'PENDING', 'uuid': '1'})
         with self.assertRaises(RuntimeError):
             batches.new_batch(self.dummy_propagation_params, self.dummy_opm_params)
-
 
     def test_new_batches(self):
         rest = _RestProxyForTest()
@@ -100,8 +99,8 @@ class BatchesTest(unittest.TestCase):
 
         # Successful run.
         rest.expect_post("/batches", self._check_inputs, 200, {'requests': [
-            {'calc_state' : 'PENDING', 'uuid' : '1'},
-            {'calc_state' : 'RUNNING', 'uuid' : '2'}
+            {'calc_state': 'PENDING', 'uuid': '1'},
+            {'calc_state': 'RUNNING', 'uuid': '2'}
         ]})
         states = batches.new_batches([
             [self.dummy_propagation_params, self.dummy_opm_params],
@@ -120,15 +119,15 @@ class BatchesTest(unittest.TestCase):
                 [self.dummy_propagation_params, self.dummy_opm_params],
                 [self.dummy_propagation_params, self.dummy_opm_params]
             ])
-    
+
     def test_delete_batch(self):
         rest = _RestProxyForTest()
         batches = Batches(rest)
-        
+
         # Successful request.
         rest.expect_delete("/batch/aaa", 204)
         batches.delete_batch('aaa')
-        
+
         # 200 isn't a valid return value for delete calls right now
         rest.expect_delete("/batch/aaa", 200)
         with self.assertRaises(RuntimeError):
@@ -137,7 +136,7 @@ class BatchesTest(unittest.TestCase):
     def test_get_summary(self):
         rest = _RestProxyForTest()
         batches = Batches(rest)
-        
+
         # Successful request.
         rest.expect_get('/batch/aaa', 200, {'uuid': 'aaa', 'calc_state': 'RUNNING'})
         summary = batches.get_summary('aaa')
@@ -181,7 +180,6 @@ class BatchesTest(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             batches.get_summaries(self.dummy_propagation_params.get_project_uuid())
 
-    
     def test_get_propagation_results(self):
         rest = _RestProxyForTest()
         batches = Batches(rest)
