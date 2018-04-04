@@ -181,7 +181,7 @@ class RetryingRestProxy(RestProxy):
             if code not in self._retry_codes or i == self._num_tries - 1:
                 break
             print("Encountered error %s calling post to %s: %s \nRetrying (attempt %s)" %
-                (code, path, response, i + 2))
+                  (code, path, response, i + 2))
         return code, response
 
     def get(self, path):
@@ -190,7 +190,7 @@ class RetryingRestProxy(RestProxy):
             if code not in self._retry_codes or i == self._num_tries - 1:
                 break
             print("Encountered error %s calling get on %s: %s \nRetrying (attempt %s)" %
-                (code, path, response, i + 2))
+                  (code, path, response, i + 2))
         return code, response
 
     def delete(self, path):
