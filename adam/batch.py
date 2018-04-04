@@ -3,100 +3,108 @@
 """
 
 from datetime import datetime
-    
+
+
 class Batch(object):
     def __init__(self, propagation_params, opm_params):
         self._propagation_params = propagation_params
         self._opm_params = opm_params
         self._state_summary = None
         self._results = None
-        
+
     def __repr__(self):
         return "Batch %s, %s" % (self.get_uuid(), self.get_calc_state())
-    
+
     def get_propagation_params(self):
         return self._propagation_params
-    
+
     def get_opm_params(self):
         return self._opm_params
-    
+
     def get_state_summary(self):
         return self._state_summary
-    
+
     def set_state_summary(self, state_summary):
         self._state_summary = state_summary
-    
+
     def get_results(self):
         return self._results
-    
+
     def set_results(self, results):
         self._results = results
-    
+
     # Convenience method to get batch uuid.
     def get_uuid(self):
-        if self._state_summary is None: return None
+        if self._state_summary is None:
+            return None
         return self._state_summary.get_uuid()
-        
+
     # Convenience method to get batch calculation state.
     def get_calc_state(self):
-        if self._state_summary is None: return None
+        if self._state_summary is None:
+            return None
         return self._state_summary.get_calc_state()
+
 
 class PropagationParams(object):
 
     DEFAULT_CONFIG_ID = "00000000-0000-0000-0000-000000000001"
-    
+
     def __init__(self, params):
         """
         Param options are:
-        
+
             --- start_time and end_time are required! ---
             start_time (str): start time of the run
             end_time (str): end time of the run
-            
+
             step_size (int): step size in seconds. Defaults to 86400, or one day.
-            propagator_uuid (str): propagator settings to use (default is the Sun, 
+            propagator_uuid (str): propagator settings to use (default is the Sun,
                 all planets, and the Moon as point masses [no asteroids])
             description (str): human-readable description of the run
-            
+
         Raises:
             KeyError if the given object does not include 'start_time' and 'end_time',
             or if unsupported parameters are provided
         """
         # Make this a bit easier to get right by checking for parameters by unexpected
         # names.
-        supported_params = {'start_time', 'end_time', 'step_size', 'propagator_uuid', 'project_uuid', 'description'}
+        supported_params = {'start_time', 'end_time', 'step_size',
+                            'propagator_uuid', 'project_uuid', 'description'}
         extra_params = params.keys() - supported_params
         if len(extra_params) > 0:
             raise KeyError("Unexpected parameters provided: %s" % (extra_params))
-            
+
         self._start_time = params['start_time']  # Required.
         self._end_time = params['end_time']  # Required.
         self._step_size = params.get('step_size') or 86400
         self._propagator_uuid = params.get('propagator_uuid') or self.DEFAULT_CONFIG_ID
         self._project_uuid = params.get('project_uuid')
         self._description = params.get('description')
-    
+
     def __repr__(self):
-        return "Batch params [%s, %s, %s, %s, %s, %s]" % (self._start_time, self._end_time, self._step_size, self._propagator_uuid, self._project_uuid, self._description)
-    
+        return "Batch params [%s, %s, %s, %s, %s, %s]" % (
+            self._start_time, self._end_time, self._step_size,
+            self._propagator_uuid, self._project_uuid, self._description)
+
     def get_start_time(self):
         return self._start_time
-    
+
     def get_end_time(self):
         return self._end_time
-            
+
     def get_step_size(self):
         return self._step_size
-    
+
     def get_propagator_uuid(self):
         return self._propagator_uuid
-    
+
     def get_project_uuid(self):
         return self._project_uuid
-    
+
     def get_description(self):
         return self._description
+
 
 class OpmParams(object):
     def __init__(self, params):
@@ -125,20 +133,20 @@ class OpmParams(object):
             originator (str): responsible entity for run (default: 'ADAM_User')
             object_name (str): name of object (default: 'dummy')
             object_id (str): identification of object (default: '001')
-            
+
             mass (float): object mass in kilograms (default: 1000 kg)
-            solar_rad_area (float): object solar radiation area in squared meters 
+            solar_rad_area (float): object solar radiation area in squared meters
                 (default: 20 m^2)
             solar_rad_coeff (float): object solar radiation coefficient (default: 1)
             drag_area (float): object drag area in squared meters (default: 20 m^2)
             drag_coeff (float): object drag coefficient (default: 2.2)
-        
+
             --- None or all of covariance, perturbation, and hypercube must be given ---
             --- No defaults if not given ---
             covariance (list): an array with 21 elements corresponding to a 6x6 lower triangle
             perturbation (int): sigma perturbation on state vector
             hypercube (str): hypercube propagation type (e.g. 'FACES' or 'CORNERS')
-            
+
         Raises:
             KeyError if the given object does not include 'epoch' and 'state_vector',
             or if unsupported parameters are provided
@@ -150,7 +158,7 @@ class OpmParams(object):
         extra_params = params.keys() - supported_params
         if len(extra_params) > 0:
             raise KeyError("Unexpected parameters provided: %s" % (extra_params))
-        
+
         self._epoch = params['epoch']  # Required.
 
         if 'state_vector' not in params and 'keplerian_elements' not in params:
@@ -161,26 +169,26 @@ class OpmParams(object):
         self._originator = params.get('originator') or 'ADAM_User'
         self._object_name = params.get('object_name') or 'dummy'
         self._object_id = params.get('object_id') or '001'
-        
+
         self._mass = params.get('mass') or 1000
         self._solar_rad_area = params.get('solar_rad_area') or 20
         self._solar_rad_coeff = params.get('solar_rad_coeff') or 1
         self._drag_area = params.get('drag_area') or 20
         self._drag_coeff = params.get('drag_coeff') or 2.2
-        
+
         self._covariance = params.get('covariance')
         self._perturbation = params.get('perturbation')
         self._hypercube = params.get('hypercube')
-    
+
     def __repr__(self):
         return "OpmParams: %s" % self.generate_opm()
-    
+
     def get_state_vector(self):
         return self._state_vector
-    
+
     def set_state_vector(self, state_vector):
         self._state_vector = state_vector
-    
+
     def generate_opm(self):
         """Generate an OPM string
 
@@ -250,7 +258,8 @@ class OpmParams(object):
                          ("CZ_DOT_X_DOT = %s\n" % (self._covariance[18])) + \
                          ("CZ_DOT_Y_DOT = %s\n" % (self._covariance[19])) + \
                          ("CZ_DOT_Z_DOT = %s\n" % (self._covariance[20])) + \
-                         ("USER_DEFINED_ADAM_INITIAL_PERTURBATION = %s [sigma]\n" % self._perturbation) + \
+                         ("USER_DEFINED_ADAM_INITIAL_PERTURBATION = %s [sigma]\n" %
+                          self._perturbation) + \
                          ("USER_DEFINED_ADAM_HYPERCUBE = %s\n" % self._hypercube)
 
         return base_opm + keplerian_elements + spacecraft_params + covariance
@@ -259,7 +268,7 @@ class StateSummary(object):
     def __init__(self, json):
         """ Requires a json response as returned from the server representing a batch
             state summary (e.g. from /batch/uuid or in bulk from batch/project_id)
-            
+
             Raises:
                 KeyError if the given object does not include 'uuid' and 'calc_state'
         """
@@ -274,59 +283,60 @@ class StateSummary(object):
 
     def __repr__(self):
         return "State summary for %s: %s" % (self._uuid, self._calc_state)
-    
+
     def get_uuid(self):
         return self._uuid
-        
+
     def get_step_size(self):
         return self._step_size
-        
+
     def get_create_time(self):
         return self._create_time
-        
+
     def get_execute_time(self):
         return self._execute_time
-        
+
     def get_complete_time(self):
         return self._complete_time
-        
+
     def get_project_uuid(self):
         return self._project_uuid
-        
+
     def get_parts_count(self):
         return self._parts_count
-        
+
     def get_calc_state(self):
         return self._calc_state
-        
+
+
 class PropagationResults(object):
 
     class Part(object):
         def __init__(self, part):
             """ Requires a json response as returned from the server representing a batch
                 part state (e.g. from /batch/batch_uuid/part_index)
-            
+
                 Raises:
-                    KeyError if the given object does not include 'part_index' and 
+                    KeyError if the given object does not include 'part_index' and
                     'calc_state'
             """
             self._part_index = part['part_index']
             self._calc_state = part['calc_state']
             self._ephemeris = part.get('stk_ephemeris')
             self._error = part.get('error')
-    
+
         def __repr__(self):
             return "PropagationPart [%s]" % (self._calc_state)
-    
+
         def get_part_index(self):
             return self._part_index
-    
+
         def get_calc_state(self):
             return self._calc_state
-    
+
         def get_ephemeris(self):
             return self._ephemeris
-    
+
         def get_error(self):
             return self._error
 
@@ -338,17 +348,17 @@ class PropagationResults(object):
         """
         if (len(parts) < 1):
             raise RuntimeError("Must provide at least one part.")
-        
+
         # Fill in None responses (which may happen e.g. in case of 404s, or if the part
         # isn't ready yet) with Nones
         self._parts = [self.Part(p) if p is not None else None for p in parts]
-    
+
     def __repr__(self):
         return "Propagation results with %s parts" % (len(self._parts))
-    
+
     def get_parts(self):
         return self._parts
-    
+
     def get_end_state_vector(self):
         """Get the end state vector as a 6d list in [km, km/s]
 
@@ -371,18 +381,18 @@ class PropagationResults(object):
         if (state != 'COMPLETED'):
             print("Cannot compute final state vector from part in state %s" % (state))
             return None
-        
+
         stk_ephemeris = part.get_ephemeris()  # Guaranteed to exist if state == COMPLETED
-    
+
         split_ephem = stk_ephemeris.splitlines()
         state_vectors = []
         for line in split_ephem:
-            split_line  = line.split()
+            split_line = line.split()
             # It's a state if it has more than 7 elements
             if len(split_line) >= 7:
                 state_vector = [(float(i) * self.M2KM) for i in split_line]
                 # Ignore time
-                state_vectors.append(state_vector[1:7])     
-        
+                state_vectors.append(state_vector[1:7])
+
         # We want the last element
         return state_vectors[-1]
