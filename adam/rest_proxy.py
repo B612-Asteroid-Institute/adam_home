@@ -84,6 +84,10 @@ class AuthenticatingRestProxy(RestProxy):
         self._token = token
 
     def _add_token_to_path(self, path):
+        if self._token == "":
+            # No addition needed.
+            return path
+
         parsed = list(urllib.parse.urlparse(path))
         query = urllib.parse.parse_qs(parsed[4])
         query['token'] = self._token
@@ -176,8 +180,8 @@ class RetryingRestProxy(RestProxy):
             code, response = self._rest_proxy.post(path, data_dict)
             if code not in self._retry_codes or i == self._num_tries - 1:
                 break
-            print("Encountered error %s calling post to %s. Retrying (attempt %s)" %
-                  (code, path, i + 2))
+            print("Encountered error %s calling post to %s: %s \nRetrying (attempt %s)" %
+                  (code, path, response, i + 2))
         return code, response
 
     def get(self, path):
@@ -185,8 +189,8 @@ class RetryingRestProxy(RestProxy):
             code, response = self._rest_proxy.get(path)
             if code not in self._retry_codes or i == self._num_tries - 1:
                 break
-            print("Encountered error %s calling get on %s. Retrying (attempt %s)" %
-                  (code, path, i + 2))
+            print("Encountered error %s calling get on %s: %s \nRetrying (attempt %s)" %
+                  (code, path, response, i + 2))
         return code, response
 
     def delete(self, path):

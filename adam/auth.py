@@ -85,7 +85,7 @@ class Auth(object):
 
             raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
 
-        if 'loggedIn' in response and response['loggedIn']:
+        if 'loggedIn' in response:
             self._token = token
             self._logged_in = response['loggedIn']
             if self._logged_in:
