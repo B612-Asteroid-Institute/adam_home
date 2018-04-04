@@ -2,11 +2,6 @@
     propagator_config.py
 """
 
-PUBLIC_CONFIG_ALL_PLANETS_AND_MOON = "00000000-0000-0000-0000-000000000001"
-PUBLIC_CONFIG_SUN_ONLY = "00000000-0000-0000-0000-000000000002"
-PUBLIC_CONFIG_ALL_PLANETS_AND_MOON_AND_ASTEROIDS = "00000000-0000-0000-0000-000000000003"
-
-
 class PropagatorConfig(object):
     def __init__(self, config_json):
         """Initializes a propagator config from the given JSON, pulling out a few important fields.
@@ -46,6 +41,10 @@ class PropagatorConfigs(object):
     """Module for managing propagator configurations.
 
     """
+
+    PUBLIC_CONFIG_ALL_PLANETS_AND_MOON = "00000000-0000-0000-0000-000000000001"
+    PUBLIC_CONFIG_SUN_ONLY = "00000000-0000-0000-0000-000000000002"
+    PUBLIC_CONFIG_ALL_PLANETS_AND_MOON_AND_ASTEROIDS = "00000000-0000-0000-0000-000000000003"
 
     def __init__(self, rest):
         self._rest = rest
