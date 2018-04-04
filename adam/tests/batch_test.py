@@ -6,11 +6,12 @@ from adam.batch import PropagationResults
 
 import unittest
 
+
 class BatchTest(unittest.TestCase):
     """Unit tests for Batch object
 
     """
-    
+
     def test_get_methods(self):
         propagation_params = {'a': 1}
         opm_params = {'b': 2}
@@ -32,14 +33,15 @@ class BatchTest(unittest.TestCase):
         batch.set_results(results)
         self.assertEqual(results, batch.get_results())
 
+
 class PropagationParamsTest(unittest.TestCase):
     """Unit tests for PropagationParams object
 
     """
-    
+
     def test_get_methods(self):
         p = PropagationParams({
-            'start_time': 'foo', 
+            'start_time': 'foo',
             'end_time': 'bar',
             'step_size': 123,
             'project_uuid': 'aaa',
@@ -51,7 +53,7 @@ class PropagationParamsTest(unittest.TestCase):
         self.assertEqual('aaa', p.get_project_uuid())
         self.assertEqual('bbb', p.get_propagator_uuid())
         self.assertEqual('abc', p.get_description())
-    
+
     def test_defaults(self):
         p = PropagationParams({'start_time': 'foo', 'end_time': 'bar'})
         self.assertEqual(86400, p.get_step_size())
@@ -60,7 +62,7 @@ class PropagationParamsTest(unittest.TestCase):
         # No default.
         self.assertIsNone(p.get_project_uuid())
         self.assertIsNone(p.get_description())
-    
+
     def test_required_keys(self):
         with self.assertRaises(KeyError):
             PropagationParams({'start_time': 'foo'})
@@ -71,7 +73,8 @@ class PropagationParamsTest(unittest.TestCase):
     def test_invalid_keys(self):
         with self.assertRaises(KeyError):
             PropagationParams({'unrecognized': 0})
-        
+
+
 class OpmParamsTest(unittest.TestCase):
     """Unit tests for OpmParams object
 
@@ -93,7 +96,8 @@ class OpmParamsTest(unittest.TestCase):
             'drag_area': 4,
             'drag_coeff': 5,
 
-            'covariance': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 ,17, 18, 19, 20],
+            'covariance': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
+                           12, 13, 14, 15, 16, 17, 18, 19, 20],
             'perturbation': 7,
             'hypercube': 'CORNERS',
         })
@@ -149,7 +153,7 @@ USER_DEFINED_ADAM_INITIAL_PERTURBATION = 7 [sigma]
 USER_DEFINED_ADAM_HYPERCUBE = CORNERS"""
         # Remove the CREATION_DATE stamp since that varies.
         opm = "\n".join([line for line in o.generate_opm().splitlines()
-            if not line.startswith('CREATION_DATE')])
+                         if not line.startswith('CREATION_DATE')])
         self.maxDiff = None  # Otherwise if the next line fails, we can't see the diff
         self.assertEqual(expected_opm, opm)
 
@@ -177,10 +181,10 @@ DRAG_AREA = 20
 DRAG_COEFF = 2.2"""
         # Remove the CREATION_DATE stamp since that varies.
         opm = "\n".join([line for line in o.generate_opm().splitlines()
-            if not line.startswith('CREATION_DATE')])
+                         if not line.startswith('CREATION_DATE')])
         self.maxDiff = None  # Otherwise if the next line fails, we can't see the diff
         self.assertEqual(expected_opm, opm)
-    
+
     def test_access_state_vector(self):
         o = OpmParams({'epoch': 'foo', 'state_vector': [1, 2, 3, 4, 5, 6]})
         self.assertEqual([1, 2, 3, 4, 5, 6], o.get_state_vector())
@@ -204,11 +208,12 @@ DRAG_COEFF = 2.2"""
         with self.assertRaises(KeyError):
             OpmParams({'unrecognized': 0})
 
+
 class StateSummaryTest(unittest.TestCase):
     """Unit tests for StateSummary object
 
     """
-    
+
     def test_get_methods(self):
         s = StateSummary({
             'uuid': 'a',
@@ -228,13 +233,14 @@ class StateSummaryTest(unittest.TestCase):
         self.assertEqual('e', s.get_complete_time())
         self.assertEqual('f', s.get_project_uuid())
         self.assertEqual(2, s.get_parts_count())
-    
+
     def test_required_keys(self):
         with self.assertRaises(KeyError):
             StateSummary({'uuid': 'a'})
 
         with self.assertRaises(KeyError):
             StateSummary({'calc_state': 'b'})
+
 
 class PropagationResultsTest(unittest.TestCase):
     """Unit tests for PropagationResults object
@@ -278,7 +284,7 @@ class PropagationResultsTest(unittest.TestCase):
             PropagationResults([{
                 'calc_state': 'b'
             }])
-    
+
     def test_no_parts(self):
         with self.assertRaises(RuntimeError):
             PropagationResults([])
