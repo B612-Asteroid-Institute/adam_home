@@ -31,7 +31,7 @@ class GroupsTest(unittest.TestCase):
     def tearDown(self):
         self._clean_up()
         self.service.teardown()
-        
+
     def test_group_management(self):
         groups = self.service.get_groups_module()
 
@@ -51,7 +51,7 @@ class GroupsTest(unittest.TestCase):
 
     def test_membership_management(self):
         groups = self.service.get_groups_module()
-        
+
         g1 = groups.new_group("g1", "")
         self.added_groups.append(g1)
 
