@@ -200,7 +200,7 @@ DRAG_COEFF = 2.2"""
 
         with self.assertRaises(KeyError):
             OpmParams({'keplerian_elements': []})
-        
+
         # No KeyError with no state vector.
         OpmParams({'epoch': 'foo', 'keplerian_elements': []})
 
