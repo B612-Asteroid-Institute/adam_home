@@ -39,7 +39,7 @@ class KeplerianTest(unittest.TestCase):
             -127.01778914927144,  # True anomaly (deg)
             1.327124400419394E11  # Gravitational constant, this one for the sun (km^3/s^2)
         ]
-        
+
         cartesian_state_vector = [
             -3.0653634150102222e8, -1.1097955684640282e8, -4.8129706422527283e7,  # x, y, z
             15.7598552764090590, -10.5875673291958420, -4.5896734328869746  # dx, dy, dZ
