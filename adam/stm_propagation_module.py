@@ -122,7 +122,7 @@ class StmPropagationModule(object):
                     Propagation-related parameters for the STM propagations
                 opm_params (OpmParams):
                     OPM-related parameters for the propagations, including the nominal
-                    state vector that will be varied.
+                    state vector that will be varied. Keplerian elements not supported.
 
             Returns:
                 end_state (list):
@@ -131,6 +131,9 @@ class StmPropagationModule(object):
                 stm (matrix):
                     STM describing effect of changes to initial state on final state
         """
+        if opm_params.get_state_vector() is None:
+            raise KeyError('Only coordinates specified via a state vector are supported.')
+
         end_state, stm = self._evaluate_func_with_derivative(
             opm_params.get_state_vector(),
             self._propagate_states,

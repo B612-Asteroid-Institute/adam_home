@@ -29,16 +29,15 @@ class KeplerianTest(unittest.TestCase):
         self.service.teardown()
 
     def make_cartesian_and_keplerian_batches(self, start_time_str, end_time_str):
-        # These are equivalent cartesian and keplerian elements.
-        keplerian_elements = [
-            3.1307289138037175E8,  # Semimajor axis (km)
-            0.5355029800000188,  # Eccentricity
-            23.439676743246295,  # Inclination (deg)
-            359.9942693176405,  # Right ascension of ascending node (deg)
-            328.5584374618295,  # Argument of pericenter (aka periapsis) (deg)
-            -127.01778914927144,  # True anomaly (deg)
-            1.327124400419394E11  # Gravitational constant, this one for the sun (km^3/s^2)
-        ]
+        keplerian_elements = {
+            'semi_major_axis_km': 3.1307289138037175E8,
+            'eccentricity': 0.5355029800000188,
+            'inclination_deg': 23.439676743246295,
+            'ra_of_asc_node_deg': 359.9942693176405,
+            'arg_of_pericenter_deg': 328.5584374618295,
+            'true_anomaly_deg': -127.01778914927144,
+            'gm': 1.327124400419394E11
+        }
 
         cartesian_state_vector = [
             -3.0653634150102222e8, -1.1097955684640282e8, -4.8129706422527283e7,  # x, y, z

@@ -120,15 +120,16 @@ class OpmParams(object):
             state_vector (list): an array with 6 elements [rx, ry, rz, vx, vy, vz]
                 representing the cartesian coordinates (the position and velocity vector)
                 of the object.
-            keplerian_elements (list): an array with 7 elements representing the
+            keplerian_elements (dictionary): contains 7 elements representing the
                 keplerian coordinates of the object. The elements are:
-                    0: semi_major_axis (float): Semimajor axis (km)
-                    1: eccentricity (float): Eccentricity of orbit
-                    2: inclination (float): Inclination of orbit (deg)
-                    3: ra_of_asc_node (float): Right ascension of ascending node (deg)
-                    4: arg_of_pericenter (float): Argument of pericenter (deg)
-                    5: true_anomaly (float): True anomaly (deg)
-                    6: gm (float): Gravitational constant (km^3/s^2)
+                    semi_major_axis_km: semi_major_axis (float): Semimajor axis (km)
+                    eccentricity: eccentricity (float): Eccentricity of orbit
+                    inclination_deg: inclination (float): Inclination of orbit (deg)
+                    ra_of_asc_node_deg: ra_of_asc_node (float): Right ascension of ascending node
+                                                                (deg)
+                    arg_of_pericenter_deg: arg_of_pericenter (float): Argument of pericenter (deg)
+                    true_anomaly_deg: true_anomaly (float): True anomaly (deg)
+                    gm: gm (float): Gravitational constant (km^3/s^2)
 
             originator (str): responsible entity for run (default: 'ADAM_User')
             object_name (str): name of object (default: 'dummy')
@@ -166,7 +167,17 @@ class OpmParams(object):
 
         if 'state_vector' not in params and 'keplerian_elements' not in params:
             raise KeyError("Either state_vector or keplerian_elements must be provided.")
-        self._state_vector = params.get('state_vector') or [0, 0, 0, 0, 0, 0]  # Required in OPM.
+
+        supported_keplerian_elements = {'semi_major_axis_km', 'eccentricity', 'inclination_deg',
+                                        'ra_of_asc_node_deg', 'arg_of_pericenter_deg',
+                                        'true_anomaly_deg', 'gm'}
+        if 'keplerian_elements' in params.keys():
+            keplerian_params = params['keplerian_elements'].keys()
+            if not supported_keplerian_elements == keplerian_params:
+                raise KeyError("Unexpected keplerian elements provided. Values for exactly "
+                               "the following must be given: %s" % (supported_keplerian_elements))
+
+        self._state_vector = params.get('state_vector')
         self._keplerian_elements = params.get('keplerian_elements')
 
         self._originator = params.get('originator') or 'ADAM_User'
@@ -203,6 +214,11 @@ class OpmParams(object):
         Returns:
             OPM (str)
         """
+
+        # State vector is required in the OPM even if keplerian elements are also given. However,
+        # in that case it will be ignored in favor of the keplerian elements so it is not required
+        # from the user. If no state vector is specified, use dummy values.
+        state_vector = self._state_vector or [0, 0, 0, 0, 0, 0]
         base_opm = "CCSDS_OPM_VERS = 2.0\n" + \
             ("CREATION_DATE = %s\n" % datetime.utcnow()) + \
             ("ORIGINATOR = %s\n" % self._originator) + \
@@ -213,23 +229,24 @@ class OpmParams(object):
             "REF_FRAME = ITRF-97\n" + \
             "TIME_SYSTEM = UTC\n" + \
             ("EPOCH = %s\n" % self._epoch) + \
-            ("X = %s\n" % (self._state_vector[0])) + \
-            ("Y = %s\n" % (self._state_vector[1])) + \
-            ("Z = %s\n" % (self._state_vector[2])) + \
-            ("X_DOT = %s\n" % (self._state_vector[3])) + \
-            ("Y_DOT = %s\n" % (self._state_vector[4])) + \
-            ("Z_DOT = %s\n" % (self._state_vector[5]))
+            ("X = %s\n" % (state_vector[0])) + \
+            ("Y = %s\n" % (state_vector[1])) + \
+            ("Z = %s\n" % (state_vector[2])) + \
+            ("X_DOT = %s\n" % (state_vector[3])) + \
+            ("Y_DOT = %s\n" % (state_vector[4])) + \
+            ("Z_DOT = %s\n" % (state_vector[5]))
 
         keplerian_elements = ""
         if self._keplerian_elements is not None:
             keplerian_elements = \
-                ("SEMI_MAJOR_AXIS = %s\n" % (self._keplerian_elements[0])) + \
-                ("ECCENTRICITY = %s\n" % (self._keplerian_elements[1])) + \
-                ("INCLINATION = %s\n" % (self._keplerian_elements[2])) + \
-                ("RA_OF_ASC_NODE = %s\n" % (self._keplerian_elements[3])) + \
-                ("ARG_OF_PERICENTER = %s\n" % (self._keplerian_elements[4])) + \
-                ("TRUE_ANOMALY = %s\n" % (self._keplerian_elements[5])) + \
-                ("GM = %s\n" % (self._keplerian_elements[6]))
+                ("SEMI_MAJOR_AXIS = %s\n" % (self._keplerian_elements['semi_major_axis_km'])) + \
+                ("ECCENTRICITY = %s\n" % (self._keplerian_elements['eccentricity'])) + \
+                ("INCLINATION = %s\n" % (self._keplerian_elements['inclination_deg'])) + \
+                ("RA_OF_ASC_NODE = %s\n" % (self._keplerian_elements['ra_of_asc_node_deg'])) + \
+                ("ARG_OF_PERICENTER = %s\n" %
+                    (self._keplerian_elements['arg_of_pericenter_deg'])) + \
+                ("TRUE_ANOMALY = %s\n" % (self._keplerian_elements['true_anomaly_deg'])) + \
+                ("GM = %s\n" % (self._keplerian_elements['gm']))
 
         spacecraft_params = \
             ("MASS = %s\n" % self._mass) + \
