@@ -84,6 +84,15 @@ class OpmParamsTest(unittest.TestCase):
         o = OpmParams({
             'epoch': 'foo',
             'state_vector': [1, 2, 3, 4, 5, 6],
+            'keplerian_elements': {
+                'semi_major_axis_km': 1,
+                'eccentricity': 2,
+                'inclination_deg': 3,
+                'ra_of_asc_node_deg': 4,
+                'arg_of_pericenter_deg': 5,
+                'true_anomaly_deg': 6,
+                'gm': 7
+            },
 
             'originator': 'a',
             'object_name': 'b',
@@ -115,6 +124,13 @@ Z = 3
 X_DOT = 4
 Y_DOT = 5
 Z_DOT = 6
+SEMI_MAJOR_AXIS = 1
+ECCENTRICITY = 2
+INCLINATION = 3
+RA_OF_ASC_NODE = 4
+ARG_OF_PERICENTER = 5
+TRUE_ANOMALY = 6
+GM = 7
 MASS = 1
 SOLAR_RAD_AREA = 2
 SOLAR_RAD_COEFF = 3
@@ -189,6 +205,58 @@ DRAG_COEFF = 2.2"""
 
         with self.assertRaises(KeyError):
             OpmParams({'state_vector': []})
+
+        with self.assertRaises(KeyError):
+            OpmParams({
+                'keplerian_elements': {
+                    'semi_major_axis_km': 1,
+                    'eccentricity': 2,
+                    'inclination_deg': 3,
+                    'ra_of_asc_node_deg': 4,
+                    'arg_of_pericenter_deg': 5,
+                    'true_anomaly_deg': 6,
+                    'gm': 7
+                }})
+
+        with self.assertRaises(KeyError):
+            OpmParams({
+                'epoch': 'foo',
+                'keplerian_elements': {
+                    'semi_major_axis_km': 1,
+                    'eccentricity': 2,
+                    'inclination_deg': 3,
+                    'ra_of_asc_node_deg': 4,
+                    'arg_of_pericenter_deg': 5,
+                    'true_anomaly_deg': 6,
+                    # Missing gm.
+                }})
+
+        with self.assertRaises(KeyError):
+            OpmParams({
+                'epoch': 'foo',
+                'keplerian_elements': {
+                    'semi_major_axis_km': 1,
+                    'eccentricity': 2,
+                    'inclination_deg': 3,
+                    'ra_of_asc_node_deg': 4,
+                    'arg_of_pericenter_deg': 5,
+                    'true_anomaly_deg': 6,
+                    'gm': 7,
+                    'extra what is this': 8
+                }})
+
+        # No KeyError with no state vector.
+        OpmParams({
+            'epoch': 'foo',
+            'keplerian_elements': {
+                'semi_major_axis_km': 1,
+                'eccentricity': 2,
+                'inclination_deg': 3,
+                'ra_of_asc_node_deg': 4,
+                'arg_of_pericenter_deg': 5,
+                'true_anomaly_deg': 6,
+                'gm': 7
+            }})
 
     def test_invalid_keys(self):
         with self.assertRaises(KeyError):
