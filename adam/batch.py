@@ -122,14 +122,13 @@ class OpmParams(object):
                 of the object.
             keplerian_elements (dictionary): contains 7 elements representing the
                 keplerian coordinates of the object. The elements are:
-                    semi_major_axis_km: semi_major_axis (float): Semimajor axis (km)
-                    eccentricity: eccentricity (float): Eccentricity of orbit
-                    inclination_deg: inclination (float): Inclination of orbit (deg)
-                    ra_of_asc_node_deg: ra_of_asc_node (float): Right ascension of ascending node
-                                                                (deg)
-                    arg_of_pericenter_deg: arg_of_pericenter (float): Argument of pericenter (deg)
-                    true_anomaly_deg: true_anomaly (float): True anomaly (deg)
-                    gm: gm (float): Gravitational constant (km^3/s^2)
+                    semi_major_axis_km (float): Semimajor axis (km)
+                    eccentricity (float): Eccentricity of orbit
+                    inclination_deg (float): Inclination of orbit (deg)
+                    ra_of_asc_node_deg (float): Right ascension of ascending node (deg)
+                    arg_of_pericenter_deg (float): Argument of pericenter (deg)
+                    true_anomaly_deg (float): True anomaly (deg)
+                    gm (float): Gravitational constant (km^3/s^2)
 
             originator (str): responsible entity for run (default: 'ADAM_User')
             object_name (str): name of object (default: 'dummy')
