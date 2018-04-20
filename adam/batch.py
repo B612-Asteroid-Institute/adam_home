@@ -160,9 +160,9 @@ class OpmParams(object):
         # Make this a bit easier to get right by checking for parameters by unexpected
         # names.
         supported_params = {'epoch', 'state_vector', 'keplerian_elements', 'originator',
-                            'object_name', 'object_id', 'mass', 'solar_rad_area',
-                            'solar_rad_coeff', 'drag_area', 'drag_coeff', 'covariance',
-                            'perturbation', 'hypercube'}
+                            'object_name', 'object_id', 'center_name', 'ref_frame', 'mass',
+                            'solar_rad_area', 'solar_rad_coeff', 'drag_area', 'drag_coeff', 
+                            'covariance', 'perturbation', 'hypercube'}
         extra_params = params.keys() - supported_params
         if len(extra_params) > 0:
             raise KeyError("Unexpected parameters provided: %s" % (extra_params))
