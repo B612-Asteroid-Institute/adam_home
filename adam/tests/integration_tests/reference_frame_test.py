@@ -9,9 +9,6 @@ import unittest
 import datetime
 import os
 
-import numpy as np
-import numpy.testing as npt
-
 
 class ReferenceFrameTest(unittest.TestCase):
     """Integration test of using different reference frames.

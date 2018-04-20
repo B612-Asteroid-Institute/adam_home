@@ -161,7 +161,7 @@ class OpmParams(object):
         # names.
         supported_params = {'epoch', 'state_vector', 'keplerian_elements', 'originator',
                             'object_name', 'object_id', 'center_name', 'ref_frame', 'mass',
-                            'solar_rad_area', 'solar_rad_coeff', 'drag_area', 'drag_coeff', 
+                            'solar_rad_area', 'solar_rad_coeff', 'drag_area', 'drag_coeff',
                             'covariance', 'perturbation', 'hypercube'}
         extra_params = params.keys() - supported_params
         if len(extra_params) > 0:
