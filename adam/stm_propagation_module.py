@@ -54,7 +54,6 @@ class StmPropagationModule(object):
 
         return end_state_vectors
 
-
     def _propagate_states_delta_velocities(self, dV_vectors, state_vector,
                                            propagation_params,
                                            opm_params_templ):
@@ -75,7 +74,7 @@ class StmPropagationModule(object):
             end_state_vectors (list of lists):
                 states at end of integration [rx, ry, rz, vx, vy, vz]  [km, km/s]
         """
-        
+
         # Create state vectors from velocity vectors
         state_vectors_dV = []
         for dV_vector in dV_vectors:
@@ -88,7 +87,6 @@ class StmPropagationModule(object):
         )
 
         return end_state_vectors
-
 
     def _evaluate_func_with_derivative(self, xk, func, *args):
         """Evaluate a function and do central differencing for the derivative
@@ -147,7 +145,6 @@ class StmPropagationModule(object):
 
         return (yk, dy_dx_matrix)
 
-
     def run_stm_propagation(self, propagation_params, opm_params, only_dV=False):
         """ Generates a state transition matrix for the propagation described by the
             given parameters. Does so by nudging the state vector given in opm_params
@@ -175,7 +172,7 @@ class StmPropagationModule(object):
             raise KeyError('Only coordinates specified via a state vector are supported.')
 
         initial_state = opm_params.get_state_vector()
-        
+
         if only_dV:
             # STM = dRV1/dV0
             initial_velocity = initial_state[3:6]
