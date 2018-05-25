@@ -54,6 +54,9 @@ class StmPropagationModuleTest(unittest.TestCase):
         end_state, stm = self.stm_module.run_stm_propagation(
             propagation_params, opm_params)
 
+        end_state_V, stm_V = self.stm_module.run_stm_propagation(
+            propagation_params, opm_params, only_dV=True)
+
         # Taken from printed output of ../state_stm_propagation.py
         expected_end_state = np.array(
             [-37523497.931654416, 492950622.8491298, 204482176.63445434,
@@ -75,6 +78,9 @@ class StmPropagationModuleTest(unittest.TestCase):
 
         npt.assert_allclose(expected_end_state, np.array(end_state), rtol=1e-8, atol=0)
         npt.assert_allclose(expected_stm.getA(), stm.getA(), rtol=1e-8, atol=0)
+
+        npt.assert_allclose(expected_end_state, np.array(end_state_V), rtol=1e-8, atol=0)
+        npt.assert_allclose(expected_stm[:, 3:].getA(), stm_V.getA(), rtol=1e-8, atol=0)
 
 
 if __name__ == '__main__':

@@ -54,6 +54,40 @@ class StmPropagationModule(object):
 
         return end_state_vectors
 
+    def _propagate_states_delta_velocities(self, dV_vectors, state_vector,
+                                           propagation_params,
+                                           opm_params_templ):
+        """Propagate states using many initial delta-V vectors.
+
+        Args:
+            dV_vectors (list of lists):
+                list of lists with 3 elements [vx, vy, vz]  [km/s]
+            state_vector (list): lost of 6 elements of initial state
+                [rx, ry, rz, vx, vy, vz]  [km, km/s]
+            propagation_params (PropagationParams):
+                propagation-related parameters to be used for all propagations
+            opm_params_templ (OpmParams):
+                opm-related parameters to be used for all propagations, once with each
+                of the given state vectors.
+
+        Returns:
+            end_state_vectors (list of lists):
+                states at end of integration [rx, ry, rz, vx, vy, vz]  [km, km/s]
+        """
+
+        # Create state vectors from velocity vectors
+        state_vectors_dV = []
+        for dV_vector in dV_vectors:
+            # concatenate position and velocity
+            state_vector_dV = state_vector[0:3] + dV_vector
+            state_vectors_dV.append(state_vector_dV)
+
+        end_state_vectors = self._propagate_states(
+            state_vectors_dV, propagation_params, opm_params_templ
+        )
+
+        return end_state_vectors
+
     def _evaluate_func_with_derivative(self, xk, func, *args):
         """Evaluate a function and do central differencing for the derivative
 
@@ -111,7 +145,7 @@ class StmPropagationModule(object):
 
         return (yk, dy_dx_matrix)
 
-    def run_stm_propagation(self, propagation_params, opm_params):
+    def run_stm_propagation(self, propagation_params, opm_params, only_dV=False):
         """ Generates a state transition matrix for the propagation described by the
             given parameters. Does so by nudging the state vector given in opm_params
             in several different directions and combining the results of propagating
@@ -123,22 +157,36 @@ class StmPropagationModule(object):
                 opm_params (OpmParams):
                     OPM-related parameters for the propagations, including the nominal
                     state vector that will be varied. Keplerian elements not supported.
+                only_dV (bool):
+                    If True, only find the STM with respect to the velocity
 
             Returns:
                 end_state (list):
                     Final state vector of nominal propagation [rx, ry, rz, vx, vy, vz]
                     [km, km/s]
                 stm (matrix):
-                    STM describing effect of changes to initial state on final state
+                    STM describing effect of changes to final state due to
+                    initial state (or velocity)
         """
         if opm_params.get_state_vector() is None:
             raise KeyError('Only coordinates specified via a state vector are supported.')
 
-        end_state, stm = self._evaluate_func_with_derivative(
-            opm_params.get_state_vector(),
-            self._propagate_states,
-            propagation_params,
-            opm_params
-        )
+        initial_state = opm_params.get_state_vector()
+
+        if only_dV:
+            # STM = dRV1/dV0
+            initial_velocity = initial_state[3:6]
+            print(initial_velocity)
+            end_state, stm = self._evaluate_func_with_derivative(
+                initial_velocity, self._propagate_states_delta_velocities,
+                initial_state, propagation_params, opm_params
+            )
+
+        else:
+            # STM = dRV1/dRV0
+            end_state, stm = self._evaluate_func_with_derivative(
+                initial_state, self._propagate_states,
+                propagation_params, opm_params
+            )
 
         return end_state, stm
