@@ -64,7 +64,7 @@ class ReferenceFrameTest(unittest.TestCase):
         npt.assert_allclose(difference[0:3], [0, 0, 0], rtol=0, atol=.02)
         npt.assert_allclose(difference[3:6], [0, 0, 0], rtol=0, atol=.00002)
 
-        ephem = batch.get_results().get_parts()
+        ephem = batch.get_results().get_parts()[-1].get_ephemeris()
         self.assertTrue("ICRF" in ephem)
 
     def test_sun_ememe(self):
