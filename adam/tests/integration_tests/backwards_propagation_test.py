@@ -35,7 +35,7 @@ class BackwardsPropagationTest(unittest.TestCase):
         propagation_params = PropagationParams({
             'start_time': start_time_str,
             'end_time': end_time_str,
-            'step_size': 0,
+            'step_size': 86400,
             'project_uuid': self.working_project.get_uuid(),
             'description': 'Created by test at ' + start_time_str
         })

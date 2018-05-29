@@ -77,7 +77,8 @@ class PropagationParams(object):
 
         self._start_time = params['start_time']  # Required.
         self._end_time = params['end_time']  # Required.
-        self._step_size = params.get('step_size') or 86400
+        # Check explicitly for None, since 0 is a valid value.
+        self._step_size = params.get('step_size') if params.get('step_size') is not None else 86400
         self._propagator_uuid = params.get('propagator_uuid') or self.DEFAULT_CONFIG_ID
         self._project_uuid = params.get('project_uuid')
         self._description = params.get('description')

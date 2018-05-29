@@ -28,14 +28,9 @@ class AnonymousTest(unittest.TestCase):
         permissions_module = self.service.get_permissions_module()
         groups_module = self.service.get_groups_module()
 
-        # Only prod has a public project.
         projects = projects_module.get_projects()
-        if self.config.get_environment() == "prod":
-            self.assertEqual(1, len(projects))
-            self.assertEqual("public", projects[0].get_name())
-        else:
-            self.assertEqual(0, len(projects))
-            print("Skipping check for public objects.")
+        self.assertEqual(1, len(projects))
+        self.assertEqual("public", projects[0].get_name())
 
         # Can't add a project to public project.
         public_project = "00000000-0000-0000-0000-000000000001"
