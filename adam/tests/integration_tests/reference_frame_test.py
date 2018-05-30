@@ -60,6 +60,7 @@ class ReferenceFrameTest(unittest.TestCase):
 
         difference = np.subtract(expected_end_state, end_state)
         print("Difference is %s" % difference)
+        print("End state: %s" % end_state)
 
         npt.assert_allclose(difference[0:3], [0, 0, 0], rtol=0, atol=.02)
         npt.assert_allclose(difference[3:6], [0, 0, 0], rtol=0, atol=.00002)
@@ -93,18 +94,23 @@ class ReferenceFrameTest(unittest.TestCase):
         runner = BatchRunManager(self.service.get_batches_module(), [batch])
         runner.run()
         end_state = batch.get_results().get_end_state_vector()
-        expected_end_state = [73978158.47632701, -132777272.5255892, 5015.073123970032,
-                              31.710003506237434, 27.761693311026138, -11.299967713192564]
+        # The output state is expected to be in ICRF.
+        expected_end_state = [73978163.61069362, -121822760.05571477, -52811158.83249758,
+                              31.71000343989318, 29.9657246374751, .6754531613947713]
+        # These values are in EMEME. The resulting ephemeris is not expected to match these values.
+        # expected_end_state = [73978158.47632701, -132777272.5255892, 5015.073123970032,
+        #                       31.710003506237434, 27.761693311026138, -11.299967713192564]
 
         difference = np.subtract(expected_end_state, end_state)
         print("Difference is %s" % difference)
+        print("End state: %s" % end_state)
 
         npt.assert_allclose(difference[0:3], [0, 0, 0], rtol=0, atol=.02)
         npt.assert_allclose(difference[3:6], [0, 0, 0], rtol=0, atol=.00002)
 
-        # THIS IS VERY STRANGE, BUT A FACT.
-        # The values returned are actually in Sun-centered EMEME, but the ephemeris
-        # reports that it is in Sun-centered ICRF.
+        # The returned ephemeris will be in Sun-centered ICRF, not EMEME. My best guess is that
+        # the ephemeris file doesn't support all reference frames, so if it encounters one that
+        # isn't supported, it'll choose a similar one.
         ephem = batch.get_results().get_parts()[-1].get_ephemeris()
         self.assertTrue("ICRF" in ephem)
         self.assertFalse("EMEME" in ephem)
