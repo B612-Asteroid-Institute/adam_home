@@ -4,6 +4,8 @@ from adam import OpmParams
 from adam.batch import StateSummary
 from adam.batch import PropagationResults
 
+from datetime import datetime
+import numpy.testing as npt
 import unittest
 
 
@@ -57,7 +59,8 @@ class PropagationParamsTest(unittest.TestCase):
     def test_defaults(self):
         p = PropagationParams({'start_time': 'foo', 'end_time': 'bar'})
         self.assertEqual(86400, p.get_step_size())
-        self.assertEqual(PropagationParams.DEFAULT_CONFIG_ID, p.get_propagator_uuid())
+        self.assertEqual(PropagationParams.DEFAULT_CONFIG_ID,
+                         p.get_propagator_uuid())
 
         # No default.
         self.assertIsNone(p.get_project_uuid())
@@ -98,9 +101,6 @@ class OpmParamsTest(unittest.TestCase):
             'object_name': 'b',
             'object_id': 'c',
 
-            'center_name': 'EARTH',
-            'ref_frame': 'EMEME2000',
-
             'mass': 1,
             'solar_rad_area': 2,
             'solar_rad_coeff': 3,
@@ -117,8 +117,8 @@ ORIGINATOR = a
 COMMENT Cartesian coordinate system
 OBJECT_NAME = b
 OBJECT_ID = c
-CENTER_NAME = EARTH
-REF_FRAME = EMEME2000
+CENTER_NAME = SUN
+REF_FRAME = ITRF-97
 TIME_SYSTEM = UTC
 EPOCH = foo
 X = 1
@@ -176,7 +176,7 @@ COMMENT Cartesian coordinate system
 OBJECT_NAME = dummy
 OBJECT_ID = 001
 CENTER_NAME = SUN
-REF_FRAME = ICRF
+REF_FRAME = ITRF-97
 TIME_SYSTEM = UTC
 EPOCH = foo
 X = 1
@@ -353,6 +353,52 @@ class PropagationResultsTest(unittest.TestCase):
         self.assertIsNone(results.get_parts()[0])
         self.assertIsNotNone(results.get_parts()[1])
         self.assertIsNone(results.get_parts()[2])
+
+    def test_get_state_at_time(self):
+        pr = PropagationResults([None, {
+            'part_index': 'b',
+            'calc_state': 'COMPLETED',
+            'stk_ephemeris': """
+stk.v.9.0
+
+# WrittenBy    STK_Components_2017 r4(17.4.392.0)
+
+BEGIN Ephemeris
+
+NumberOfEphemerisPoints	18252
+ScenarioEpoch	21 Jul 2009 13:42:34.615999999999985
+InterpolationMethod	Hermite
+InterpolationSamplesM1	2
+CentralBody	Sun
+CoordinateSystem	ICRF
+
+EphemerisTimePosVel
+
+0 73136102939.90326 -133490160572.72543 8406324.905534467 28220.13126652218 22868.590558009368 -0.19231683186022774
+-86400 70687762770.92772 -135447234231.29443 8421107.139721738 28452.654845207973 22433.79996994943 -0.1499638154415067
+-172800 68219786459.42084 -137366684784.5862 8432255.918466914 28674.683201744967 21997.744385379105 -0.10821028857188271
+-259200 65733077574.2293 -139248418103.58472 8439823.350024007 28886.293259423644 21560.77327825493 -0.06706343692839449
+-345600 63228532421.91671 -141092369828.8071 8443862.153904703 29087.576060079045 21123.22618751113 -0.026530247821391004
+-432000 60707038864.30396 -142898504487.95035 8444425.64979409 29278.635896145453 20685.43217483686 0.013382350455396062
+-518400 58169475211.58147 -144666814569.93005 8441567.758123463 29459.589430332002 20247.709357212265 0.052667360276471335
+-604800 55616709191.788055 -146397319561.69974 8435343.01074691 29630.564809218675 19810.364512470725 0.09131761180289957
+-691200 53049596996.92381 -148090064954.06686 8425806.568807617 29791.700776677662 19373.692755679345 0.12932570231264304
+-777600 50468982405.472176 -149745121222.51495 8413014.243413422 29943.145792593295 18937.977283700522 0.16668399446203316
+            """  # NOQA
+        }])
+        self.assertEqual(None,
+                         pr.get_state_vector_at_time(datetime.strptime("21 Jul 2009 13:42:35.616",
+                                                                       "%d %b %Y %H:%M:%S.%f")))
+        npt.assert_almost_equal(
+            [70687762.77092772, -135447234.23129443, 8421.107139721738,
+             28.452654845207973, 22.43379996994943, -0.0001499638154415067],
+            pr.get_state_vector_at_time(datetime.strptime("20 Jul 2009 13:42:34.616",
+                                                          "%d %b %Y %H:%M:%S.%f")))
+        npt.assert_almost_equal(
+            [50468982.405472176, -149745121.22251495, 8413.014243413422,
+             29.943145792593295, 18.937977283700522, 0.00016668399446203316],
+            pr.get_state_vector_at_time(datetime.strptime("12 Jul 2009 13:42:34.616",
+                                                          "%d %b %Y %H:%M:%S.%f")))
 
     def test_get_final_state_vector(self):
         pr = PropagationResults([None])
