@@ -135,6 +135,11 @@ class OpmParams(object):
             object_name (str): name of object (default: 'dummy')
             object_id (str): identification of object (default: '001')
 
+            center_name (str): center for propagation. 'SUN' or 'EARTH'. (default: 'SUN')
+            ref_frame (str): reference frame for propagation. 'ICRF' (International Celestial
+                             Reference Frame) or 'EMEME2000' (Earth Mean Ecliptic Mean
+                             Equinox of J2000). (default: 'ICRF')
+
             mass (float): object mass in kilograms (default: 1000 kg)
             solar_rad_area (float): object solar radiation area in squared meters
                 (default: 20 m^2)
@@ -156,9 +161,9 @@ class OpmParams(object):
         # Make this a bit easier to get right by checking for parameters by unexpected
         # names.
         supported_params = {'epoch', 'state_vector', 'keplerian_elements', 'originator',
-                            'object_name', 'object_id', 'mass', 'solar_rad_area',
-                            'solar_rad_coeff', 'drag_area', 'drag_coeff', 'covariance',
-                            'perturbation', 'hypercube'}
+                            'object_name', 'object_id', 'center_name', 'ref_frame', 'mass',
+                            'solar_rad_area', 'solar_rad_coeff', 'drag_area', 'drag_coeff',
+                            'covariance', 'perturbation', 'hypercube'}
         extra_params = params.keys() - supported_params
         if len(extra_params) > 0:
             raise KeyError("Unexpected parameters provided: %s" % (extra_params))
@@ -183,6 +188,9 @@ class OpmParams(object):
         self._originator = params.get('originator') or 'ADAM_User'
         self._object_name = params.get('object_name') or 'dummy'
         self._object_id = params.get('object_id') or '001'
+
+        self._center_name = params.get('center_name') or 'SUN'
+        self._ref_frame = params.get('ref_frame') or 'ICRF'
 
         self._mass = params.get('mass') or 1000
         self._solar_rad_area = params.get('solar_rad_area') or 20
@@ -225,8 +233,8 @@ class OpmParams(object):
             "COMMENT Cartesian coordinate system\n" + \
             ("OBJECT_NAME = %s\n" % self._object_name) + \
             ("OBJECT_ID = %s\n" % self._object_id) + \
-            "CENTER_NAME = SUN\n" + \
-            "REF_FRAME = ITRF-97\n" + \
+            ("CENTER_NAME = %s\n" % self._center_name) + \
+            ("REF_FRAME = %s\n" % self._ref_frame) + \
             "TIME_SYSTEM = UTC\n" + \
             ("EPOCH = %s\n" % self._epoch) + \
             ("X = %s\n" % (state_vector[0])) + \
