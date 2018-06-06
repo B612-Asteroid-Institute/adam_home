@@ -79,8 +79,10 @@ class PropagationParams(object):
         self._start_time = params['start_time']  # Required.
         self._end_time = params['end_time']  # Required.
         # Check explicitly for None, since 0 is a valid value.
-        self._step_size = params.get('step_size') if params.get('step_size') is not None else 86400
-        self._propagator_uuid = params.get('propagator_uuid') or self.DEFAULT_CONFIG_ID
+        self._step_size = params.get('step_size') if params.get(
+            'step_size') is not None else 86400
+        self._propagator_uuid = params.get(
+            'propagator_uuid') or self.DEFAULT_CONFIG_ID
         self._project_uuid = params.get('project_uuid')
         self._description = params.get('description')
 
@@ -162,9 +164,9 @@ class OpmParams(object):
         # Make this a bit easier to get right by checking for parameters by unexpected
         # names.
         supported_params = {'epoch', 'state_vector', 'keplerian_elements', 'originator',
-                            'object_name', 'object_id', 'center_name', 'ref_frame', 'mass', 'solar_rad_area',
-                            'solar_rad_coeff', 'drag_area', 'drag_coeff', 'covariance',
-                            'perturbation', 'hypercube'}
+                            'object_name', 'object_id', 'center_name', 'ref_frame', 'mass',
+                            'solar_rad_area', 'solar_rad_coeff', 'drag_area', 'drag_coeff',
+                            'covariance', 'perturbation', 'hypercube'}
         extra_params = params.keys() - supported_params
         if len(extra_params) > 0:
             raise KeyError("Unexpected parameters provided: %s" %
@@ -191,7 +193,7 @@ class OpmParams(object):
         self._originator = params.get('originator') or 'ADAM_User'
         self._object_name = params.get('object_name') or 'dummy'
         self._object_id = params.get('object_id') or '001'
- 
+
         self._center_name = params.get('center_name') or 'SUN'
         self._ref_frame = params.get('ref_frame') or 'ICRF'
 
