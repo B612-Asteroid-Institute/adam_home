@@ -101,6 +101,9 @@ class OpmParamsTest(unittest.TestCase):
             'object_name': 'b',
             'object_id': 'c',
 
+            'center_name': 'EARTH',
+            'ref_frame': 'EMEME2000',
+
             'mass': 1,
             'solar_rad_area': 2,
             'solar_rad_coeff': 3,
@@ -117,8 +120,8 @@ ORIGINATOR = a
 COMMENT Cartesian coordinate system
 OBJECT_NAME = b
 OBJECT_ID = c
-CENTER_NAME = SUN
-REF_FRAME = ITRF-97
+CENTER_NAME = EARTH
+REF_FRAME = EMEME2000
 TIME_SYSTEM = UTC
 EPOCH = foo
 X = 1
@@ -176,7 +179,7 @@ COMMENT Cartesian coordinate system
 OBJECT_NAME = dummy
 OBJECT_ID = 001
 CENTER_NAME = SUN
-REF_FRAME = ITRF-97
+REF_FRAME = ICRF
 TIME_SYSTEM = UTC
 EPOCH = foo
 X = 1
