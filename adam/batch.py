@@ -2,7 +2,7 @@
     batch.py
 """
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 class Batch(object):
@@ -73,13 +73,16 @@ class PropagationParams(object):
                             'propagator_uuid', 'project_uuid', 'description'}
         extra_params = params.keys() - supported_params
         if len(extra_params) > 0:
-            raise KeyError("Unexpected parameters provided: %s" % (extra_params))
+            raise KeyError("Unexpected parameters provided: %s" %
+                           (extra_params))
 
         self._start_time = params['start_time']  # Required.
         self._end_time = params['end_time']  # Required.
         # Check explicitly for None, since 0 is a valid value.
-        self._step_size = params.get('step_size') if params.get('step_size') is not None else 86400
-        self._propagator_uuid = params.get('propagator_uuid') or self.DEFAULT_CONFIG_ID
+        self._step_size = params.get('step_size') if params.get(
+            'step_size') is not None else 86400
+        self._propagator_uuid = params.get(
+            'propagator_uuid') or self.DEFAULT_CONFIG_ID
         self._project_uuid = params.get('project_uuid')
         self._description = params.get('description')
 
@@ -166,12 +169,14 @@ class OpmParams(object):
                             'covariance', 'perturbation', 'hypercube'}
         extra_params = params.keys() - supported_params
         if len(extra_params) > 0:
-            raise KeyError("Unexpected parameters provided: %s" % (extra_params))
+            raise KeyError("Unexpected parameters provided: %s" %
+                           (extra_params))
 
         self._epoch = params['epoch']  # Required.
 
         if 'state_vector' not in params and 'keplerian_elements' not in params:
-            raise KeyError("Either state_vector or keplerian_elements must be provided.")
+            raise KeyError(
+                "Either state_vector or keplerian_elements must be provided.")
 
         supported_keplerian_elements = {'semi_major_axis_km', 'eccentricity', 'inclination_deg',
                                         'ra_of_asc_node_deg', 'arg_of_pericenter_deg',
@@ -388,6 +393,75 @@ class PropagationResults(object):
     def get_parts(self):
         return self._parts
 
+    def get_final_ephemeris(self):
+        part = self._parts[-1]
+        if part is None:
+            print("Final part is not available")
+            return None
+        state = part.get_calc_state()
+        if (state != 'COMPLETED'):
+            print(
+                "Final part is in state %s, not COMPLETED, so no ephemeris is available" % (state))
+            return None
+        return part.get_ephemeris()
+
+    def _parse_date(self, date):
+        # TODO(jcarrico): Find a more precise datetime library.
+        parts = date.split(".")
+        micros = float("0." + parts[1])
+
+        parsed = datetime.strptime(parts[0], "%d %b %Y %H:%M:%S")
+        parsed = parsed + timedelta(microseconds=micros * 1000000)
+        return parsed
+
+    def get_state_vector_at_time(self, target_epoch):
+        """Get the state vector at the given time as a 6d list in [km, km/s]
+
+        This function grabs the STK ephemeris from the final part. It parses the epoch given in
+        the ephemeris in order to determine the times of all the state vectors given in the file.
+
+        If a time is requested that does not have an explicit state vector, None will be returned.
+        This will not interpolate.
+
+        Args:
+            target_epoch (datetime) - time at which a state vector is desired
+
+        Returns:
+            state_vector (list) - an array with 6 elements [rx, ry, rz, vx, vy, vz]
+                                  [km, km/s]
+        """
+        stk_ephemeris = self.get_final_ephemeris()
+        if stk_ephemeris is None:
+            return None
+
+        split_ephem = stk_ephemeris.splitlines()
+
+        file_epoch = None
+        for line in split_ephem:
+            if line.startswith("ScenarioEpoch"):
+                epoch_str = line.split('\t')[1]
+                try:
+                    file_epoch = self._parse_date(epoch_str)
+                except ValueError as e:
+                    print("Caught error, ignoring: " + str(e))
+                    pass
+        if file_epoch is None:
+            print("No file epoch could be parsed")
+            return None
+
+        for line in split_ephem:
+            split_line = line.split()
+            # It's a state if it has more than 7 elements
+            if len(split_line) >= 7:
+                epoch = file_epoch + timedelta(seconds=float(split_line[0]))
+                if abs((epoch - target_epoch).total_seconds()) <= 1e-6:
+                    state_vector = [(float(i) * self.M2KM)
+                                    for i in split_line][1:7]
+                    return state_vector
+
+        print("No state vector found at time " + str(target_epoch))
+        return None
+
     def get_end_state_vector(self):
         """Get the end state vector as a 6d list in [km, km/s]
 
@@ -400,18 +474,9 @@ class PropagationResults(object):
             state_vector (list) - an array with 6 elements [rx, ry, rz, vx, vy, vz]
                                   [km, km/s]
         """
-
-        # get final ephemeris part
-        part = self._parts[-1]
-        if part is None:
-            print("Cannot compute final state vector from nonexistent final part")
+        stk_ephemeris = self.get_final_ephemeris()
+        if stk_ephemeris is None:
             return None
-        state = part.get_calc_state()
-        if (state != 'COMPLETED'):
-            print("Cannot compute final state vector from part in state %s" % (state))
-            return None
-
-        stk_ephemeris = part.get_ephemeris()  # Guaranteed to exist if state == COMPLETED
 
         split_ephem = stk_ephemeris.splitlines()
         state_vectors = []
