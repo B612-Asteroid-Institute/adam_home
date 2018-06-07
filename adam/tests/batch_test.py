@@ -358,6 +358,27 @@ class PropagationResultsTest(unittest.TestCase):
         self.assertIsNone(results.get_parts()[2])
 
     def test_get_state_at_time(self):
+        pr = PropagationResults([None])
+        self.assertIsNone(pr.get_state_vector_at_time(datetime.now()))
+
+        pr = PropagationResults([{
+            'part_index': 'a',
+            'calc_state': 'RUNNING'
+        }])
+        self.assertIsNone(pr.get_state_vector_at_time(datetime.now()))
+
+
+        pr = PropagationResults([None, {
+            'part_index': 'a',
+            'calc_state': 'COMPLETED',
+            'stk_ephemeris': """
+some junk here not a file epoch
+1 2 3 4 5 6 7
+7 6 5 4 3 2 1
+            """
+        }])
+        self.assertIsNone(pr.get_state_vector_at_time(datetime.now()))
+
         pr = PropagationResults([None, {
             'part_index': 'b',
             'calc_state': 'COMPLETED',
@@ -389,14 +410,19 @@ EphemerisTimePosVel
 -777600 50468982405.472176 -149745121222.51495 8413014.243413422 29943.145792593295 18937.977283700522 0.16668399446203316
             """  # NOQA
         }])
+        # Wrong time, no match.
         self.assertEqual(None,
                          pr.get_state_vector_at_time(datetime.strptime("21 Jul 2009 13:42:35.616",
                                                                        "%d %b %Y %H:%M:%S.%f")))
+
+        # Middle point.
         npt.assert_almost_equal(
             [70687762.77092772, -135447234.23129443, 8421.107139721738,
              28.452654845207973, 22.43379996994943, -0.0001499638154415067],
             pr.get_state_vector_at_time(datetime.strptime("20 Jul 2009 13:42:34.616",
                                                           "%d %b %Y %H:%M:%S.%f")))
+
+        # Check last point.
         npt.assert_almost_equal(
             [50468982.405472176, -149745121.22251495, 8413.014243413422,
              29.943145792593295, 18.937977283700522, 0.00016668399446203316],

@@ -406,6 +406,7 @@ class PropagationResults(object):
         return part.get_ephemeris()
 
     def _parse_date(self, date):
+        # TODO(jcarrico): Find a more precise datetime library.
         parts = date.split(".")
         micros = float("0." + parts[1])
 
