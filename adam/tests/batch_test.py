@@ -367,7 +367,6 @@ class PropagationResultsTest(unittest.TestCase):
         }])
         self.assertIsNone(pr.get_state_vector_at_time(datetime.now()))
 
-
         pr = PropagationResults([None, {
             'part_index': 'a',
             'calc_state': 'COMPLETED',
