@@ -346,9 +346,15 @@ class StateSummary(object):
 class PropagationResults(object):
 
     class Part(object):
-        def __init__(self, part):
+        def __init__(self, part, ephem_file_base=None, keep_local_ephem=True):
             """ Requires a json response as returned from the server representing a batch
                 part state (e.g. from /batch/batch_uuid/part_index)
+
+                part: JSON response from server
+                ephem_file_base: base name of files to which ephem files should be written.
+                    _[part index].e will be added to this base for each part.
+                keep_local_ephem: whether to keep the in-memory version of the ephemeris.
+                    May be false only if ephem_file_base is specified.
 
                 Raises:
                     KeyError if the given object does not include 'part_index' and
@@ -358,6 +364,16 @@ class PropagationResults(object):
             self._calc_state = part['calc_state']
             self._ephemeris = part.get('stk_ephemeris')
             self._error = part.get('error')
+            self._ephem_file = None
+            if ephem_file_base is not None:
+                self._ephem_file = ephem_file_base + "_" + str(self._part_index) + ".e"
+            self._keep_local_ephem = keep_local_ephem
+
+            if self._ephem_file is not None:
+                with open(self._ephem_file, "w") as f:
+                    f.write(part.get('stk_ephemeris'))
+                if not self._keep_local_ephem:
+                    self._ephemeris = None
 
         def __repr__(self):
             return "PropagationPart [%s]" % (self._calc_state)
@@ -369,23 +385,35 @@ class PropagationResults(object):
             return self._calc_state
 
         def get_ephemeris(self):
-            return self._ephemeris
+            if self._ephemeris is not None:
+                return self._ephemeris
+            elif self._ephem_file is not None:
+                with open(self._ephem_file, "r") as f:
+                    return f.read()
+            else:
+                return None
 
         def get_error(self):
             return self._error
 
     M2KM = 1E-3  # meters to kilometers
 
-    def __init__(self, parts):
+    def __init__(self, parts, ephem_file_base=None, keep_local_ephem=True):
         """ Should be called with a list of json responses from the server representing
             the parts_count parts of a batch propagation result.
+
+            part: JSON parts array from server
+            ephem_file_base: base name of files to which ephem files should be written.
+                _[part index].e will be added to this base for each part.
+            keep_local_ephem: whether to keep the in-memory version of the ephemeris.
+                May be false only if ephem_dir is specified.
         """
         if (len(parts) < 1):
             raise RuntimeError("Must provide at least one part.")
 
         # Fill in None responses (which may happen e.g. in case of 404s, or if the part
         # isn't ready yet) with Nones
-        self._parts = [self.Part(p) if p is not None else None for p in parts]
+        self._parts = [self.Part(p, ephem_file_base, keep_local_ephem) if p is not None else None for p in parts]
 
     def __repr__(self):
         return "Propagation results with %s parts" % (len(self._parts))

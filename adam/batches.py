@@ -110,16 +110,24 @@ class Batches(object):
 
         return part_json
 
-    def get_propagation_results(self, state_summary):
+    def get_propagation_results(self, state_summary, ephem_file_dir=None, keep_local_ephems=True):
         """ Returns a PropagationResults object with as many PropagationPart objects as
             the state summary  claims to have parts, or raises an error. Note that if
             state of given summary is not 'COMPLETED' or 'FAILED', not all parts are
             guaranteed to exist or to have an ephemeris.
+
+            ephem_file_dir: directory to which ephem files should be written.
+            keep_local_ephems: whether to keep the in-memory version of the ephemeris.
+                May be false only if ephem_file_dir is specified.
         """
         if state_summary.get_parts_count() is None or state_summary.get_parts_count() < 1:
             print("Unable to retrieve results for batch with no parts")
             return None
 
+        ephem_file_base = None
+        if ephem_file_dir is not None:
+            ephem_file_base = ephem_file_dir + "/" + state_summary.get_uuid()
+
         parts = [self._get_part(state_summary, i)
                  for i in range(state_summary.get_parts_count())]
-        return PropagationResults(parts)
+        return PropagationResults(parts, ephem_file_base, keep_local_ephems)

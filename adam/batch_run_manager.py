@@ -191,17 +191,18 @@ class BatchRunManager(object):
         if self.do_timing:
             self.timer.stop()
 
-    def _get_results(self):
+    def _get_results(self, ephem_file_dir=None, keep_local_ephems=True):
         if self.do_timing:
             self.timer.start("Retrieving propagation results.")
 
         def _get_results(i):
             b = self.batch_runs[i]
-            results = self.batches_module.get_propagation_results(b.get_state_summary())
+            results = self.batches_module.get_propagation_results(
+                b.get_state_summary(), ephem_file_dir, keep_local_ephems)
             b.set_results(results)
 
         if self.multi_threaded:
-            threads = 5
+            threads = 50
         else:
             threads = 1
         pool = ThreadPool(threads)
@@ -212,7 +213,7 @@ class BatchRunManager(object):
         if self.do_timing:
             self.timer.stop()
 
-    def run(self):
+    def run(self, ephem_file_dir=None, keep_local_ephems=True):
         self._submit()
         self._wait_for_completion()
-        self._get_results()
+        self._get_results(ephem_file_dir, keep_local_ephems)

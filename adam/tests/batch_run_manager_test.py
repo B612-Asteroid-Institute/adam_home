@@ -23,7 +23,7 @@ class MockBatches:
     def expect_new_batch(self, batch, response):
         self.expected_new_batch.append([batch, response])
 
-    def get_propagation_results(self, batch):
+    def get_propagation_results(self, batch, ephem_file_dir=None, keep_local_ephems=True):
         if len(self.expected_get_results) == 0:
             raise AssertionError("Did not expect any calls")
 
