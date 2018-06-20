@@ -3,25 +3,23 @@
 """
 
 from tabulate import tabulate
-from adam.batch import OpmParams
-from adam.batch import PropagationParams
+from adam.adam_objects import AdamObjects
+from adam.opm_params import OpmParams
+from adam.propagation_params import PropagationParams
 
-class AdamObject(object):
-    def __init__(self, uuid, typee):
-        self._uuid = uuid
-        self._type = typee
-
-    def get_uuid(self):
-        return self._uuid
-
-    def get_type(self):
-        return self._type
+import json
 
 class TargetedPropagation(object):
-    def __init__(self, propagation_params, opm_params, targeting_params):
+    def __init__(self, uuid, propagation_params, opm_params, targeting_params, ephemeris=None, maneuver=None):
+        self._uuid = uuid
         self._propagation_params = propagation_params
         self._opm_params = opm_params
         self._targeting_params = targeting_params
+        self._ephemeris = ephemeris
+        self._maneuver = maneuver
+    
+    def get_uuid(self):
+        return self._uuid
 
     def get_propagation_params(self):
         return self._propagation_params
@@ -31,8 +29,21 @@ class TargetedPropagation(object):
 
     def get_targeting_params(self):
         return self._targeting_params
+    
+    def get_ephemeris(self):
+        return self._ephemeris
+    
+    def get_maneuver(self):
+        return self._maneuver
 
 class TargetingParams(object):
+    @classmethod
+    def fromJsonResponse(cls, response_targeting_params):
+        return TargetingParams({
+            'target_distance_from_earth': response_targeting_params['targetDistanceFromEarth'],
+            'tolerance': response_targeting_params['tolerance'],
+            'run_nominal_only': response_targeting_params['runNominalOnly'],
+        })
 
     def __init__(self, params):
         """
@@ -74,123 +85,48 @@ class TargetingParams(object):
         return self._run_nominal_only
 
 
-class TargetedPropagations(object):
+class TargetedPropagations(AdamObjects):
     """Module for managing targeted propagations.
 
     """
+
     def __init__(self, rest):
-        self._rest = rest
+        AdamObjects.__init__(self, rest, 'TargetedPropagation')
 
     def __repr__(self):
         return "TargetedPropagations module"
 
-    def _build_targeted_propagation_creation_data(self, propagation_params, opm_params, targeting_params):
-        data = {'startTime': propagation_params.get_start_time(),
-                'endTime': propagation_params.get_end_time(),
-                'stepDurationSec': propagation_params.get_step_size(),
-                'propagatorUuid': propagation_params.get_propagator_uuid(),
-                'opmString': opm_params.generate_opm(),
-                'description': propagation_params.get_description(),
-                'targetDistanceFromEarth': targeting_params.get_target_distance_from_earth(),
-                'tolerance': targeting_params.get_tolerance(),
-                'runNominalOnly': targeting_params.get_run_nominal_only(),
-                'project': propagation_params.get_project_uuid(),
-                'description': propagation_params.get_description()}
+    def _build_targeted_propagation_creation_data(self, propagation_params, opm_params, targeting_params, project_uuid):
+        data = {'description': propagation_params.get_description(),
+                'initialPropagationParameters': {
+                    'start_time': propagation_params.get_start_time(),
+                    'end_time': propagation_params.get_end_time(),
+                    'propagator_uuid': propagation_params.get_propagator_uuid(),
+                    'stepDurationSec': propagation_params.get_step_size(),
+                    'opmFromString': opm_params.generate_opm(),
+                },
+                'targetingParameters': {
+                    'targetDistanceFromEarth': targeting_params.get_target_distance_from_earth(),
+                    'tolerance': targeting_params.get_tolerance(),
+                    'runNominalOnly': targeting_params.get_run_nominal_only(),
+                },
+                'project': project_uuid}
 
         return data
 
-    def new_targeted_propagation(self, propagation_params, opm_params, targeting_params):
-        data = self._build_targeted_propagation_creation_data(propagation_params, opm_params, targeting_params)
-
-        code, response = self._rest.post('/adam_object/TargetedPropagation', data)
-
-        if code != 200:
-            raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
-
-        return AdamObject(response['uuid'], response['type'])
-
-    def new_batches(self, param_pairs):
-        """ Expects a list of pairs of [propagation_params, opm_params].
-            Returns a list of batch summaries for the submitted batches in the same order.
-        """
-        batch_dicts = []
-        for pair in param_pairs:
-            batch_dicts.append(self._build_batch_creation_data(pair[0], pair[1]))
-
-        code, response = self._rest.post('/batches', {'requests': batch_dicts})
-
-        # Check error code
-        if code != 200:
-            raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
-
-        if len(param_pairs) != len(response['requests']):
-            raise RuntimeError("Expected %s results, only got %s" %
-                               (len(param_pairs), len(response['requests'])))
-
-        # Store response values
-        summaries = []
-        for i in range(len(response['requests'])):
-            summaries.append(StateSummary(response['requests'][i]))
-
-        return summaries
-
-    def delete_batch(self, uuid):
-        code = self._rest.delete('/batch/' + uuid)
-
-        if code != 204:
-            raise RuntimeError("Server status code: %s" % (code))
-
-    def get_summary(self, uuid):
-        code, response = self._rest.get('/batch/' + uuid)
-
-        if code == 404:
-            return None
-        elif code != 200:
-            raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
-
-        return StateSummary(response)
-
-    def _get_summaries(self, project):
-        code, response = self._rest.get('/batch?project_uuid=' + project)
-
-        if code != 200:
-            raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
-
-        return response['items']
-
-    def get_summaries(self, project):
-        summaries = {}
-        for s in self._get_summaries(project):
-            summaries[s['uuid']] = StateSummary(s)
-        return summaries
-
-    def print_summaries(self, project, keys="batch_uuid,calc_state"):
-        batches = self._get_summaries(project)
-
-        print(tabulate(batches, headers=keys, tablefmt="fancy_grid"))
-
-    def _get_part(self, state_summary, index):
-        # Parts IDs are 1-indexed, not 0-indexed.
-        url = '/batch/' + state_summary.get_uuid() + '/' + str(index + 1)
-        code, part_json = self._rest.get(url)
-
-        if code == 404:    # Not found
-            return None
-        if code != 200:
-            raise RuntimeError("Server status code: %s; Response %s" % (code, part_json))
-
-        return part_json
-
-    def get_propagation_results(self, state_summary):
-        """ Returns a PropagationResults object with as many PropagationPart objects as
-            the state summary  claims to have parts, or raises an error. Note that if
-            state of given summary is not 'COMPLETED' or 'FAILED', not all parts are
-            guaranteed to exist or to have an ephemeris.
-        """
-        if state_summary.get_parts_count() is None or state_summary.get_parts_count() < 1:
-            print("Unable to retrieve results for batch with no parts")
-            return None
-
-        parts = [self._get_part(state_summary, i)
-                 for i in range(state_summary.get_parts_count())]
-        return PropagationResults(parts)
+    def new_targeted_propagation(self, propagation_params, opm_params, targeting_params, project_uuid):
+        data = self._build_targeted_propagation_creation_data(propagation_params, opm_params, targeting_params, project_uuid)
+        return AdamObjects.create(self, data)
+    
+    def get_targeted_propagation(self, uuid):
+        response = AdamObjects._get_json(self, uuid)
+        print(json.dumps(response, indent=1))
+        opmParams = OpmParams.fromJsonResponse(response['initialPropagationParameters']['opm'])
+        propParams = PropagationParams.fromJsonResponse(
+            response['initialPropagationParameters'], response.get('description'))
+        targetingParams = TargetingParams.fromJsonResponse(response['targetingParameters'])
+        ephemeris = response.get('ephemeris')
+        maneuver = None
+        if 'maneuverX' in response:
+            maneuver = [response['maneuverX'], response['maneuverY'], response['maneuverZ']]
+        return TargetedPropagation(response['uuid'], propParams, opmParams, targetingParams, ephemeris, maneuver)

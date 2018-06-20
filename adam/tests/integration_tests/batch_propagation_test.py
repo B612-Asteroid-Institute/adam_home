@@ -4,9 +4,8 @@ from adam import PropagationParams
 from adam import OpmParams
 from adam import BatchRunManager
 from adam import ConfigManager
-from adam import TargetedPropagation
-from adam import TargetedPropagations
-from adam import TargetingParams
+from adam import BatchPropagation
+from adam import BatchPropagations
 
 import unittest
 import datetime
@@ -15,7 +14,7 @@ import os
 import numpy.testing as npt
 
 
-class TargetedPropagationTest(unittest.TestCase):
+class BatchPropagationTest(unittest.TestCase):
 
     def setUp(self):
         config = ConfigManager(os.getcwd() + '/test_config.json').get_config()
@@ -27,7 +26,7 @@ class TargetedPropagationTest(unittest.TestCase):
     def tearDown(self):
         self.service.teardown()
 
-    def new_targeted_propagation(self):
+    def new_batch_propagation_params(self):
         now = datetime.datetime.utcnow()
         later = now + datetime.timedelta(10 * 365)
 
@@ -35,7 +34,6 @@ class TargetedPropagationTest(unittest.TestCase):
             'start_time': now.isoformat() + 'Z',
             'end_time': later.isoformat() + 'Z',
             'step_size': 60 * 60,  # 1 hour.
-            'project_uuid': self.working_project.get_uuid(),
             'description': 'Created by test at ' + str(now) + 'Z'
         })
 
@@ -58,25 +56,37 @@ class TargetedPropagationTest(unittest.TestCase):
             'originator': 'Test',
             'object_name': 'TestObj',
             'object_id': 'TestObjId',
+
+            # Lower triangular covariance matrix (21 elements in a list)
+            'covariance': [
+                3.331349476038534e-04,
+                4.618927349220216e-04, 6.782421679971363e-04,
+                -3.070007847730449e-04, -4.221234189514228e-04, 3.231931992380369e-04,
+                -3.349365033922630e-07, -4.686084221046758e-07, 2.484949578400095e-07, 4.296022805587290e-10,  # NOQA (we want to keep the visual triangle)
+                -2.211832501084875e-07, -2.864186892102733e-07, 1.798098699846038e-07, 2.608899201686016e-10, 1.767514756338532e-10,  # NOQA
+                -3.041346050686871e-07, -4.989496988610662e-07, 3.540310904497689e-07, 1.869263192954590e-10, 1.008862586240695e-10, 6.224444338635500e-10],  # NOQA
+            'perturbation': 3,
+            'hypercube': 'FACES',
         })
 
-        return propagation_params, opm_params, TargetingParams({'target_distance_from_earth': 1e7})
+        return propagation_params, opm_params
 
-    def test_targeted_propagation(self):
-        propagation_params, opm_params, targeting_params = self.new_targeted_propagation()
+    def test_batch_propagation(self):
+        propagation_params, opm_params = self.new_batch_propagation_params()
+        props = BatchPropagations(self.service.rest)
 
-        props = TargetedPropagations(self.service.rest)
+        response = props.new_batch_propagation(propagation_params, opm_params, self.working_project.get_uuid())
+        self.assertIsNotNone(response.get_uuid())
+        self.assertEqual("BatchPropagation", response.get_type())
 
-        obj = props.new_targeted_propagation(
-            propagation_params, opm_params, targeting_params, self.working_project.get_uuid())
-        self.assertIsNotNone(obj.get_uuid())
-        self.assertEqual("TargetedPropagation", obj.get_type())
-
-        props.get_runnable_state(obj.get_uuid())
+        props.get_runnable_state(response.get_uuid())
 
         props.get_runnable_states(self.working_project.get_uuid())
 
-        print(props.get_targeted_propagation(obj.get_uuid()))
+        batch = props.get_batch_propagation(response.get_uuid())
+        print(batch.get_opm_params().generate_opm())
+        print(batch.get_final_state_vectors())
+
 
 
 if __name__ == '__main__':
