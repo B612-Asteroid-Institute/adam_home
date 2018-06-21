@@ -4,6 +4,7 @@
 
 from datetime import datetime, timedelta
 
+
 class OpmParams(object):
     @classmethod
     def fromJsonResponse(cls, response_opm):
@@ -11,9 +12,10 @@ class OpmParams(object):
         metadata = response_opm['metadata']
         spacecraft = response_opm['spacecraft']
         state_vector = response_opm['state_vector']
-        keplerian_elements = response_opm.get('keplerian') 
+        keplerian_elements = response_opm.get('keplerian')
         covariance = response_opm.get('covariance')
-        adam_fields = {f['key']: f['value'] for f in response_opm.get('adam_fields') or []}
+        adam_fields = {f['key']: f['value']
+                       for f in response_opm.get('adam_fields') or []}
         opm_params = {
             'epoch': state_vector['epoch'],
             'state_vector': [
@@ -37,7 +39,8 @@ class OpmParams(object):
 
         if covariance is not None:
             opm_params['hypercube'] = adam_fields['HYPERCUBE']
-            opm_params['perturbation'] = int(adam_fields['INITIAL_PERTURBATION'])
+            opm_params['perturbation'] = int(
+                adam_fields['INITIAL_PERTURBATION'])
             opm_params['covariance'] = [covariance['cx_x'],
                                         covariance['cy_x'],
                                         covariance['cy_y'],
@@ -59,7 +62,7 @@ class OpmParams(object):
                                         covariance['cz_dot_x_dot'],
                                         covariance['cz_dot_y_dot'],
                                         covariance['cz_dot_z_dot']]
-                                        
+
         if keplerian_elements is not None:
             opm_params['keplerian_elements'] = {
                 'semi_major_axis_km': keplerian_elements['semi_major_axis'],

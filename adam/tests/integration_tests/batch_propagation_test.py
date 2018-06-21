@@ -75,25 +75,36 @@ class BatchPropagationTest(unittest.TestCase):
         propagation_params, opm_params = self.new_batch_propagation_params()
         props = BatchPropagations(self.service.rest)
 
-        response = props.new_batch_propagation(propagation_params, opm_params, self.working_project.get_uuid())
-        self.assertIsNotNone(response.get_uuid())
-        self.assertEqual("BatchPropagation", response.get_type())
+        uuid = props.new_batch_propagation(
+            propagation_params,
+            opm_params,
+            self.working_project.get_uuid())
+        self.assertIsNotNone(uuid)
 
-        props.get_runnable_state(response.get_uuid())
+        runnable_state = props.get_runnable_state(uuid)
+        self.assertEqual('COMPLETED', runnable_state.get_calc_state())
+        self.assertIsNone(runnable_state.get_error())
 
-        props.get_runnable_states(self.working_project.get_uuid())
+        runnable_state_list = props.get_runnable_states(
+            self.working_project.get_uuid())
+        self.assertEqual(1, len(runnable_state_list))
 
-        batch = props.get_batch_propagation(response.get_uuid())
+        batch = props.get_batch_propagation(uuid)
+        self.assertIsNotNone(batch)
 
-        children = props.get_ephemerides_for_batch_propagation(response.get_uuid())
+        children = props.get_ephemerides_for_batch_propagation(uuid)
         self.assertEqual(len(batch.get_final_state_vectors()), len(children))
         for i in range(len(batch.get_final_state_vectors())):
-            self.assertEqual(batch.get_final_state_vectors()[i], children[i].get_final_state_vector())
+            self.assertEqual(
+                batch.get_final_state_vectors()[i],
+                children[i].get_final_state_vector())
 
-        props.delete(response.get_uuid())
+        props.delete(uuid)
 
-        self.assertIsNone(props.get_batch_propagation(response.get_uuid()))
-        self.assertEqual(0, len(props.get_ephemerides_for_batch_propagation(response.get_uuid())))
+        self.assertIsNone(props.get_batch_propagation(uuid))
+        self.assertEqual(
+            0, len(
+                props.get_ephemerides_for_batch_propagation(uuid)))
 
 
 if __name__ == '__main__':

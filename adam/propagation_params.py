@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 class PropagationParams(object):
 
     DEFAULT_CONFIG_ID = "00000000-0000-0000-0000-000000000001"
-    
+
     @classmethod
     def fromJsonResponse(cls, response_prop_params, description):
         # Ignores opm, which should be processed separately.

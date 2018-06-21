@@ -60,25 +60,29 @@ class TargetedPropagationTest(unittest.TestCase):
             'object_id': 'TestObjId',
         })
 
-        return propagation_params, opm_params, TargetingParams({'target_distance_from_earth': 1e7})
+        return propagation_params, opm_params, TargetingParams(
+            {'target_distance_from_earth': 1e7})
 
     def test_targeted_propagation(self):
         propagation_params, opm_params, targeting_params = self.new_targeted_propagation()
 
         props = TargetedPropagations(self.service.rest)
 
-        obj = props.new_targeted_propagation(
+        uuid = props.new_targeted_propagation(
             propagation_params, opm_params, targeting_params, self.working_project.get_uuid())
-        self.assertIsNotNone(obj.get_uuid())
-        self.assertEqual("TargetedPropagation", obj.get_type())
+        self.assertIsNotNone(uuid)
 
-        props.get_runnable_state(obj.get_uuid())
+        runnable_state = props.get_runnable_state(uuid)
+        self.assertEqual('FAILED', runnable_state.get_calc_state())
+        self.assertIsNotNone(runnable_state.get_error())
 
-        props.get_runnable_states(self.working_project.get_uuid())
+        runnable_state_list = props.get_runnable_states(
+            self.working_project.get_uuid())
+        self.assertEqual(1, len(runnable_state_list))
 
-        props.delete(obj.get_uuid())
+        props.delete(uuid)
 
-        self.assertIsNone(props.get_targeted_propagation(obj.get_uuid()))
+        self.assertIsNone(props.get_targeted_propagation(uuid))
 
 
 if __name__ == '__main__':
