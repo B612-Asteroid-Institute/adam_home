@@ -45,7 +45,16 @@ class BatchPropagationTest(unittest.TestCase):
                      10.346605942591514]
         opm_params = OpmParams({
             'epoch': now.isoformat() + 'Z',
-            'state_vector': state_vec,
+            # 'state_vector': state_vec,
+            'keplerian_elements': {
+                'semi_major_axis_km': 3.1307289138037175E8,
+                'eccentricity': 0.5355029800000188,
+                'inclination_deg': 23.439676743246295,
+                'ra_of_asc_node_deg': 359.9942693176405,
+                'arg_of_pericenter_deg': 328.5584374618295,
+                'true_anomaly_deg': -127.01778914927144,
+                'gm': 1.327124400419394E11
+            },
 
             'mass': 500.5,
             'solar_rad_area': 25.2,
@@ -74,6 +83,7 @@ class BatchPropagationTest(unittest.TestCase):
     def test_batch_propagation(self):
         propagation_params, opm_params = self.new_batch_propagation_params()
         props = BatchPropagations(self.service.rest)
+        print(opm_params.generate_opm())
 
         uuid = props.new_batch_propagation(
             propagation_params,
