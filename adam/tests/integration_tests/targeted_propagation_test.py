@@ -76,7 +76,9 @@ class TargetedPropagationTest(unittest.TestCase):
 
         props.get_runnable_states(self.working_project.get_uuid())
 
-        print(props.get_targeted_propagation(obj.get_uuid()))
+        props.delete(obj.get_uuid())
+
+        self.assertIsNone(props.get_targeted_propagation(obj.get_uuid()))
 
 
 if __name__ == '__main__':
