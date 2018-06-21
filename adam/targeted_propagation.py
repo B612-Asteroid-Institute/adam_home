@@ -120,7 +120,9 @@ class TargetedPropagations(AdamObjects):
     
     def get_targeted_propagation(self, uuid):
         response = AdamObjects._get_json(self, uuid)
-        print(json.dumps(response, indent=1))
+        if response is None:
+            return None
+            
         opmParams = OpmParams.fromJsonResponse(response['initialPropagationParameters']['opm'])
         propParams = PropagationParams.fromJsonResponse(
             response['initialPropagationParameters'], response.get('description'))

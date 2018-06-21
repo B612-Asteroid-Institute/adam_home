@@ -66,18 +66,16 @@ class AdamObjects(object):
         elif code != 200:
             raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
 
-        print(response)
         return AdamObjectRunnableState(response)
     
     def get_runnable_states(self, project):
         code, response = self._rest.get('/adam_object/runnable_state/by_project/' + self._type + '/' + project)
 
         if code == 404:
-            return None
+            return []
         elif code != 200:
             raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
 
-        print(response)
         return [AdamObjectRunnableState(r) for r in response['items']]
     
     def _get_json(self, uuid):
@@ -88,4 +86,14 @@ class AdamObjects(object):
         elif code != 200:
             raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
 
+        return response
+    
+    def _get_children_json(self, uuid):
+        code, response = self._rest.get('/adam_object/by_parent/' + self._type + '/' + uuid)
+
+        if code == 404:
+            return None
+        elif code != 200:
+            raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
+        
         return response
