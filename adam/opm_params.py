@@ -3,11 +3,13 @@
 """
 
 from datetime import datetime, timedelta
+import json
 
 
 class OpmParams(object):
     @classmethod
     def fromJsonResponse(cls, response_opm):
+        print(json.dumps(response_opm, indent=2))
         header = response_opm['header']
         metadata = response_opm['metadata']
         spacecraft = response_opm['spacecraft']
@@ -70,7 +72,7 @@ class OpmParams(object):
                 'inclination_deg': keplerian_elements['inclination'],
                 'ra_of_asc_node_deg': keplerian_elements['ra_of_asc_node'],
                 'arg_of_pericenter_deg': keplerian_elements['arg_of_pericenter'],
-                'true_anomaly_deg': keplerian_elements['semi_major_axis'],
+                'true_anomaly_deg': keplerian_elements['true_anomaly'],
                 'gm': keplerian_elements['gm'],
             }
 
@@ -196,7 +198,7 @@ class OpmParams(object):
         # State vector is required in the OPM even if keplerian elements are also given. However,
         # in that case it will be ignored in favor of the keplerian elements so it is not required
         # from the user. If no state vector is specified, use dummy values.
-        state_vector = self._state_vector or [0, 0, 0, 0, 0, 0]
+        state_vector = self._state_vector or [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         base_opm = "CCSDS_OPM_VERS = 2.0\n" + \
             ("CREATION_DATE = %s\n" % datetime.utcnow()) + \
             ("ORIGINATOR = %s\n" % self._originator) + \
