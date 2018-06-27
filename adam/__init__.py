@@ -4,7 +4,6 @@
 
 from adam.auth import Auth
 from adam.batch import Batch
-from adam.batch import PropagationParams
 from adam.batches import Batches
 from adam.batch_propagation import BatchPropagation
 from adam.batch_propagation import BatchPropagations
@@ -15,7 +14,9 @@ from adam.opm_params import OpmParams
 from adam.permission import Permission
 from adam.permission import Permissions
 from adam.project import Projects
+from adam.propagation_params import PropagationParams
 from adam.propagator_config import PropagatorConfigs
+from adam.opm_params import OpmParams
 from adam.service import Service
 from adam.rest_proxy import RestRequests
 from adam.rest_proxy import AuthenticatingRestProxy

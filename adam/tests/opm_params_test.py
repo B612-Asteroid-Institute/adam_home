@@ -1,11 +1,5 @@
-from adam import Batch
-from adam import PropagationParams
 from adam import OpmParams
-from adam.batch import StateSummary
-from adam.batch import PropagationResults
 
-from datetime import datetime
-import numpy.testing as npt
 import unittest
 
 
@@ -14,10 +8,11 @@ class OpmParamsTest(unittest.TestCase):
 
     """
 
-    def remove_non_static_fields(self, opm_string):
+    @classmethod
+    def remove_non_static_fields(cls, opm_string):
         # Remove the CREATION_DATE stamp since that varies.
         return "\n".join([line for line in opm_string.splitlines()
-                         if not line.startswith('CREATION_DATE')])
+                          if not line.startswith('CREATION_DATE')])
 
     def test_generate_opm(self):
         o = OpmParams({
@@ -101,7 +96,7 @@ CZ_DOT_Y_DOT = 19
 CZ_DOT_Z_DOT = 20
 USER_DEFINED_ADAM_INITIAL_PERTURBATION = 7 [sigma]
 USER_DEFINED_ADAM_HYPERCUBE = CORNERS"""
-        opm = self.remove_non_static_fields(o.generate_opm())
+        opm = OpmParamsTest.remove_non_static_fields(o.generate_opm())
         self.maxDiff = None  # Otherwise if the next line fails, we can't see the diff
         self.assertEqual(expected_opm, opm)
 
@@ -122,12 +117,12 @@ Z = 3
 X_DOT = 4
 Y_DOT = 5
 Z_DOT = 6
-MASS = 1000
-SOLAR_RAD_AREA = 20
-SOLAR_RAD_COEFF = 1
-DRAG_AREA = 20
+MASS = 1000.0
+SOLAR_RAD_AREA = 20.0
+SOLAR_RAD_COEFF = 1.0
+DRAG_AREA = 20.0
 DRAG_COEFF = 2.2"""
-        opm = self.remove_non_static_fields(o.generate_opm())
+        opm = OpmParamsTest.remove_non_static_fields(o.generate_opm())
         self.maxDiff = None  # Otherwise if the next line fails, we can't see the diff
         self.assertEqual(expected_opm, opm)
 
@@ -199,7 +194,7 @@ DRAG_COEFF = 2.2"""
     def test_invalid_keys(self):
         with self.assertRaises(KeyError):
             OpmParams({'unrecognized': 0})
-    
+
     def test_from_json(self):
         self.maxDiff = 1000
         json1 = {
@@ -258,9 +253,9 @@ SOLAR_RAD_COEFF = 1.2
 DRAG_AREA = 33.3
 DRAG_COEFF = 2.5"""
 
-        expected_opm1 = self.remove_non_static_fields(expected_opm1)
+        expected_opm1 = OpmParamsTest.remove_non_static_fields(expected_opm1)
         opm_params1 = OpmParams.fromJsonResponse(json1)
-        actual_opm1 = self.remove_non_static_fields(opm_params1.generate_opm())
+        actual_opm1 = OpmParamsTest.remove_non_static_fields(opm_params1.generate_opm())
 
         self.assertEqual(expected_opm1, actual_opm1)
 
@@ -271,7 +266,7 @@ DRAG_COEFF = 2.5"""
             },
             "metadata": {
                 "comments": [
-                "Cartesian coordinate system"
+                    "Cartesian coordinate system"
                 ],
                 "object_name": "TestObj",
                 "object_id": "TestObjId",
@@ -311,12 +306,12 @@ DRAG_COEFF = 2.5"""
             },
             "adam_fields": [
                 {
-                "key": "INITIAL_PERTURBATION",
-                "value": "3"
+                    "key": "INITIAL_PERTURBATION",
+                    "value": "3"
                 },
                 {
-                "key": "HYPERCUBE",
-                "value": "FACES"
+                    "key": "HYPERCUBE",
+                    "value": "FACES"
                 }
             ],
             "ccsds_opm_vers": "2.0",
@@ -376,9 +371,9 @@ CZ_DOT_Z_DOT = 6.2244443386355e-10
 USER_DEFINED_ADAM_INITIAL_PERTURBATION = 3 [sigma]
 USER_DEFINED_ADAM_HYPERCUBE = FACES"""
 
-        expected_opm2 = self.remove_non_static_fields(expected_opm2)
+        expected_opm2 = OpmParamsTest.remove_non_static_fields(expected_opm2)
         opm_params2 = OpmParams.fromJsonResponse(json2)
-        actual_opm2 = self.remove_non_static_fields(opm_params2.generate_opm())
+        actual_opm2 = OpmParamsTest.remove_non_static_fields(opm_params2.generate_opm())
 
         self.assertEqual(expected_opm2, actual_opm2)
 
@@ -389,7 +384,7 @@ USER_DEFINED_ADAM_HYPERCUBE = FACES"""
             },
             "metadata": {
                 "comments": [
-                "Cartesian coordinate system"
+                    "Cartesian coordinate system"
                 ],
                 "object_name": "TestObj",
                 "object_id": "TestObjId",
@@ -456,9 +451,9 @@ SOLAR_RAD_COEFF = 1.2
 DRAG_AREA = 33.3
 DRAG_COEFF = 2.5"""
 
-        expected_opm3 = self.remove_non_static_fields(expected_opm3)
+        expected_opm3 = OpmParamsTest.remove_non_static_fields(expected_opm3)
         opm_params3 = OpmParams.fromJsonResponse(json3)
-        actual_opm3 = self.remove_non_static_fields(opm_params3.generate_opm())
+        actual_opm3 = OpmParamsTest.remove_non_static_fields(opm_params3.generate_opm())
 
         self.assertEqual(expected_opm3, actual_opm3)
 

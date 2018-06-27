@@ -1,13 +1,10 @@
 """
-    project.py
+    batch_propagation.py
 """
 
-from tabulate import tabulate
-from adam.batch import OpmParams
-from adam.batch import PropagationParams
+from adam.opm_params import OpmParams
+from adam.propagation_params import PropagationParams
 from adam.adam_objects import AdamObjects
-
-import json
 
 M2KM = 1E-3  # meters to kilometers
 
@@ -33,6 +30,8 @@ class BatchPropagation(object):
         return self._summary
 
     def get_final_state_vectors(self):
+        if self._summary is None:
+            return []
         return [[(float(n) * M2KM) for n in sv.split()]
                 for sv in self._summary.splitlines()]
 
@@ -76,14 +75,15 @@ class BatchPropagations(AdamObjects):
 
     def _build_batch_propagation_creation_data(
             self, propagation_params, opm_params, project_uuid):
-        data = {'description': propagation_params.get_description(),
-                'templatePropagationParameters': {
-                    'start_time': propagation_params.get_start_time(),
-                    'end_time': propagation_params.get_end_time(),
-                    'propagator_uuid': propagation_params.get_propagator_uuid(),
-                    'step_duration_sec': propagation_params.get_step_size(),
-                    'opmFromString': opm_params.generate_opm(),
-        },
+        data = {
+            'description': propagation_params.get_description(),
+            'templatePropagationParameters': {
+                'start_time': propagation_params.get_start_time(),
+                'end_time': propagation_params.get_end_time(),
+                'propagator_uuid': propagation_params.get_propagator_uuid(),
+                'step_duration_sec': propagation_params.get_step_size(),
+                'opmFromString': opm_params.generate_opm(),
+            },
             'project': project_uuid,
         }
 
@@ -93,7 +93,7 @@ class BatchPropagations(AdamObjects):
                               opm_params, project_uuid):
         data = self._build_batch_propagation_creation_data(
             propagation_params, opm_params, project_uuid)
-        return AdamObjects.create(self, data)
+        return AdamObjects._create(self, data)
 
     def get_batch_propagation(self, uuid):
         response = AdamObjects._get_json(self, uuid)
@@ -109,13 +109,10 @@ class BatchPropagations(AdamObjects):
             response['uuid'], propParams, opmParams, summary)
 
     def get_ephemerides_for_batch_propagation(self, uuid):
-        response = AdamObjects._get_children_json(self, uuid)
-        if response is None:
-            return []
+        child_response_list = AdamObjects._get_children_json(self, uuid)
 
         children = []
-        for child, child_type in zip(
-                response['children'], response['childTypes']):
+        for child, child_type in child_response_list:
             # All child types should be SinglePropagation, but ignore those
             # that aren't just in case.
             if not child_type == 'SinglePropagation':
@@ -126,7 +123,12 @@ class BatchPropagations(AdamObjects):
                 child['propagationParameters']['opm'])
             childPropParams = PropagationParams.fromJsonResponse(
                 child['propagationParameters'], child.get('description'))
-            children.append(SinglePropagation(
-                child['uuid'], childPropParams, childOpmParams, child.get('ephemeris'), child.get('finalStateVector')))
+            children.append(
+                SinglePropagation(
+                    child['uuid'],
+                    childPropParams,
+                    childOpmParams,
+                    child.get('ephemeris'),
+                    child.get('finalStateVector')))
 
         return children

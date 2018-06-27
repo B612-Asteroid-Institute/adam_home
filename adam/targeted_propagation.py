@@ -1,23 +1,25 @@
 """
-    project.py
+    targeted_propagation.py
 """
-
-from tabulate import tabulate
 from adam.adam_objects import AdamObjects
 from adam.opm_params import OpmParams
 from adam.propagation_params import PropagationParams
 
-import json
-
 
 class TargetedPropagation(object):
-    def __init__(self, uuid, propagation_params, opm_params,
-                 targeting_params, ephemeris=None, maneuver=None):
-        self._uuid = uuid
+    def __init__(self, propagation_params, opm_params,
+                 targeting_params):
         self._propagation_params = propagation_params
         self._opm_params = opm_params
         self._targeting_params = targeting_params
+    
+    def set_uuid(self, uuid):
+        self._uuid = uuid
+    
+    def set_ephemeris(self, ephemeris):
         self._ephemeris = ephemeris
+    
+    def set_maneuver(self, maneuver):
         self._maneuver = maneuver
 
     def get_uuid(self):
@@ -103,20 +105,22 @@ class TargetedPropagations(AdamObjects):
 
     def _build_targeted_propagation_creation_data(
             self, propagation_params, opm_params, targeting_params, project_uuid):
-        data = {'description': propagation_params.get_description(),
-                'initialPropagationParameters': {
-                    'start_time': propagation_params.get_start_time(),
-                    'end_time': propagation_params.get_end_time(),
-                    'propagator_uuid': propagation_params.get_propagator_uuid(),
-                    'stepDurationSec': propagation_params.get_step_size(),
-                    'opmFromString': opm_params.generate_opm(),
-        },
+        data = {
+            'description': propagation_params.get_description(),
+            'initialPropagationParameters': {
+                'start_time': propagation_params.get_start_time(),
+                'end_time': propagation_params.get_end_time(),
+                'propagator_uuid': propagation_params.get_propagator_uuid(),
+                'step_duration_sec': propagation_params.get_step_size(),
+                'opmFromString': opm_params.generate_opm(),
+            },
             'targetingParameters': {
-                    'targetDistanceFromEarth': targeting_params.get_target_distance_from_earth(),
-                    'tolerance': targeting_params.get_tolerance(),
-                    'runNominalOnly': targeting_params.get_run_nominal_only(),
-        },
-            'project': project_uuid}
+                'targetDistanceFromEarth': targeting_params.get_target_distance_from_earth(),
+                'tolerance': targeting_params.get_tolerance(),
+                'runNominalOnly': targeting_params.get_run_nominal_only(),
+            },
+            'project': project_uuid,
+        }
 
         return data
 
@@ -124,7 +128,7 @@ class TargetedPropagations(AdamObjects):
             self, propagation_params, opm_params, targeting_params, project_uuid):
         data = self._build_targeted_propagation_creation_data(
             propagation_params, opm_params, targeting_params, project_uuid)
-        return AdamObjects.create(self, data)
+        return AdamObjects._create(self, data)
 
     def get_targeted_propagation(self, uuid):
         response = AdamObjects._get_json(self, uuid)

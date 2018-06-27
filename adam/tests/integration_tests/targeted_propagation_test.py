@@ -1,18 +1,13 @@
 from adam import Service
-from adam import Batch
 from adam import PropagationParams
 from adam import OpmParams
-from adam import BatchRunManager
 from adam import ConfigManager
-from adam import TargetedPropagation
 from adam import TargetedPropagations
 from adam import TargetingParams
 
 import unittest
 import datetime
 import os
-
-import numpy.testing as npt
 
 
 class TargetedPropagationTest(unittest.TestCase):
@@ -73,12 +68,20 @@ class TargetedPropagationTest(unittest.TestCase):
         self.assertIsNotNone(uuid)
 
         runnable_state = props.get_runnable_state(uuid)
+        self.assertIsNotNone(runnable_state)
+        while (runnable_state.get_calc_state() != 'COMPLETED' and runnable_state.get_calc_state() != 'FAILED'):
+            print(runnable_state.get_calc_state())
+            runnable_state = props.get_runnable_state(uuid)
+            self.assertIsNotNone(runnable_state)
         self.assertEqual('FAILED', runnable_state.get_calc_state())
         self.assertIsNotNone(runnable_state.get_error())
 
         runnable_state_list = props.get_runnable_states(
             self.working_project.get_uuid())
         self.assertEqual(1, len(runnable_state_list))
+
+        targeted_prop = props.get_targeted_propagation(uuid)
+        self.assertEqual(uuid, targeted_prop.get_uuid())
 
         props.delete(uuid)
 

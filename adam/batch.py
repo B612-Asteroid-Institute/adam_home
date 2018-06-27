@@ -2,9 +2,6 @@
     batch.py
 """
 
-from adam.opm_params import OpmParams
-from adam.propagation_params import PropagationParams
-
 from datetime import datetime, timedelta
 
 
@@ -47,6 +44,7 @@ class Batch(object):
         if self._state_summary is None:
             return None
         return self._state_summary.get_calc_state()
+
 
 class StateSummary(object):
     def __init__(self, json):
