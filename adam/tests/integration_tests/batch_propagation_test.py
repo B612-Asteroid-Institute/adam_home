@@ -1,17 +1,12 @@
 from adam import Service
-from adam import Batch
 from adam import PropagationParams
 from adam import OpmParams
-from adam import BatchRunManager
 from adam import ConfigManager
-from adam import BatchPropagation
 from adam import BatchPropagations
 
 import unittest
 import datetime
 import os
-
-import numpy.testing as npt
 
 
 class BatchPropagationTest(unittest.TestCase):
@@ -45,16 +40,16 @@ class BatchPropagationTest(unittest.TestCase):
                      10.346605942591514]
         opm_params = OpmParams({
             'epoch': now.isoformat() + 'Z',
-            # 'state_vector': state_vec,
-            'keplerian_elements': {
-                'semi_major_axis_km': 3.1307289138037175E8,
-                'eccentricity': 0.5355029800000188,
-                'inclination_deg': 23.439676743246295,
-                'ra_of_asc_node_deg': 359.9942693176405,
-                'arg_of_pericenter_deg': 328.5584374618295,
-                'true_anomaly_deg': -127.01778914927144,
-                'gm': 1.327124400419394E11
-            },
+            'state_vector': state_vec,
+            # 'keplerian_elements': {
+            #     'semi_major_axis_km': 3.1307289138037175E8,
+            #     'eccentricity': 0.5355029800000188,
+            #     'inclination_deg': 23.439676743246295,
+            #     'ra_of_asc_node_deg': 359.9942693176405,
+            #     'arg_of_pericenter_deg': 328.5584374618295,
+            #     'true_anomaly_deg': -127.01778914927144,
+            #     'gm': 1.327124400419394E11
+            # },
 
             'mass': 500.5,
             'solar_rad_area': 25.2,
@@ -66,7 +61,7 @@ class BatchPropagationTest(unittest.TestCase):
             'object_name': 'TestObj',
             'object_id': 'TestObjId',
 
-            # # Lower triangular covariance matrix (21 elements in a list)
+            # Lower triangular covariance matrix (21 elements in a list)
             # 'covariance': [
             #     3.331349476038534e-04,
             #     4.618927349220216e-04, 6.782421679971363e-04,
@@ -90,8 +85,14 @@ class BatchPropagationTest(unittest.TestCase):
             opm_params,
             self.working_project.get_uuid())
         self.assertIsNotNone(uuid)
+        print(uuid)
 
         runnable_state = props.get_runnable_state(uuid)
+        self.assertIsNotNone(runnable_state)
+        while (runnable_state.get_calc_state() != 'COMPLETED'):
+            print(runnable_state.get_calc_state())
+            runnable_state = props.get_runnable_state(uuid)
+            self.assertIsNotNone(runnable_state)
         self.assertEqual('COMPLETED', runnable_state.get_calc_state())
         self.assertIsNone(runnable_state.get_error())
 

@@ -31,26 +31,20 @@ class AdamObjects(object):
     def __repr__(self):
         return "AdamObjects module"
 
-    def create(self, data):
+    def _create(self, data):
         code, response = self._rest.post(
-            '/adam_object/individual/' + self._type, data)
+            '/adam_object/single/' + self._type, data)
 
         if code != 200:
             raise RuntimeError(
                 "Server status code: %s; Response: %s" % (code, response))
 
+        print(response)
         return response['uuid']
-
-    def delete(self, uuid):
-        code = self._rest.delete(
-            '/adam_object/individual/' + self._type + '/' + uuid)
-
-        if code != 204:
-            raise RuntimeError("Server status code: %s" % (code))
 
     def get_runnable_state(self, uuid):
         code, response = self._rest.get(
-            '/adam_object/runnable_state/individual/' + self._type + '/' + uuid)
+            '/adam_object/runnable_state/single/' + self._type + '/' + uuid)
 
         if code == 404:
             return None
@@ -60,9 +54,9 @@ class AdamObjects(object):
 
         return AdamObjectRunnableState(response)
 
-    def get_runnable_states(self, project):
+    def get_runnable_states(self, project_uuid):
         code, response = self._rest.get(
-            '/adam_object/runnable_state/by_project/' + self._type + '/' + project)
+            '/adam_object/runnable_state/by_project/' + self._type + '/' + project_uuid)
 
         if code == 404:
             return []
@@ -74,7 +68,7 @@ class AdamObjects(object):
 
     def _get_json(self, uuid):
         code, response = self._rest.get(
-            '/adam_object/individual/' + self._type + '/' + uuid)
+            '/adam_object/single/' + self._type + '/' + uuid)
 
         if code == 404:
             return None
@@ -83,15 +77,42 @@ class AdamObjects(object):
                 "Server status code: %s; Response: %s" % (code, response))
 
         return response
+
+    def _get_in_project_json(self, project_uuid):
+        code, response = self._rest.get(
+            '/adam_object/by_project/' + self._type + '/' + project_uuid)
+
+        if code == 404:
+            return []
+        elif code != 200:
+            raise RuntimeError(
+                "Server status code: %s; Response: %s" % (code, response))
+
+        return response['items']
 
     def _get_children_json(self, uuid):
         code, response = self._rest.get(
             '/adam_object/by_parent/' + self._type + '/' + uuid)
 
         if code == 404:
-            return None
+            return []
         elif code != 200:
             raise RuntimeError(
                 "Server status code: %s; Response: %s" % (code, response))
 
-        return response
+        if response is None:
+            return []
+            
+        child_json_list = []
+        for child_type, child_uuid in zip(response['childTypes'], response['childUuids']):
+            print('Fetching ' + child_uuid + ' of type ' + child_type)
+            retriever = AdamObjects(self._rest, child_type)
+            child_json_list.append([retriever._get_json(child_uuid), child_type])
+        return child_json_list
+
+    def delete(self, uuid):
+        code = self._rest.delete(
+            '/adam_object/single/' + self._type + '/' + uuid)
+
+        if code != 204:
+            raise RuntimeError("Server status code: %s" % (code))

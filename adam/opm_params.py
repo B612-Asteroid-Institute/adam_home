@@ -1,15 +1,13 @@
 """
-    batch.py
+    opm_params.py
 """
 
-from datetime import datetime, timedelta
-import json
+from datetime import datetime
 
 
 class OpmParams(object):
     @classmethod
     def fromJsonResponse(cls, response_opm):
-        print(json.dumps(response_opm, indent=2))
         header = response_opm['header']
         metadata = response_opm['metadata']
         spacecraft = response_opm['spacecraft']
@@ -164,10 +162,10 @@ class OpmParams(object):
         self._center_name = params.get('center_name') or 'SUN'
         self._ref_frame = params.get('ref_frame') or 'ICRF'
 
-        self._mass = params.get('mass') or 1000
-        self._solar_rad_area = params.get('solar_rad_area') or 20
-        self._solar_rad_coeff = params.get('solar_rad_coeff') or 1
-        self._drag_area = params.get('drag_area') or 20
+        self._mass = params.get('mass') or 1000.0
+        self._solar_rad_area = params.get('solar_rad_area') or 20.0
+        self._solar_rad_coeff = params.get('solar_rad_coeff') or 1.0
+        self._drag_area = params.get('drag_area') or 20.0
         self._drag_coeff = params.get('drag_coeff') or 2.2
 
         self._covariance = params.get('covariance')

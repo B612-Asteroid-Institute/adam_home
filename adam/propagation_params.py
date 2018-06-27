@@ -1,8 +1,6 @@
 """
-    batch.py
+    propagation_params.py
 """
-
-from datetime import datetime, timedelta
 
 
 class PropagationParams(object):
