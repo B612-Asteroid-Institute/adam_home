@@ -1,29 +1,29 @@
 """
     targeted_propagation.py
 """
+from adam.adam_objects import AdamObject
 from adam.adam_objects import AdamObjects
 from adam.opm_params import OpmParams
 from adam.propagation_params import PropagationParams
 
 
-class TargetedPropagation(object):
-    def __init__(self, propagation_params, opm_params,
-                 targeting_params):
+class TargetedPropagation(AdamObject):
+    def __init__(self, propagation_params, opm_params, targeting_params):
+        AdamObject.__init__(self)
+        # NOTE 1: the end date in propagation_params should be shortly before the
+        # targeted perigee (recommended ~30 days before).
+        # NOTE 2: the step size in propagation_params is currently ignored.
         self._propagation_params = propagation_params
         self._opm_params = opm_params
         self._targeting_params = targeting_params
-    
-    def set_uuid(self, uuid):
-        self._uuid = uuid
+        self._ephemeris = None
+        self._maneuver = None
     
     def set_ephemeris(self, ephemeris):
         self._ephemeris = ephemeris
     
     def set_maneuver(self, maneuver):
         self._maneuver = maneuver
-
-    def get_uuid(self):
-        return self._uuid
 
     def get_propagation_params(self):
         return self._propagation_params
@@ -93,10 +93,6 @@ class TargetingParams(object):
 
 
 class TargetedPropagations(AdamObjects):
-    """Module for managing targeted propagations.
-
-    """
-
     def __init__(self, rest):
         AdamObjects.__init__(self, rest, 'TargetedPropagation')
 
@@ -124,13 +120,31 @@ class TargetedPropagations(AdamObjects):
 
         return data
 
-    def new_targeted_propagation(
-            self, propagation_params, opm_params, targeting_params, project_uuid):
+    def insert(self, targeted_propagation, project_uuid):
         data = self._build_targeted_propagation_creation_data(
-            propagation_params, opm_params, targeting_params, project_uuid)
-        return AdamObjects._create(self, data)
+            targeted_propagation.get_propagation_params(),
+            targeted_propagation.get_opm_params(),
+            targeted_propagation.get_targeting_params(),
+            project_uuid
+        )
+        targeted_propagation.set_uuid(AdamObjects._insert(self, data))
+    
+    def update_with_results(self, targeted_propagation):
+        uuid = targeted_propagation.get_uuid()
+        response = AdamObjects._get_json(self, uuid)
+        if response is None:
+            raise RuntimeError("Could not retrieve results for " + uuid)
 
-    def get_targeted_propagation(self, uuid):
+        ephemeris = response.get('ephemeris')
+        maneuver = None
+        if 'maneuverX' in response:
+            maneuver = [response['maneuverX'],
+                        response['maneuverY'], response['maneuverZ']]
+        targeted_propagation.set_ephemeris(ephemeris)
+        targeted_propagation.set_maneuver(maneuver)
+
+    
+    def get(self, uuid):
         response = AdamObjects._get_json(self, uuid)
         if response is None:
             return None
@@ -141,10 +155,19 @@ class TargetedPropagations(AdamObjects):
             response['initialPropagationParameters'], response.get('description'))
         targetingParams = TargetingParams.fromJsonResponse(
             response['targetingParameters'])
+        targeted_propagation = TargetedPropagation(propParams, opmParams, targetingParams)
+
+        uuid = response['uuid']
         ephemeris = response.get('ephemeris')
         maneuver = None
         if 'maneuverX' in response:
             maneuver = [response['maneuverX'],
                         response['maneuverY'], response['maneuverZ']]
-        return TargetedPropagation(
-            response['uuid'], propParams, opmParams, targetingParams, ephemeris, maneuver)
+        targeted_propagation.set_uuid(uuid)
+        targeted_propagation.set_ephemeris(ephemeris)
+        targeted_propagation.set_maneuver(maneuver)
+
+        return targeted_propagation
+
+    def get_children(self, uuid):
+        return []
