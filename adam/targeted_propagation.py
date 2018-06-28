@@ -61,8 +61,7 @@ class TargetingParams(object):
                 Whether to run only the nominal sequence of the targeter. Defaults to false.
 
         Raises:
-            KeyError if the given object does not include 'start_time' and 'end_time',
-            or if unsupported parameters are provided
+            KeyError if unsupported parameters are provided
         """
         # Make this a bit easier to get right by checking for parameters by unexpected
         # names.

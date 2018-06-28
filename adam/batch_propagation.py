@@ -36,22 +36,20 @@ class BatchPropagation(AdamObject):
                 for sv in self._summary.splitlines()]
 
 
-class SinglePropagation(object):
-    def __init__(self, uuid, propagation_params,
-                 opm_params, ephemeris, final_state_vector, runnable_state):
-        self._uuid = uuid
+class SinglePropagation(AdamObject):
+    def __init__(self, propagation_params, opm_params):
+        AdamObject.__init__(self)
         self._propagation_params = propagation_params
         self._opm_params = opm_params
+        self._ephemeris = None
+        self._final_state_vector = None
+
+    def set_ephemeris(self, ephemeris):
         self._ephemeris = ephemeris
+
+    def set_final_state_vector(self, final_state_vector):
         self._final_state_vector = None if final_state_vector is None else [
             float(n) * M2KM for n in final_state_vector.split()]
-        self._runnable_state = runnable_state
-
-    def get_uuid(self):
-        return self._uuid
-
-    def get_runnable_state(self):
-        return self._runnable_state
 
     def get_propagation_params(self):
         return self._propagation_params
@@ -123,7 +121,7 @@ class BatchPropagations(AdamObjects):
         child_response_list = AdamObjects._get_children_json(self, uuid)
 
         children = []
-        for child, child_runnable_state, child_type in child_response_list:
+        for childJson, child_runnable_state, child_type in child_response_list:
             # All child types should be SinglePropagation, but ignore those
             # that aren't just in case.
             if not child_type == 'SinglePropagation':
@@ -131,16 +129,15 @@ class BatchPropagations(AdamObjects):
                 continue
 
             childOpmParams = OpmParams.fromJsonResponse(
-                child['propagationParameters']['opm'])
+                childJson['propagationParameters']['opm'])
             childPropParams = PropagationParams.fromJsonResponse(
-                child['propagationParameters'], child.get('description'))
-            children.append(
-                SinglePropagation(
-                    child['uuid'],
-                    childPropParams,
-                    childOpmParams,
-                    child.get('ephemeris'),
-                    child.get('finalStateVector'),
-                    child_runnable_state))
+                childJson['propagationParameters'], childJson.get('description'))
+            childProp = SinglePropagation(childPropParams, childOpmParams)
+            childProp.set_uuid(childJson['uuid'])
+            childProp.set_runnable_state(child_runnable_state)
+            childProp.set_ephemeris(childJson.get('ephemeris'))
+            childProp.set_final_state_vector(childJson.get('finalStateVector'))
+
+            children.append(childProp)
 
         return children
