@@ -78,7 +78,7 @@ class RunnableManagerTest(unittest.TestCase):
         return BatchPropagation(propagation_params, opm_params)
 
     def test_batch_propagation(self):
-        batch_propagations = [self.new_batch_propagation() for i in range(10)]
+        batch_propagations = [self.new_batch_propagation() for i in range(3)]
         batch_propagations_module = BatchPropagations(self.service.rest)
 
         manager = RunnableManager(
