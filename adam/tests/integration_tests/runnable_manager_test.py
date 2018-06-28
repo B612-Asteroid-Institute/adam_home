@@ -81,13 +81,16 @@ class RunnableManagerTest(unittest.TestCase):
         batch_propagations = [self.new_batch_propagation() for i in range(10)]
         batch_propagations_module = BatchPropagations(self.service.rest)
 
-        manager = RunnableManager(batch_propagations_module, batch_propagations, self.working_project.get_uuid())
+        manager = RunnableManager(
+            batch_propagations_module, batch_propagations, self.working_project.get_uuid())
         manager.run()
 
         for prop in batch_propagations:
-            self.assertEqual('COMPLETED', prop.get_runnable_state().get_calc_state())
-            
-            self.assertEqual(len(prop.get_final_state_vectors()), len(prop.get_children()))
+            self.assertEqual(
+                'COMPLETED', prop.get_runnable_state().get_calc_state())
+
+            self.assertEqual(len(prop.get_final_state_vectors()),
+                             len(prop.get_children()))
             for i in range(len(prop.get_final_state_vectors())):
                 self.assertEqual(
                     prop.get_final_state_vectors()[i],

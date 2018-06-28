@@ -26,11 +26,13 @@ class RunnableManager(object):
     is calling get_latest_statuses() while a call to run() is ongoing.
     """
 
-    def __init__(self, runnables_module, runnables, project_uuid, do_timing=True, multi_threaded=True):
+    def __init__(self, runnables_module, runnables, project_uuid,
+                 do_timing=True, multi_threaded=True):
         """Sets up object that can manage the running and lifetime of the given batches.
 
         Args:
-            runnables_module: Object to use to communicate with server. Should be subclass of AdamObjects and should implement create, get, and update_with_results.
+            runnables_module: Object to use to communicate with server. Should be subclass of
+                AdamObjects and should implement create, get, and update_with_results.
             runnables (list<object>): Runnable objects to be run/managed. Should implement get_uuid.
             project_uuid (string): The uuid of the project in which these runnables should be run.
             do_timing (boolean): If true, timing information will be printed for various
@@ -86,7 +88,8 @@ class RunnableManager(object):
     def _update_cached_status(self):
         status = self._get_empty_cached_status()
         for r in self.runnables:
-            status[r.get_runnable_state().get_calc_state()].append(r.get_uuid())
+            status[r.get_runnable_state().get_calc_state()
+                   ].append(r.get_uuid())
 
         self.status_lock.acquire()
         self.cached_status = status
@@ -94,13 +97,14 @@ class RunnableManager(object):
 
     def _submit(self):
         if self.do_timing:
-            self.timer.start("Submitting %s runnables." % (len(self.runnables)))
+            self.timer.start("Submitting %s runnables." %
+                             (len(self.runnables)))
 
         if not self.state == State.INITIALIZED:
             print("Error: runnables already submitted, cannot resubmit.")
             self.timer.stop()
             return
-        
+
         # Insert all the runnables server-side.
         import time
         count = 0
@@ -168,13 +172,15 @@ class RunnableManager(object):
             return
 
         # First, update the status of all runnables.
-        runnable_states = self.runnables_module.get_runnable_states(self.project_uuid)
+        runnable_states = self.runnables_module.get_runnable_states(
+            self.project_uuid)
         runnable_states_by_uuid = {}
         for runnable_state in runnable_states:
             runnable_states_by_uuid[runnable_state.get_uuid()] = runnable_state
-        
+
         for runnable in self.runnables:
-            runnable.set_runnable_state(runnable_states_by_uuid[runnable.get_uuid()])
+            runnable.set_runnable_state(
+                runnable_states_by_uuid[runnable.get_uuid()])
 
         # Then, if the state of this whole batch should be updated, do that.
         complete = True

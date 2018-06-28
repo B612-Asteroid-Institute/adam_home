@@ -45,6 +45,8 @@ class OpmParamsTest(unittest.TestCase):
                            12, 13, 14, 15, 16, 17, 18, 19, 20],
             'perturbation': 7,
             'hypercube': 'CORNERS',
+
+            'initial_maneuver': [1, 2, 3],
         })
         expected_opm = """CCSDS_OPM_VERS = 2.0
 ORIGINATOR = a
@@ -95,7 +97,14 @@ CZ_DOT_X_DOT = 18
 CZ_DOT_Y_DOT = 19
 CZ_DOT_Z_DOT = 20
 USER_DEFINED_ADAM_INITIAL_PERTURBATION = 7 [sigma]
-USER_DEFINED_ADAM_HYPERCUBE = CORNERS"""
+USER_DEFINED_ADAM_HYPERCUBE = CORNERS
+MAN_EPOCH_IGNITION = foo
+MAN_DURATION = 0.0
+MAN_DELTA_MASS = 0.0
+MAN_REF_FRAME = TNW
+MAN_DV_1 = 1
+MAN_DV_2 = 2
+MAN_DV_3 = 3"""
         opm = OpmParamsTest.remove_non_static_fields(o.generate_opm())
         self.maxDiff = None  # Otherwise if the next line fails, we can't see the diff
         self.assertEqual(expected_opm, opm)
@@ -196,7 +205,7 @@ DRAG_COEFF = 2.2"""
             OpmParams({'unrecognized': 0})
 
     def test_from_json(self):
-        self.maxDiff = 1000
+        self.maxDiff = None
         json1 = {
             "header": {
                 "originator": "Test",
@@ -281,6 +290,15 @@ DRAG_COEFF = 2.5"""
                 "drag_area": 33.3,
                 "drag_coeff": 2.5
             },
+            "maneuvers": [{
+                "duration": 0.0,
+                "man_epoch_ignition": "2018-06-21T17:43:20.984304Z",
+                "delta_mass": 0.0,
+                "man_ref_frame": "TNW",
+                "man_dv_1": 1.0,
+                "man_dv_2": 2.0,
+                "man_dv_3": 3.0,
+            }],
             "covariance": {
                 "cx_x": 0.0003331349476038534,
                 "cy_x": 0.0004618927349220216,
@@ -369,7 +387,14 @@ CZ_DOT_X_DOT = 1.86926319295459e-10
 CZ_DOT_Y_DOT = 1.008862586240695e-10
 CZ_DOT_Z_DOT = 6.2244443386355e-10
 USER_DEFINED_ADAM_INITIAL_PERTURBATION = 3 [sigma]
-USER_DEFINED_ADAM_HYPERCUBE = FACES"""
+USER_DEFINED_ADAM_HYPERCUBE = FACES
+MAN_EPOCH_IGNITION = 2018-06-21T17:43:20.984304Z
+MAN_DURATION = 0.0
+MAN_DELTA_MASS = 0.0
+MAN_REF_FRAME = TNW
+MAN_DV_1 = 1.0
+MAN_DV_2 = 2.0
+MAN_DV_3 = 3.0"""
 
         expected_opm2 = OpmParamsTest.remove_non_static_fields(expected_opm2)
         opm_params2 = OpmParams.fromJsonResponse(json2)

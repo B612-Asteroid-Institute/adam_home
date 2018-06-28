@@ -16,7 +16,7 @@ class BatchPropagation(AdamObject):
         self._propagation_params = propagation_params
         self._opm_params = opm_params
         self._summary = None
-    
+
     def set_summary(self, summary):
         self._summary = summary
 
@@ -49,7 +49,7 @@ class SinglePropagation(object):
 
     def get_uuid(self):
         return self._uuid
-    
+
     def get_runnable_state(self):
         return self._runnable_state
 
@@ -95,7 +95,7 @@ class BatchPropagations(AdamObjects):
             batch_propagation.get_opm_params(),
             project_uuid)
         batch_propagation.set_uuid(AdamObjects._insert(self, data))
-    
+
     def update_with_results(self, batch_propagation):
         uuid = batch_propagation.get_uuid()
         response = AdamObjects._get_json(self, uuid)
@@ -104,7 +104,6 @@ class BatchPropagations(AdamObjects):
 
         batch_propagation.set_summary(response.get('summary'))
 
-    
     def get(self, uuid):
         response = AdamObjects._get_json(self, uuid)
         if response is None:

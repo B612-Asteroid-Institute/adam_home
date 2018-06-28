@@ -2,19 +2,20 @@ from adam import Service
 from adam import PropagationParams
 from adam import OpmParams
 from adam import ConfigManager
+from adam import RunnableManager
 from adam import TargetedPropagation
 from adam import TargetedPropagations
 from adam import TargetingParams
 
 import unittest
-import datetime
 import os
 
 
 class TargetedPropagationTest(unittest.TestCase):
 
     def setUp(self):
-        config = ConfigManager(os.getcwd() + '/test_config.json').get_config('local-dev')
+        config = ConfigManager(
+            os.getcwd() + '/test_config.json').get_config('local-dev')
         self.service = Service(config)
         self.assertTrue(self.service.setup())
         self.working_project = self.service.new_working_project()
@@ -23,7 +24,7 @@ class TargetedPropagationTest(unittest.TestCase):
     def tearDown(self):
         self.service.teardown()
 
-    def new_targeted_propagation(self):
+    def new_targeted_propagation(self, initial_maneuver):
         start = '2013-05-25T00:00:02.000000Z'
         end = '2018-04-25T03:06:14.200000Z'
         propagation_params = PropagationParams({
@@ -42,13 +43,14 @@ class TargetedPropagationTest(unittest.TestCase):
         opm_params = OpmParams({
             'epoch': start,
             'state_vector': state_vec,
+            'initial_maneuver': initial_maneuver,
         })
 
         return TargetedPropagation(propagation_params, opm_params, TargetingParams(
             {'target_distance_from_earth': 1.0e4, 'tolerance': 1.0}))
 
     def test_targeted_propagation(self):
-        targeted_propagation = self.new_targeted_propagation()
+        targeted_propagation = self.new_targeted_propagation([0, 0, 0])
 
         props = TargetedPropagations(self.service.rest)
 
@@ -58,8 +60,8 @@ class TargetedPropagationTest(unittest.TestCase):
 
         runnable_state = props.get_runnable_state(uuid)
         self.assertIsNotNone(runnable_state)
-        while (runnable_state.get_calc_state() != 'COMPLETED' and runnable_state.get_calc_state() != 'FAILED'):
-            print(runnable_state.get_calc_state())
+        while (runnable_state.get_calc_state() != 'COMPLETED' and
+               runnable_state.get_calc_state() != 'FAILED'):
             runnable_state = props.get_runnable_state(uuid)
             self.assertIsNotNone(runnable_state)
         self.assertEqual('COMPLETED', runnable_state.get_calc_state())
@@ -70,8 +72,8 @@ class TargetedPropagationTest(unittest.TestCase):
         self.assertEqual(1, len(runnable_state_list))
 
         props.update_with_results(targeted_propagation)
-        print(targeted_propagation.get_maneuver())
         self.assertIsNotNone(targeted_propagation.get_ephemeris())
+        maneuver = targeted_propagation.get_maneuver()
 
         fresh_targeted_prop = props.get(uuid)
         self.assertIsNotNone(fresh_targeted_prop)
@@ -80,6 +82,16 @@ class TargetedPropagationTest(unittest.TestCase):
         props.delete(uuid)
 
         self.assertIsNone(props.get(uuid))
+
+        # Create a new propagation with the given maneuver as the initial maneuver.
+        # It should report no maneuver needed.
+        targeted_propagation2 = self.new_targeted_propagation(maneuver)
+
+        RunnableManager(props, [targeted_propagation2],
+                        self.working_project.get_uuid()).run()
+        self.assertEqual(0, targeted_propagation2.get_maneuver()[0])
+        self.assertEqual(0, targeted_propagation2.get_maneuver()[1])
+        self.assertEqual(0, targeted_propagation2.get_maneuver()[2])
 
 
 if __name__ == '__main__':
