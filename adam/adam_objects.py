@@ -2,15 +2,16 @@
     adam_objects.py
 """
 
+
 class AdamObject(object):
     def __init__(self):
         self._uuid = None
         self._runnable_state = None
         self._children = None
-    
+
     def set_uuid(self, uuid):
         self._uuid = uuid
-    
+
     def set_runnable_state(self, runnable_state):
         self._runnable_state = runnable_state
 
@@ -19,10 +20,10 @@ class AdamObject(object):
 
     def get_uuid(self):
         return self._uuid
-    
+
     def get_runnable_state(self):
         return self._runnable_state
-    
+
     def get_children(self):
         return self._children
 
@@ -125,7 +126,7 @@ class AdamObjects(object):
 
         if response is None:
             return []
-            
+
         child_json_list = []
         for child_type, child_uuid in zip(response['childTypes'], response['childUuids']):
             print('Fetching ' + child_uuid + ' of type ' + child_type)

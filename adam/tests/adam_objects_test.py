@@ -66,7 +66,8 @@ class AdamObjectsTest(unittest.TestCase):
             return True
 
         expected_data = {'anyKey': 'anyVal'}
-        rest.expect_post("/adam_object/single/MyType", check_input, 200, {'uuid': 'uuid1'})
+        rest.expect_post("/adam_object/single/MyType",
+                         check_input, 200, {'uuid': 'uuid1'})
 
         uuid = adam_objects._insert({'anyKey': 'anyVal'})
         self.assertEqual('uuid1', uuid)
@@ -88,11 +89,13 @@ class AdamObjectsTest(unittest.TestCase):
         self.assertEqual('PENDING', runnable_state.get_calc_state())
         self.assertIsNone(runnable_state.get_error())
 
-        rest.expect_get("/adam_object/runnable_state/single/MyType/uuid1", 404, {})
+        rest.expect_get(
+            "/adam_object/runnable_state/single/MyType/uuid1", 404, {})
         runnable_state = adam_objects.get_runnable_state('uuid1')
         self.assertEqual(runnable_state, None)
 
-        rest.expect_get("/adam_object/runnable_state/single/MyType/uuid1", 403, {})
+        rest.expect_get(
+            "/adam_object/runnable_state/single/MyType/uuid1", 403, {})
         with self.assertRaises(RuntimeError):
             adam_objects.get_runnable_state('uuid1')
 
@@ -126,11 +129,13 @@ class AdamObjectsTest(unittest.TestCase):
         self.assertEqual('FAILED', runnable_states[1].get_calc_state())
         self.assertEqual('some error', runnable_states[1].get_error())
 
-        rest.expect_get("/adam_object/runnable_state/by_project/MyType/project_uuid", 404, {})
+        rest.expect_get(
+            "/adam_object/runnable_state/by_project/MyType/project_uuid", 404, {})
         runnable_states = adam_objects.get_runnable_states('project_uuid')
         self.assertEqual(runnable_states, [])
 
-        rest.expect_get("/adam_object/runnable_state/by_project/MyType/project_uuid", 403, {})
+        rest.expect_get(
+            "/adam_object/runnable_state/by_project/MyType/project_uuid", 403, {})
         with self.assertRaises(RuntimeError):
             adam_objects.get_runnable_states('project_uuid')
 
@@ -138,7 +143,8 @@ class AdamObjectsTest(unittest.TestCase):
         rest = _RestProxyForTest()
         adam_objects = AdamObjects(rest, 'MyType')
 
-        rest.expect_get("/adam_object/single/MyType/uuid1", 200, {'anyKey': 'anyVal'})
+        rest.expect_get("/adam_object/single/MyType/uuid1",
+                        200, {'anyKey': 'anyVal'})
         json = adam_objects._get_json('uuid1')
         self.assertEqual({'anyKey': 'anyVal'}, json)
 
@@ -154,7 +160,8 @@ class AdamObjectsTest(unittest.TestCase):
         rest = _RestProxyForTest()
         adam_objects = AdamObjects(rest, 'MyType')
 
-        rest.expect_get("/adam_object/by_project/MyType/project_uuid", 200, {'items': []})
+        rest.expect_get(
+            "/adam_object/by_project/MyType/project_uuid", 200, {'items': []})
         json = adam_objects._get_in_project_json('project_uuid')
         self.assertEqual(0, len(json))
 
@@ -178,10 +185,11 @@ class AdamObjectsTest(unittest.TestCase):
         adam_objects = AdamObjects(rest, 'MyType')
 
         rest.expect_get("/adam_object/by_parent/MyType/uuid1", 200,
-            {'childTypes': ['ChildType'], 'childUuids': ['childUuid1']})
-        rest.expect_get("/adam_object/single/ChildType/childUuid1", 200, {'anyJson': 5})
+                        {'childTypes': ['ChildType'], 'childUuids': ['childUuid1']})
+        rest.expect_get(
+            "/adam_object/single/ChildType/childUuid1", 200, {'anyJson': 5})
         rest.expect_get("/adam_object/runnable_state/single/ChildType/childUuid1", 200,
-            {'uuid': 'childUuid1', 'calculationState': 'COMPLETED'})
+                        {'uuid': 'childUuid1', 'calculationState': 'COMPLETED'})
         children_json = adam_objects._get_children_json('uuid1')
         self.assertEqual(1, len(children_json))
         child_json, child_runnable_state, child_type = children_json[0]

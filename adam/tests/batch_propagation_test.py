@@ -21,7 +21,8 @@ class BatchPropagationTest(unittest.TestCase):
         self.assertIsNone(batch_prop.get_summary())
         self.assertEqual([], batch_prop.get_final_state_vectors())
 
-        batch_prop.set_summary('1000 2000 3000 4000 5000 6000 7000\n7000 6000 5000 4000 3000 2000 1000')
+        batch_prop.set_summary(
+            '1000 2000 3000 4000 5000 6000 7000\n7000 6000 5000 4000 3000 2000 1000')
         # Summary is in meters. State vectors are in km (to match OPM).
         self.assertEqual(
             '1000 2000 3000 4000 5000 6000 7000\n7000 6000 5000 4000 3000 2000 1000',
@@ -95,7 +96,8 @@ class BatchPropagationsTest(unittest.TestCase):
             return 'uuid'
         AdamObjects._insert = store_data
 
-        batch_prop = BatchPropagation(self.dummy_propagation_params, self.dummy_opm_params)
+        batch_prop = BatchPropagation(
+            self.dummy_propagation_params, self.dummy_opm_params)
         batch_props.insert(batch_prop, 'project_uuid')
         uuid = batch_prop.get_uuid()
 

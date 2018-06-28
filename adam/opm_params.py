@@ -14,6 +14,7 @@ class OpmParams(object):
         state_vector = response_opm['state_vector']
         keplerian_elements = response_opm.get('keplerian')
         covariance = response_opm.get('covariance')
+        maneuvers = response_opm.get('maneuvers')
         adam_fields = {f['key']: f['value']
                        for f in response_opm.get('adam_fields') or []}
         opm_params = {
@@ -74,6 +75,14 @@ class OpmParams(object):
                 'gm': keplerian_elements['gm'],
             }
 
+        if maneuvers is not None and len(maneuvers) > 0:
+            # Only the first one present will be parsed.
+            opm_params['initial_maneuver'] = [
+                maneuvers[0]['man_dv_1'],
+                maneuvers[0]['man_dv_2'],
+                maneuvers[0]['man_dv_3'],
+            ]
+
         return OpmParams(opm_params)
 
     def __init__(self, params):
@@ -121,6 +130,11 @@ class OpmParams(object):
             perturbation (int): sigma perturbation on state vector
             hypercube (str): hypercube propagation type (e.g. 'FACES' or 'CORNERS')
 
+            initial_maneuver (list): An array with 3 elements representing intial dx, dy, dz
+                in velocity-orbit-normal coordinates (dx is in direction of velocity,
+                dy is orbit-normal, and dz is in direction of x cross y).
+                Assumed to take place at state vector epoch.
+
         Raises:
             KeyError if the given object does not include 'epoch' and 'state_vector',
             or if unsupported parameters are provided
@@ -131,7 +145,7 @@ class OpmParams(object):
         supported_params = {'epoch', 'state_vector', 'keplerian_elements', 'originator',
                             'object_name', 'object_id', 'center_name', 'ref_frame', 'mass',
                             'solar_rad_area', 'solar_rad_coeff', 'drag_area', 'drag_coeff',
-                            'covariance', 'perturbation', 'hypercube'}
+                            'covariance', 'perturbation', 'hypercube', 'initial_maneuver'}
         extra_params = params.keys() - supported_params
         if len(extra_params) > 0:
             raise KeyError("Unexpected parameters provided: %s" %
@@ -171,6 +185,8 @@ class OpmParams(object):
         self._covariance = params.get('covariance')
         self._perturbation = params.get('perturbation')
         self._hypercube = params.get('hypercube')
+
+        self._initial_maneuver = params.get('initial_maneuver')
 
     def __repr__(self):
         return "OpmParams: %s" % self.generate_opm()
@@ -260,4 +276,14 @@ class OpmParams(object):
                           self._perturbation) + \
                          ("USER_DEFINED_ADAM_HYPERCUBE = %s\n" % self._hypercube)
 
-        return base_opm + keplerian_elements + spacecraft_params + covariance
+        maneuver = ""
+        if self._initial_maneuver is not None:
+            maneuver = ("MAN_EPOCH_IGNITION = %s\n" % (self._epoch)) + \
+                       ("MAN_DURATION = 0.0\n") + \
+                       ("MAN_DELTA_MASS = 0.0\n") + \
+                       ("MAN_REF_FRAME = TNW\n") + \
+                       ("MAN_DV_1 = %s\n" % (self._initial_maneuver[0])) + \
+                       ("MAN_DV_2 = %s\n" % (self._initial_maneuver[1])) + \
+                       ("MAN_DV_3 = %s\n" % (self._initial_maneuver[2]))
+
+        return base_opm + keplerian_elements + spacecraft_params + covariance + maneuver

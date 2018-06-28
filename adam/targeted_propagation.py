@@ -18,10 +18,10 @@ class TargetedPropagation(AdamObject):
         self._targeting_params = targeting_params
         self._ephemeris = None
         self._maneuver = None
-    
+
     def set_ephemeris(self, ephemeris):
         self._ephemeris = ephemeris
-    
+
     def set_maneuver(self, maneuver):
         self._maneuver = maneuver
 
@@ -128,7 +128,7 @@ class TargetedPropagations(AdamObjects):
             project_uuid
         )
         targeted_propagation.set_uuid(AdamObjects._insert(self, data))
-    
+
     def update_with_results(self, targeted_propagation):
         uuid = targeted_propagation.get_uuid()
         response = AdamObjects._get_json(self, uuid)
@@ -143,19 +143,18 @@ class TargetedPropagations(AdamObjects):
         targeted_propagation.set_ephemeris(ephemeris)
         targeted_propagation.set_maneuver(maneuver)
 
-    
     def get(self, uuid):
         response = AdamObjects._get_json(self, uuid)
         if response is None:
             return None
-
         opmParams = OpmParams.fromJsonResponse(
             response['initialPropagationParameters']['opm'])
         propParams = PropagationParams.fromJsonResponse(
             response['initialPropagationParameters'], response.get('description'))
         targetingParams = TargetingParams.fromJsonResponse(
             response['targetingParameters'])
-        targeted_propagation = TargetedPropagation(propParams, opmParams, targetingParams)
+        targeted_propagation = TargetedPropagation(
+            propParams, opmParams, targetingParams)
 
         uuid = response['uuid']
         ephemeris = response.get('ephemeris')
