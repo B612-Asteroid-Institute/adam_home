@@ -4,13 +4,14 @@ from adam import OpmParams
 from adam import ConfigManager
 from adam import BatchPropagation
 from adam import BatchPropagations
+from adam import RunnableManager
 
 import unittest
 import datetime
 import os
 
 
-class BatchPropagationTest(unittest.TestCase):
+class RunnableManagerTest(unittest.TestCase):
 
     def setUp(self):
         config = ConfigManager(os.getcwd() + '/test_config.json').get_config()
@@ -77,44 +78,20 @@ class BatchPropagationTest(unittest.TestCase):
         return BatchPropagation(propagation_params, opm_params)
 
     def test_batch_propagation(self):
-        batch_propagation = self.new_batch_propagation()
-        props = BatchPropagations(self.service.rest)
+        batch_propagations = [self.new_batch_propagation() for i in range(10)]
+        batch_propagations_module = BatchPropagations(self.service.rest)
 
-        props.insert(batch_propagation, self.working_project.get_uuid())
-        uuid = batch_propagation.get_uuid()
-        self.assertIsNotNone(uuid)
-        print(uuid)
+        manager = RunnableManager(batch_propagations_module, batch_propagations, self.working_project.get_uuid())
+        manager.run()
 
-        runnable_state = props.get_runnable_state(uuid)
-        self.assertIsNotNone(runnable_state)
-        while (runnable_state.get_calc_state() != 'COMPLETED'):
-            print(runnable_state.get_calc_state())
-            runnable_state = props.get_runnable_state(uuid)
-            self.assertIsNotNone(runnable_state)
-        self.assertEqual('COMPLETED', runnable_state.get_calc_state())
-        self.assertIsNone(runnable_state.get_error())
-
-        runnable_state_list = props.get_runnable_states(
-            self.working_project.get_uuid())
-        self.assertEqual(1, len(runnable_state_list))
-
-        props.update_with_results(batch_propagation)
-        self.assertIsNotNone(batch_propagation)
-
-        fresh_batch = props.get(uuid)
-        self.assertIsNotNone(fresh_batch)
-
-        children = props.get_children(uuid)
-        self.assertEqual(len(batch_propagation.get_final_state_vectors()), len(children))
-        for i in range(len(batch_propagation.get_final_state_vectors())):
-            self.assertEqual(
-                batch_propagation.get_final_state_vectors()[i],
-                children[i].get_final_state_vector())
-
-        props.delete(uuid)
-
-        self.assertIsNone(props.get(uuid))
-        self.assertEqual(0, len(props.get_children(uuid)))
+        for prop in batch_propagations:
+            self.assertEqual('COMPLETED', prop.get_runnable_state().get_calc_state())
+            
+            self.assertEqual(len(prop.get_final_state_vectors()), len(prop.get_children()))
+            for i in range(len(prop.get_final_state_vectors())):
+                self.assertEqual(
+                    prop.get_final_state_vectors()[i],
+                    prop.get_children()[i].get_final_state_vector())
 
 
 if __name__ == '__main__':
