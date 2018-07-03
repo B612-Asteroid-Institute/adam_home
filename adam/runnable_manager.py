@@ -207,14 +207,15 @@ class RunnableManager(object):
         if self.do_timing:
             self.timer.stop()
 
-    def _get_results(self):
+    def _get_results(self, get_child_results):
         if self.do_timing:
             self.timer.start("Retrieving runnable results.")
 
         def _get_results(i):
             r = self.runnables[i]
             self.runnables_module.update_with_results(r)
-            r.set_children(self.runnables_module.get_children(r.get_uuid()))
+            if get_child_results:
+                r.set_children(self.runnables_module.get_children(r.get_uuid()))
 
         if self.multi_threaded:
             threads = 5
@@ -228,7 +229,7 @@ class RunnableManager(object):
         if self.do_timing:
             self.timer.stop()
 
-    def run(self):
+    def run(self, get_child_results=True):
         self._submit()
         self._wait_for_completion()
-        self._get_results()
+        self._get_results(get_child_results)

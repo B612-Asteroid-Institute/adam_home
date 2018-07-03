@@ -2,6 +2,8 @@
     __init__.py
 """
 
+from adam.access_calculation import AccessCalculation
+from adam.access_calculation import AccessCalculations
 from adam.auth import Auth
 from adam.batch import Batch
 from adam.batches import Batches
