@@ -88,8 +88,10 @@ class RunnableManager(object):
     def _update_cached_status(self):
         status = self._get_empty_cached_status()
         for r in self.runnables:
-            status[r.get_runnable_state().get_calc_state()
-                   ].append(r.get_uuid())
+            calc_state = 'PENDING'
+            if r.get_runnable_state() is not None:
+                calc_state = r.get_runnable_state().get_calc_state()
+            status[calc_state].append(r.get_uuid())
 
         self.status_lock.acquire()
         self.cached_status = status
@@ -172,20 +174,22 @@ class RunnableManager(object):
             return
 
         # First, update the status of all runnables.
-        runnable_states = self.runnables_module.get_runnable_states(
-            self.project_uuid)
+        runnable_states = self.runnables_module.get_runnable_states(self.project_uuid)
         runnable_states_by_uuid = {}
         for runnable_state in runnable_states:
             runnable_states_by_uuid[runnable_state.get_uuid()] = runnable_state
 
         for runnable in self.runnables:
             runnable.set_runnable_state(
-                runnable_states_by_uuid[runnable.get_uuid()])
+                runnable_states_by_uuid.get(runnable.get_uuid()))
 
         # Then, if the state of this whole batch should be updated, do that.
         complete = True
         for runnable in self.runnables:
-            if not runnable.get_runnable_state().get_calc_state() in ['COMPLETED', 'FAILED']:
+            calc_state = 'PENDING'
+            if runnable.get_runnable_state() is not None:
+                calc_state = runnable.get_runnable_state().get_calc_state()
+            if not calc_state in ['COMPLETED', 'FAILED']:
                 complete = False
                 break
         if complete:

@@ -25,43 +25,6 @@ class AccessCalculationTest(unittest.TestCase):
     def tearDown(self):
         self.service.teardown()
     
-    def new_propagation_1703_keplerian(self):
-        # start = '2027-02-25T02:02:41.216Z'
-        # end = '2016-02-25T02:02:41.216Z'
-        start = '2016-02-25T02:02:41.216Z'
-        end = '2027-02-25T02:02:41.216Z'
-        propagation_params = PropagationParams({
-            'start_time': start,
-            'end_time': end,
-            'step_size': 86400,
-            'description': 'Created by test at ' + start
-        })
-
-        state_vector = [309583299.63553455,
-                        149330310.63501837,
-                        91399553.72240286,
-                        -13.348371665766601,
-                        8.096083086159309,
-                        5.588584368211324]
-        # state_vector = [-131900970.6, 62817207.04, 43907139.71,
-        #                 -13.58678389, -27.66719022, -17.85324656]
-
-        # keplerian_elements = {
-        #     'semi_major_axis_km': 1.883096951 * 149597870.7,
-        #     'eccentricity': 0.4737577730000001,
-        #     'inclination_deg': 33.25638884571273,
-        #     'ra_of_asc_node_deg': 1.810551601578951,
-        #     'arg_of_pericenter_deg': 172.5271584249529,
-        #     'true_anomaly_deg': 335.814768,
-        #     'gm': 1.327124400419394E11
-        # }
-        opm_params = OpmParams({
-            'epoch': start,
-            'state_vector': state_vector,
-        })
-
-        return BatchPropagation(propagation_params, opm_params)
-    
     def new_propagation_1703_cartesian(self):
         start = '2016-12-13T12:50:42.216000Z'
         end =   '2028-12-13T12:50:42.216000Z'
@@ -115,7 +78,7 @@ class AccessCalculationTest(unittest.TestCase):
     
     def test_access_calculation_1703_10yr_propagate_separately(self):
         # NOTE accesss calculations do not work with back propagated ephems
-        propagation_1703 = self.new_propagation_1703_keplerian()
+        propagation_1703 = self.new_propagation_1703_cartesian()
         batch_propagations = BatchPropagations(self.service.rest)
 
         RunnableManager(batch_propagations, [propagation_1703],
@@ -142,6 +105,27 @@ class AccessCalculationTest(unittest.TestCase):
 
         access_calculations.delete(access_calculation.get_uuid())
         batch_propagations.delete(propagation_1703.get_uuid())
+    
+    def test_access_calculation_1703_10yr(self):
+        access_start_time = '2022-02-03T00:00:00Z'
+        access_end_time = '2022-02-12T00:00:00Z'
+        access_calculation = self.new_access_calculation_1703_propagated(
+            access_start_time, access_end_time, 'Lsst10yrPointings')
+        access_calculations = AccessCalculations(self.service.rest)
+
+        RunnableManager(access_calculations, [access_calculation],
+                        self.working_project.get_uuid()).run()
+
+        print('Child propagation: ')
+        self.assertEqual(1, len(access_calculation.get_children()))
+        child_prop = access_calculation.get_children()[0]
+        print(child_prop.get_ephemeris()[:1000] + '\n...\n' + child_prop.get_ephemeris()[-500:])
+
+        print('Computed accesses: ')
+        for a in access_calculation.get_accesses():
+            print(a)
+
+        access_calculations.delete(access_calculation.get_uuid())
     
     def no_test_access_calculation_1703_10yr_load(self):
         access_start_time = '2017-01-01T00:00:00Z'

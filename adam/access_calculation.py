@@ -122,12 +122,8 @@ class AccessCalculations(AdamObjects):
             raise RuntimeError("Could not retrieve results for " + uuid)
 
         access_calculation.set_accesses_from_str(response.get('accesses'))
-
-    def get(self, uuid):
-        response = AdamObjects._get_json(self, uuid)
-        if response is None:
-            return None
-        
+    
+    def _access_calculation_from_json_response(self, response):
         opm_params = None
         prop_params = None
         if 'asteroidPropagationParameters' in response:
@@ -146,25 +142,44 @@ class AccessCalculations(AdamObjects):
 
         return access_calculation
 
-    def get_children(self, uuid):
-        child_response_list = AdamObjects._get_children_json(self, uuid)
+    def get(self, uuid):
+        response = AdamObjects._get_json(self, uuid)
+        if response is None:
+            return None
+        
+        return self._access_calculation_from_json_response(response)
+
+    def get_children(self, uuid, skip_access_children=True):
+        children_types_and_uuids = AdamObjects._get_children_types_and_uuids(self, uuid)
+
+        # We want to skip the LsstAccessCalculations, since their results will have been summarized
+        # into the parent (so fetching is redundant).
 
         children = []
-        for childJson, child_runnable_state, child_type in child_response_list:
-            # The only interesting child will be the SinglePropagations. Skip others.
-            if not child_type == 'SinglePropagation':
+        for child_type, child_uuid in children_types_and_uuids:
+            if skip_access_children and child_type == 'LsstAccessCalculation':
+                continue
+            
+            childJson, child_runnable_state, child_type = AdamObjects._get_child_json(
+                self, child_type, child_uuid)
+
+            child = None
+            if child_type == 'SinglePropagation':
+                childOpmParams = OpmParams.fromJsonResponse(
+                    childJson['propagationParameters']['opm'])
+                childPropParams = PropagationParams.fromJsonResponse(
+                    childJson['propagationParameters'], childJson.get('description'))
+                child = SinglePropagation(childPropParams, childOpmParams)
+                child.set_uuid(childJson['uuid'])
+                child.set_ephemeris(childJson.get('ephemeris'))
+                child.set_final_state_vector(childJson.get('finalStateVector'))
+            elif child_type == 'LsstAccessCalculation':
+                child = self._access_calculation_from_json_response(childJson)
+            else:
+                print('Skipping child of unexpected type ' + child_type)
                 continue
 
-            childOpmParams = OpmParams.fromJsonResponse(
-                childJson['propagationParameters']['opm'])
-            childPropParams = PropagationParams.fromJsonResponse(
-                childJson['propagationParameters'], childJson.get('description'))
-            childProp = SinglePropagation(childPropParams, childOpmParams)
-            childProp.set_uuid(childJson['uuid'])
-            childProp.set_runnable_state(child_runnable_state)
-            childProp.set_ephemeris(childJson.get('ephemeris'))
-            childProp.set_final_state_vector(childJson.get('finalStateVector'))
-
-            children.append(childProp)
+            child.set_runnable_state(child_runnable_state)
+            children.append(child)
 
         return children
