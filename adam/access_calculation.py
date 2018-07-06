@@ -88,12 +88,11 @@ class AccessCalculations(AdamObjects):
     def __repr__(self):
         return "AccessCalculations module"
 
-    def _build_access_calculation_creation_data(self, access_calculation, project_uuid):
+    def _build_access_calculation_creation_data(self, access_calculation):
         propagation_params = access_calculation.get_propagation_params()
         opm_params = access_calculation.get_opm_params()
         data = {
             'description': propagation_params.get_description() if propagation_params is not None else '',
-            'project': project_uuid,
             'asteroidPropagationUuid': access_calculation.get_asteroid_propagation_uuid(),
             'accessStartTime': access_calculation.get_access_start_time(),
             'accessEndTime': access_calculation.get_access_end_time(),
@@ -110,9 +109,18 @@ class AccessCalculations(AdamObjects):
             }
 
         return data
+    
+    def insert_all(self, access_calculations, project_uuid):
+        all_data = {'requests': [], 'project': project_uuid}
+        for access_calculation in access_calculations:
+            all_data['requests'].append(self._build_access_calculation_creation_data(access_calculation))
+        uuids = AdamObjects._insert_all(self, all_data)
+        for i in range(len(uuids)):
+            access_calculations[i].set_uuid(uuids[i])
 
     def insert(self, access_calculation, project_uuid):
-        data = self._build_access_calculation_creation_data(access_calculation, project_uuid)
+        data = self._build_access_calculation_creation_data(access_calculation)
+        data['project'] = project_uuid
         access_calculation.set_uuid(AdamObjects._insert(self, data))
 
     def update_with_results(self, access_calculation):

@@ -13,7 +13,7 @@ import os
 class BatchPropagationTest(unittest.TestCase):
 
     def setUp(self):
-        config = ConfigManager(os.getcwd() + '/test_config.json').get_config()
+        config = ConfigManager(os.getcwd() + '/test_config.json').get_config('local-dev')
         self.service = Service(config)
         self.assertTrue(self.service.setup())
         self.working_project = self.service.new_working_project()
@@ -80,7 +80,7 @@ class BatchPropagationTest(unittest.TestCase):
         batch_propagation = self.new_batch_propagation()
         props = BatchPropagations(self.service.rest)
 
-        props.insert(batch_propagation, self.working_project.get_uuid())
+        props.insert_all([batch_propagation], self.working_project.get_uuid())
         uuid = batch_propagation.get_uuid()
         self.assertIsNotNone(uuid)
         print(uuid)

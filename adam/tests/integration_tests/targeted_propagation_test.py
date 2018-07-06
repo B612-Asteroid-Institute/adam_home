@@ -15,7 +15,7 @@ class TargetedPropagationTest(unittest.TestCase):
 
     def setUp(self):
         config = ConfigManager(
-            os.getcwd() + '/test_config.json').get_config()
+            os.getcwd() + '/test_config.json').get_config('local-dev')
         self.service = Service(config)
         self.assertTrue(self.service.setup())
         self.working_project = self.service.new_working_project()
