@@ -1,9 +1,9 @@
 from adam.batch_run_manager import BatchRunManager
 from adam.batch import Batch
-from adam.batch import PropagationParams
-from adam.batch import OpmParams
 from adam.batch import StateSummary
 from adam.batch import PropagationResults
+from adam.opm_params import OpmParams
+from adam.propagation_params import PropagationParams
 
 import unittest
 
