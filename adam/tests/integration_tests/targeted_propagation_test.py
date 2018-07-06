@@ -84,14 +84,14 @@ class TargetedPropagationTest(unittest.TestCase):
         self.assertIsNone(props.get(uuid))
 
         # Create a new propagation with the given maneuver as the initial maneuver.
-        # It should report no maneuver needed.
+        # It should report no additional maneuver needed.
         targeted_propagation2 = self.new_targeted_propagation(maneuver)
 
         RunnableManager(props, [targeted_propagation2],
                         self.working_project.get_uuid()).run()
-        self.assertEqual(0, targeted_propagation2.get_maneuver()[0])
-        self.assertEqual(0, targeted_propagation2.get_maneuver()[1])
-        self.assertEqual(0, targeted_propagation2.get_maneuver()[2])
+        self.assertEqual(maneuver[0], targeted_propagation2.get_maneuver()[0])
+        self.assertEqual(maneuver[1], targeted_propagation2.get_maneuver()[1])
+        self.assertEqual(maneuver[2], targeted_propagation2.get_maneuver()[2])
 
 
 if __name__ == '__main__':
