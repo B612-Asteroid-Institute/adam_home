@@ -14,7 +14,7 @@ import os
 class RunnableManagerTest(unittest.TestCase):
 
     def setUp(self):
-        config = ConfigManager(os.getcwd() + '/test_config.json').get_config()
+        config = ConfigManager(os.getcwd() + '/test_config.json').get_config('dev')
         self.service = Service(config)
         self.assertTrue(self.service.setup())
         self.working_project = self.service.new_working_project()
@@ -43,15 +43,6 @@ class RunnableManagerTest(unittest.TestCase):
         opm_params = OpmParams({
             'epoch': now.isoformat() + 'Z',
             'state_vector': state_vec,
-            # 'keplerian_elements': {
-            #     'semi_major_axis_km': 3.1307289138037175E8,
-            #     'eccentricity': 0.5355029800000188,
-            #     'inclination_deg': 23.439676743246295,
-            #     'ra_of_asc_node_deg': 359.9942693176405,
-            #     'arg_of_pericenter_deg': 328.5584374618295,
-            #     'true_anomaly_deg': -127.01778914927144,
-            #     'gm': 1.327124400419394E11
-            # },
 
             'mass': 500.5,
             'solar_rad_area': 25.2,
@@ -62,22 +53,11 @@ class RunnableManagerTest(unittest.TestCase):
             'originator': 'Test',
             'object_name': 'TestObj',
             'object_id': 'TestObjId',
-
-            # Lower triangular covariance matrix (21 elements in a list)
-            # 'covariance': [
-            #     3.331349476038534e-04,
-            #     4.618927349220216e-04, 6.782421679971363e-04,
-            #     -3.070007847730449e-04, -4.221234189514228e-04, 3.231931992380369e-04,
-            #     -3.349365033922630e-07, -4.686084221046758e-07, 2.484949578400095e-07, 4.296022805587290e-10,  # NOQA (we want to keep the visual triangle)
-            #     -2.211832501084875e-07, -2.864186892102733e-07, 1.798098699846038e-07, 2.608899201686016e-10, 1.767514756338532e-10,  # NOQA
-            #     -3.041346050686871e-07, -4.989496988610662e-07, 3.540310904497689e-07, 1.869263192954590e-10, 1.008862586240695e-10, 6.224444338635500e-10],  # NOQA
-            # 'perturbation': 3,
-            # 'hypercube': 'FACES',
         })
 
         return BatchPropagation(propagation_params, opm_params)
 
-    def test_batch_propagation(self):
+    def test_runnable_manager(self):
         batch_propagations = [self.new_batch_propagation() for i in range(3)]
         batch_propagations_module = BatchPropagations(self.service.rest)
 

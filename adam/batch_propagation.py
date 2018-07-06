@@ -116,6 +116,7 @@ class BatchPropagations(AdamObjects):
         if response is None:
             return None
 
+        # Values in [] are guaranteed to be present. Values in .get() may be missing.
         opmParams = OpmParams.fromJsonResponse(
             response['templatePropagationParameters']['opm'])
         propParams = PropagationParams.fromJsonResponse(
@@ -137,6 +138,7 @@ class BatchPropagations(AdamObjects):
                 print('Skipping child of unexpected type ' + child_type)
                 continue
 
+            # Values in [] are guaranteed to be present. Values in .get() may be missing.
             childOpmParams = OpmParams.fromJsonResponse(
                 childJson['propagationParameters']['opm'])
             childPropParams = PropagationParams.fromJsonResponse(
