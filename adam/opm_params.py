@@ -8,6 +8,7 @@ from datetime import datetime
 class OpmParams(object):
     @classmethod
     def fromJsonResponse(cls, response_opm):
+        # Values in [] are guaranteed to be present. Values in .get() may be missing.
         header = response_opm['header']
         metadata = response_opm['metadata']
         spacecraft = response_opm['spacecraft']

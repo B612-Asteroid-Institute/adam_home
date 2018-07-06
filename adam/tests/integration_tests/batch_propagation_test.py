@@ -13,7 +13,7 @@ import os
 class BatchPropagationTest(unittest.TestCase):
 
     def setUp(self):
-        config = ConfigManager(os.getcwd() + '/test_config.json').get_config()
+        config = ConfigManager(os.getcwd() + '/test_config.json').get_config('dev')
         self.service = Service(config)
         self.assertTrue(self.service.setup())
         self.working_project = self.service.new_working_project()
@@ -42,6 +42,8 @@ class BatchPropagationTest(unittest.TestCase):
         opm_params = OpmParams({
             'epoch': now.isoformat() + 'Z',
             'state_vector': state_vec,
+
+            # Comment out state_vector and uncomment this to try with keplerian elements instead.
             # 'keplerian_elements': {
             #     'semi_major_axis_km': 3.1307289138037175E8,
             #     'eccentricity': 0.5355029800000188,
@@ -62,6 +64,7 @@ class BatchPropagationTest(unittest.TestCase):
             'object_name': 'TestObj',
             'object_id': 'TestObjId',
 
+            # Uncomment this to try a hypercube propagation.
             # Lower triangular covariance matrix (21 elements in a list)
             # 'covariance': [
             #     3.331349476038534e-04,
