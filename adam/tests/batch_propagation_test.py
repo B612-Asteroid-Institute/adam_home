@@ -94,6 +94,7 @@ class BatchPropagationsTest(unittest.TestCase):
         def store_data(self, data, passed_data=passed_data):
             passed_data.append(data)
             return 'uuid'
+        tmp_insert = AdamObjects._insert
         AdamObjects._insert = store_data
 
         batch_prop = BatchPropagation(
@@ -128,6 +129,8 @@ class BatchPropagationsTest(unittest.TestCase):
                 passed_prop_params['opmFromString']))
 
         self.assertEqual('project_uuid', passed_data[0]['project'])
+
+        AdamObjects._insert = tmp_insert
 
     def test_get_batch_propagation(self):
         dummy_rest = {'not': 'used'}
@@ -179,6 +182,7 @@ class BatchPropagationsTest(unittest.TestCase):
 
         def return_data(self, uuid, return_data=return_data):
             return return_data
+        tmp_get_json = AdamObjects._get_json
         AdamObjects._get_json = return_data
 
         batch_prop = batch_props.get('uuid')
@@ -200,6 +204,8 @@ class BatchPropagationsTest(unittest.TestCase):
                          batch_prop.get_summary())
         self.assertEqual([[1, 2, 3, 4, 5, 6, 7], [7, 6, 5, 4, 3, 2, 1]],
                          batch_prop.get_final_state_vectors())
+        
+        AdamObjects._get_json = tmp_get_json
 
 
 if __name__ == '__main__':

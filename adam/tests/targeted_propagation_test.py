@@ -137,6 +137,7 @@ class TargetedPropagationsTest(unittest.TestCase):
         def store_data(self, data, passed_data=passed_data):
             passed_data.append(data)
             return 'uuid'
+        tmp_insert = AdamObjects._insert
         AdamObjects._insert = store_data
 
         prop = TargetedPropagation(
@@ -181,6 +182,8 @@ class TargetedPropagationsTest(unittest.TestCase):
                          passed_targeting_params['runNominalOnly'])
 
         self.assertEqual('project_uuid', passed_data[0]['project'])
+
+        AdamObjects._insert = tmp_insert
 
     def test_get_targeted_propagation(self):
         dummy_rest = {'not': 'used'}
@@ -240,6 +243,7 @@ class TargetedPropagationsTest(unittest.TestCase):
 
         def return_data(self, uuid, return_data=return_data):
             return return_data
+        tmp_get_json = AdamObjects._get_json
         AdamObjects._get_json = return_data
 
         targeted_prop = targeted_props.get('uuid')
@@ -262,6 +266,8 @@ class TargetedPropagationsTest(unittest.TestCase):
 
         self.assertIsNone(targeted_prop.get_ephemeris())
         self.assertEqual([0, 0, 0], targeted_prop.get_maneuver())
+
+        AdamObjects._get_json = tmp_get_json
 
 
 if __name__ == '__main__':
