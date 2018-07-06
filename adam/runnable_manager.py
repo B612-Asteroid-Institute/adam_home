@@ -181,8 +181,8 @@ class RunnableManager(object):
         self._update_cached_status()
 
     def _wait_for_completion(self):
-        """ Waits for the completion of all the batches managed by this object. When this
-            returns, all managed batches are guaranteed to be in a final state
+        """ Waits for the completion of all the runnables managed by this object. When this
+            returns, all managed runnables are guaranteed to be in a final state
             (COMPLETED or FAILED).
         """
         if self.do_timing:
@@ -194,15 +194,14 @@ class RunnableManager(object):
         if self.do_timing:
             self.timer.stop()
 
-    def _get_results(self, get_child_results):
+    def _get_results(self):
         if self.do_timing:
             self.timer.start("Retrieving runnable results.")
 
         def _get_results(i):
             r = self.runnables[i]
             self.runnables_module.update_with_results(r)
-            if get_child_results:
-                r.set_children(self.runnables_module.get_children(r.get_uuid()))
+            r.set_children(self.runnables_module.get_children(r.get_uuid()))
 
         if self.multi_threaded:
             threads = 5
@@ -216,7 +215,7 @@ class RunnableManager(object):
         if self.do_timing:
             self.timer.stop()
 
-    def run(self, get_child_results=True):
+    def run(self):
         self._submit()
         self._wait_for_completion()
-        self._get_results(get_child_results)
+        self._get_results()

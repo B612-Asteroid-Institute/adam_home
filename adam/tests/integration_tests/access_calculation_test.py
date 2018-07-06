@@ -84,7 +84,7 @@ class AccessCalculationTest(unittest.TestCase):
         batch_propagations = BatchPropagations(self.service.rest)
 
         RunnableManager(batch_propagations, [propagation_1703],
-                        self.working_project.get_uuid()).run(get_child_results=True)
+                        self.working_project.get_uuid()).run()
 
         single_prop_uuid = propagation_1703.get_children()[0].get_uuid()
         print('Using single prop ' + single_prop_uuid +
@@ -100,7 +100,7 @@ class AccessCalculationTest(unittest.TestCase):
         access_calculations = AccessCalculations(self.service.rest)
 
         RunnableManager(access_calculations, [access_calculation],
-                        self.working_project.get_uuid()).run(get_child_results=False)
+                        self.working_project.get_uuid()).run()
 
         # Spot-check computed accesses.
         self.assertEqual(14, len(access_calculation.get_accesses()))
@@ -150,7 +150,7 @@ class AccessCalculationTest(unittest.TestCase):
         access_calculations = AccessCalculations(self.service.rest)
 
         RunnableManager(access_calculations, access_calculation_list,
-                        self.working_project.get_uuid()).run(get_child_results=False)
+                        self.working_project.get_uuid()).run()
 
         print('Computed accesses: ')
         for a in access_calculation_list[0].get_accesses():
