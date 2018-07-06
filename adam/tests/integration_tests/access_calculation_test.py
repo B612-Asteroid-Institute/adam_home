@@ -11,12 +11,13 @@ from adam import TargetingParams
 
 import unittest
 import os
+import datetime
 
 
 class AccessCalculationTest(unittest.TestCase):
 
     def setUp(self):
-        config = ConfigManager(os.getcwd() + '/test_config.json').get_config('local-dev')
+        config = ConfigManager(os.getcwd() + '/test_config.json').get_config('dev')
         self.service = Service(config)
         self.assertTrue(self.service.setup())
         self.working_project = self.service.new_working_project()
@@ -87,8 +88,8 @@ class AccessCalculationTest(unittest.TestCase):
         single_prop_uuid = propagation_1703.get_children()[0].get_uuid()
         print('Using single prop ' + single_prop_uuid + ' for access calculations.')
         print('OPM:\n' + propagation_1703.get_opm_params().generate_opm())
-        print('Results:\n' + propagation_1703.get_children()[0].get_ephemeris()[:1000]
-            + '\n...\n' + propagation_1703.get_children()[0].get_ephemeris()[-500:])
+        print('Results:\n' + propagation_1703.get_children()[0].get_ephemeris()[:600]
+            + '\n...\n' + propagation_1703.get_children()[0].get_ephemeris()[-200:])
 
         access_start_time = '2022-02-03T00:00:00Z'
         access_end_time = '2022-02-12T00:00:00Z'
@@ -99,9 +100,13 @@ class AccessCalculationTest(unittest.TestCase):
         RunnableManager(access_calculations, [access_calculation],
                         self.working_project.get_uuid()).run(get_child_results=False)
 
-        print('Computed accesses: ')
-        for a in access_calculation.get_accesses():
-            print(a)
+        # Spot-check computed accesses.
+        self.assertEqual(14, len(access_calculation.get_accesses()))
+        self.assertEqual([2459618.8358333334,
+                          2459618.8361805556,
+                          datetime.datetime(2022, 2, 8, 8, 3, 36, 8),
+                          datetime.datetime(2022, 2, 8, 8, 4, 6, 6)],
+                         access_calculation.get_accesses()[1])
 
         access_calculations.delete(access_calculation.get_uuid())
         batch_propagations.delete(propagation_1703.get_uuid())
@@ -119,14 +124,20 @@ class AccessCalculationTest(unittest.TestCase):
         print('Child propagation: ')
         self.assertEqual(1, len(access_calculation.get_children()))
         child_prop = access_calculation.get_children()[0]
-        print(child_prop.get_ephemeris()[:1000] + '\n...\n' + child_prop.get_ephemeris()[-500:])
+        print(child_prop.get_ephemeris()[:600] + '\n...\n' + child_prop.get_ephemeris()[-200:])
 
-        print('Computed accesses: ')
-        for a in access_calculation.get_accesses():
-            print(a)
+        # Spot-check computed accesses.
+        self.assertEqual(14, len(access_calculation.get_accesses()))
+        self.assertEqual([2459618.8358333334,
+                          2459618.8361805556,
+                          datetime.datetime(2022, 2, 8, 8, 3, 36, 8),
+                          datetime.datetime(2022, 2, 8, 8, 4, 6, 6)],
+                         access_calculation.get_accesses()[1])
 
         access_calculations.delete(access_calculation.get_uuid())
     
+    # Rename, removing leading no_ to run. CAREFUL because this will kick off
+    # a very large computation.
     def no_test_access_calculation_1703_10yr_load(self):
         access_start_time = '2017-01-01T00:00:00Z'
         access_end_time = '2027-01-01T00:00:00Z'
@@ -144,47 +155,6 @@ class AccessCalculationTest(unittest.TestCase):
             
         for access_calculation in access_calculation_list:
             access_calculations.delete(access_calculation.get_uuid())
-    
-    def no_test_access_calculation_1703_160yr(self):
-        access_start_time = '2017-06-10T00:00:00Z'
-        access_end_time = '2017-06-11T00:00:00Z'
-        access_calculation = self.new_access_calculation_1703_propagated(
-            access_start_time, access_end_time, 'LsstPointings')
-
-        access_calculations = AccessCalculations(self.service.rest)
-
-        RunnableManager(access_calculations, [access_calculation],
-                        self.working_project.get_uuid()).run(get_child_results=False)
-
-        print('Computed accesses: ')
-        for a in access_calculation.get_accesses():
-            print(a)
-            
-        access_calculations.delete(access_calculation.get_uuid())
-
-    def no_test_access_calculation_1703_4mo(self):
-        access_start_time = '2022-01-03T00:00:00Z'
-        access_end_time = '2022-05-03T00:00:00Z'
-        access_calculation = self.new_access_calculation_1703_propagated(
-            access_start_time, access_end_time, 'Lsst4moPointings')
-
-        access_calculations = AccessCalculations(self.service.rest)
-
-        RunnableManager(access_calculations, [access_calculation],
-                        self.working_project.get_uuid()).run(get_child_results=False)
-
-        print('Computed accesses: ')
-        for a in access_calculation.get_accesses():
-            print(a)
-
-        children = access_calculation.get_children()
-        if children is None or len(children) == 0:
-            print("children: " + str(children))
-
-        access_calculations.delete(access_calculation.get_uuid())
-        access_calculations.delete('e6e65f0a-8715-41b6-8cc2-dd7af349097b')
-
-        self.assertIsNone(access_calculations.get(access_calculation.get_uuid()))
 
 
 if __name__ == '__main__':
