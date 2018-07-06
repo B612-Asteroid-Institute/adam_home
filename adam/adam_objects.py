@@ -55,6 +55,16 @@ class AdamObjects(object):
 
     def __repr__(self):
         return "AdamObjects module"
+    
+    def _insert_all(self, all_data):
+        code, response = self._rest.post(
+            '/adam_object/batch/' + self._type, all_data)
+
+        if code != 200:
+            raise RuntimeError(
+                "Server status code: %s; Response: %s" % (code, response))
+        
+        return [r['uuid'] for r in response['items']]
 
     def _insert(self, data):
         code, response = self._rest.post(

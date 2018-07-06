@@ -99,7 +99,7 @@ class TargetedPropagations(AdamObjects):
         return "TargetedPropagations module"
 
     def _build_targeted_propagation_creation_data(
-            self, propagation_params, opm_params, targeting_params, project_uuid):
+            self, propagation_params, opm_params, targeting_params):
         data = {
             'description': propagation_params.get_description(),
             'initialPropagationParameters': {
@@ -113,19 +113,28 @@ class TargetedPropagations(AdamObjects):
                 'targetDistanceFromEarth': targeting_params.get_target_distance_from_earth(),
                 'tolerance': targeting_params.get_tolerance(),
                 'runNominalOnly': targeting_params.get_run_nominal_only(),
-            },
-            'project': project_uuid,
+            }
         }
 
         return data
+    
+    def insert_all(self, targeted_propagations, project_uuid):
+        all_data = {'requests': [], 'project': project_uuid}
+        for targeted_propagation in targeted_propagations:
+            all_data['requests'].append(self._build_targeted_propagation_creation_data(
+                targeted_propagation.get_propagation_params(),
+                targeted_propagation.get_opm_params(),
+                targeted_propagation.get_targeting_params()))
+        uuids = AdamObjects._insert_all(self, all_data)
+        for i in range(len(uuids)):
+            targeted_propagations[i].set_uuid(uuids[i])
 
     def insert(self, targeted_propagation, project_uuid):
         data = self._build_targeted_propagation_creation_data(
             targeted_propagation.get_propagation_params(),
             targeted_propagation.get_opm_params(),
-            targeted_propagation.get_targeting_params(),
-            project_uuid
-        )
+            targeted_propagation.get_targeting_params())
+        data['project'] = project_uuid
         targeted_propagation.set_uuid(AdamObjects._insert(self, data))
 
     def update_with_results(self, targeted_propagation):

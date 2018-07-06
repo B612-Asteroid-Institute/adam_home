@@ -108,53 +108,36 @@ class RunnableManager(object):
             return
 
         # Insert all the runnables server-side.
-        import time
-        count = 0
-        for r in self.runnables:
-            self.runnables_module.insert(r, self.project_uuid)
-            count = count + 1
-            if count % 10 == 0:
-                print('Inserted ' + str(count) + ' runnables')
-            time.sleep(.5)
 
-        # TODO: support batched submission.
+        # Insertions are most efficient when submitted in a single call because of the
+        # overhead of authorization, connecting to the database, etc. The server takes
+        # ~20 seconds to submit 500 runnables. We don't want to take more time than that
+        # because calls time out around 60 seconds.
+        submission_batch_size = 500
 
-        # # Batch runs are most efficient when submitted in a single call because of the
-        # # overhead of authorization, connecting to the database, etc. The server takes
-        # # ~20 seconds to submit 500 batch runs. We don't want to take more time than that
-        # # because calls time out around 60 seconds.
-        # submission_batch_size = 500
+        # Use as many threads as we have runnables to submit, up to an arbitrary maximum
+        # of 10, which allows us to submit 5000 runnables in parallel.
+        if self.multi_threaded:
+            num_batches = round(len(self.runnables) / submission_batch_size) + 1
+            threads = min(num_batches, 10)
+        else:
+            threads = 1
 
-        # # Use as many threads as we have batches to submit, up to an arbitrary maximum
-        # # of 10, which allows us to submit 5000 batches in parallel.
-        # if self.multi_threaded:
-        #     num_batches = round(len(self.batch_runs) / submission_batch_size) + 1
-        #     threads = min(num_batches, 10)
-        # else:
-        #     threads = 1
+        def _submit_runnables(i):
+            # Call to the server to insert the runnables.
+            runnable_subset = self.runnables[i:i + submission_batch_size]
+            self.runnables_module.insert_all(runnable_subset, self.project_uuid)
 
-        # def _submit_batches(i):
-        #     # Grab all the creation parameters from the batch objects.
-        #     runs = self.batch_runs[i:i+submission_batch_size]
-        #     params = [[b.get_propagation_params(), b.get_opm_params()] for b in runs]
+        pool = ThreadPool(threads)
+        # Break up the runnables into chunks and submit them in chunks. For fewer than
+        # <submission_batch_size> runs, this just submits them all in one request on one
+        # thread.
+        pool.map(_submit_runnables,
+                 [i for i in range(0, len(self.runnables), submission_batch_size)])
+        pool.close()
+        pool.join()
 
-        #     # Call to the server to create the batches.
-        #     summaries = self.batches_module.new_batches(params)
-
-        #     # Update the batches with the resulting state summaries.
-        #     for summary_i in range(len(summaries)):
-        #         self.batch_runs[i + summary_i].set_state_summary(summaries[summary_i])
-
-        # pool = ThreadPool(threads)
-        # # Break up the batches into chunks and submit them in chunks. For fewer than
-        # # <submission_batch_size> runs, this just submits them all in one request on one
-        # # thread.
-        # pool.map(_submit_batches,
-        #          [i for i in range(0, len(self.batch_runs), submission_batch_size)])
-        # pool.close()
-        # pool.join()
-
-        # self._update_cached_status()
+        self._update_cached_status()
 
         if self.do_timing:
             self.timer.stop()
