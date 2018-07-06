@@ -85,7 +85,7 @@ class BatchPropagations(AdamObjects):
         }
 
         return data
-    
+
     def insert_all(self, batch_propagations, project_uuid):
         all_data = {'requests': [], 'project': project_uuid}
         for batch_propagation in batch_propagations:

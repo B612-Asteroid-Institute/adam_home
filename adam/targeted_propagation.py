@@ -117,7 +117,7 @@ class TargetedPropagations(AdamObjects):
         }
 
         return data
-    
+
     def insert_all(self, targeted_propagations, project_uuid):
         all_data = {'requests': [], 'project': project_uuid}
         for targeted_propagation in targeted_propagations:

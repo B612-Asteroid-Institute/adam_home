@@ -7,7 +7,6 @@ from adam import ConfigManager
 from adam import RunnableManager
 from adam import AccessCalculation
 from adam import AccessCalculations
-from adam import TargetingParams
 
 import unittest
 import os
@@ -17,7 +16,8 @@ import datetime
 class AccessCalculationTest(unittest.TestCase):
 
     def setUp(self):
-        config = ConfigManager(os.getcwd() + '/test_config.json').get_config('dev')
+        config = ConfigManager(
+            os.getcwd() + '/test_config.json').get_config('dev')
         self.service = Service(config)
         self.assertTrue(self.service.setup())
         self.working_project = self.service.new_working_project()
@@ -25,10 +25,10 @@ class AccessCalculationTest(unittest.TestCase):
 
     def tearDown(self):
         self.service.teardown()
-    
+
     def new_propagation_1703_cartesian(self):
         start = '2016-12-13T12:50:42.216000Z'
-        end =   '2028-12-13T12:50:42.216000Z'
+        end = '2028-12-13T12:50:42.216000Z'
         propagation_params = PropagationParams({
             'start_time': start,
             'end_time': end,
@@ -48,9 +48,10 @@ class AccessCalculationTest(unittest.TestCase):
         })
 
         return BatchPropagation(propagation_params, opm_params)
-    
-    def new_access_calculation_1703_with_ephem(self, single_prop_uuid, access_start, access_end, table):
-        return AccessCalculation(None, None, single_prop_uuid, 
+
+    def new_access_calculation_1703_with_ephem(
+            self, single_prop_uuid, access_start, access_end, table):
+        return AccessCalculation(None, None, single_prop_uuid,
                                  access_start, access_end, table)
 
     def new_access_calculation_1703_propagated(self, access_start, access_end, table):
@@ -76,7 +77,7 @@ class AccessCalculationTest(unittest.TestCase):
 
         return AccessCalculation(propagation_params, opm_params, None,
                                  access_start, access_end, table)
-    
+
     def test_access_calculation_1703_10yr_propagate_separately(self):
         # NOTE accesss calculations do not work with back propagated ephems
         propagation_1703 = self.new_propagation_1703_cartesian()
@@ -86,10 +87,11 @@ class AccessCalculationTest(unittest.TestCase):
                         self.working_project.get_uuid()).run(get_child_results=True)
 
         single_prop_uuid = propagation_1703.get_children()[0].get_uuid()
-        print('Using single prop ' + single_prop_uuid + ' for access calculations.')
+        print('Using single prop ' + single_prop_uuid +
+              ' for access calculations.')
         print('OPM:\n' + propagation_1703.get_opm_params().generate_opm())
         print('Results:\n' + propagation_1703.get_children()[0].get_ephemeris()[:600]
-            + '\n...\n' + propagation_1703.get_children()[0].get_ephemeris()[-200:])
+              + '\n...\n' + propagation_1703.get_children()[0].get_ephemeris()[-200:])
 
         access_start_time = '2022-02-03T00:00:00Z'
         access_end_time = '2022-02-12T00:00:00Z'
@@ -110,7 +112,7 @@ class AccessCalculationTest(unittest.TestCase):
 
         access_calculations.delete(access_calculation.get_uuid())
         batch_propagations.delete(propagation_1703.get_uuid())
-    
+
     def test_access_calculation_1703_10yr(self):
         access_start_time = '2022-02-03T00:00:00Z'
         access_end_time = '2022-02-12T00:00:00Z'
@@ -124,7 +126,8 @@ class AccessCalculationTest(unittest.TestCase):
         print('Child propagation: ')
         self.assertEqual(1, len(access_calculation.get_children()))
         child_prop = access_calculation.get_children()[0]
-        print(child_prop.get_ephemeris()[:600] + '\n...\n' + child_prop.get_ephemeris()[-200:])
+        print(child_prop.get_ephemeris()[
+              :600] + '\n...\n' + child_prop.get_ephemeris()[-200:])
 
         # Spot-check computed accesses.
         self.assertEqual(14, len(access_calculation.get_accesses()))
@@ -135,7 +138,7 @@ class AccessCalculationTest(unittest.TestCase):
                          access_calculation.get_accesses()[1])
 
         access_calculations.delete(access_calculation.get_uuid())
-    
+
     # Rename, removing leading no_ to run. CAREFUL because this will kick off
     # a very large computation.
     def no_test_access_calculation_1703_10yr_load(self):
@@ -152,7 +155,7 @@ class AccessCalculationTest(unittest.TestCase):
         print('Computed accesses: ')
         for a in access_calculation_list[0].get_accesses():
             print(a)
-            
+
         for access_calculation in access_calculation_list:
             access_calculations.delete(access_calculation.get_uuid())
 

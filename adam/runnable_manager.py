@@ -172,7 +172,7 @@ class RunnableManager(object):
             calc_state = 'PENDING'
             if runnable.get_runnable_state() is not None:
                 calc_state = runnable.get_runnable_state().get_calc_state()
-            if not calc_state in ['COMPLETED', 'FAILED']:
+            if calc_state not in ['COMPLETED', 'FAILED']:
                 complete = False
                 break
         if complete:
