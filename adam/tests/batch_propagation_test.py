@@ -204,7 +204,7 @@ class BatchPropagationsTest(unittest.TestCase):
                          batch_prop.get_summary())
         self.assertEqual([[1, 2, 3, 4, 5, 6, 7], [7, 6, 5, 4, 3, 2, 1]],
                          batch_prop.get_final_state_vectors())
-        
+
         AdamObjects._get_json = tmp_get_json
 
 
