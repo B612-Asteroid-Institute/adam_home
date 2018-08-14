@@ -4,6 +4,7 @@
 import json
 from os.path import expanduser
 
+
 class setPaths(object):
 
     home = expanduser("~") + "/adam_home"
