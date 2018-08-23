@@ -45,8 +45,3 @@ class setPaths(object):
             MY_functions_path = home + OS + raw_config['MY_config']['MY_functions_path']
                 
         return (adam_path, data_path, env_template_path, env_config_path, ephem_path, MY_functions_path)
-        
-
-    
-       
-    
