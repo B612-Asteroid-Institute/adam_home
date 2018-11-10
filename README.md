@@ -25,7 +25,7 @@ Note that to use the `adam.stk` submodule you will need to have STK installed on
 
 To to add `adam` to your Python path: 
 
-```export PYTHONPATH=/path/to/adam/:$PYTHONPATH```
+```export PYTHONPATH=/path/to/adam_home/:$PYTHONPATH```
 
 ## Installation for Users
 
