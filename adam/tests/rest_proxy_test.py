@@ -166,7 +166,7 @@ class AuthenticatingRestProxyTest(unittest.TestCase):
         rest = _RestProxyForTest()
         # All the unsafe and reserved characters
         #pylint: disable=W1401 # NOQA
-        token = '; / ? : @ = &   < > # % { } | \ ^ ~ [ ]'
+        token = '; / ? : @ = &   < > # % { } | \\ ^ ~ [ ]'
         auth_rest = AuthenticatingRestProxy(rest, token)
 
         rest.expect_get("/test?a=1&b=2&token=%3B+%2F+%3F+%3A+%40+%3D+%26+++%3C+%3E"
