@@ -80,7 +80,7 @@ class TargetingParams(object):
         # Required.
         self._target_distance_from_earth = params['target_distance_from_earth']
         self._initial_target_distance_from_earth =\
-            params['initial_target_distance_from_earth'] or -1
+            params.get('initial_target_distance_from_earth') or -1
         self._tolerance = params.get('tolerance') or 1.0
         self._run_nominal_only = params.get('run_nominal_only') or False
 
