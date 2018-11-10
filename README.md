@@ -7,7 +7,7 @@
 
 Clone this repository using git (using SSH in this example):
 
-```git clone git@github.com:B612-Asteroid-Institute/adam.git```
+```git clone git@github.com:B612-Asteroid-Institute/adam_home.git```
 
 Then `cd` into the cloned repository and do one of the following depending on how you prefer your packages to be installed.
 
