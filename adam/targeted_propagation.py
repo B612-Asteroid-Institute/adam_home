@@ -46,7 +46,8 @@ class TargetingParams(object):
     def fromJsonResponse(cls, response_targeting_params):
         return TargetingParams({
             'target_distance_from_earth': response_targeting_params['targetDistanceFromEarth'],
-            'initial_target_distance_from_earth': response_targeting_params['initialTargetDistanceFromEarth'],
+            'initial_target_distance_from_earth':
+                response_targeting_params['initialTargetDistanceFromEarth'],
             'tolerance': response_targeting_params['tolerance'],
             'run_nominal_only': response_targeting_params['runNominalOnly'],
         })
@@ -78,13 +79,16 @@ class TargetingParams(object):
 
         # Required.
         self._target_distance_from_earth = params['target_distance_from_earth']
-        self._initial_target_distance_from_earth = params['initial_target_distance_from_earth'] or -1
+        self._initial_target_distance_from_earth =
+            params['initial_target_distance_from_earth'] or -1
         self._tolerance = params.get('tolerance') or 1.0
         self._run_nominal_only = params.get('run_nominal_only') or False
 
     def __repr__(self):
         return "Targeting params [%s, %s, %s, %s]" % (
-            self._target_distance_from_earth, self._initial_target_distance_from_earth, self._tolerance, self._run_nominal_only)
+            self._target_distance_from_earth,
+            self._initial_target_distance_from_earth,
+            self._tolerance, self._run_nominal_only)
 
     def get_target_distance_from_earth(self):
         return self._target_distance_from_earth
@@ -119,7 +123,8 @@ class TargetedPropagations(AdamObjects):
             },
             'targetingParameters': {
                 'targetDistanceFromEarth': targeting_params.get_target_distance_from_earth(),
-                'initialTargetDistanceFromEarth': targeting_params.get_initial_target_distance_from_earth(),
+                'initialTargetDistanceFromEarth':
+                    targeting_params.get_initial_target_distance_from_earth(),
                 'tolerance': targeting_params.get_tolerance(),
                 'runNominalOnly': targeting_params.get_run_nominal_only(),
             },
