@@ -43,6 +43,7 @@ def _process_notebook(path):
 def test():
     # initial CWD = adam_home/adam/tests
     # change to adam_home
+    print("cwd: ", os.getcwd())
     os.chdir("../..")
     # adam_home/demos
     notebook_path = os.getcwd() + '/demos/single_run_demo.ipynb'
