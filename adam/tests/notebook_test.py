@@ -1,7 +1,8 @@
 import subprocess
 import tempfile
 import nbformat
-import os, sys
+import os
+import sys
 
 
 # https://blog.thedataincubator.com/2016/06/testing-jupyter-notebooks/
