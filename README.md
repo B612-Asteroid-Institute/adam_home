@@ -32,4 +32,4 @@ Please refer to the team drive for "Developer OnBoarding/Defined_ADAMinstallInst
 ## Installation for Users (Non-Developers)
 
 Go to: https://github.com/B612-Asteroid-Institute/adam_home
-Click on the green button to "Clone or Download". From the drop down, click on "Download Zip". Save "adam_home-master.zip" to your local computer. Upzip the files from your C:/Users/YourName directory.
+Click on the green button to "Clone or Download". From the drop down, click on "Download Zip". Save "adam_home-master.zip" to your local computer. Unzip (extract) the files into your C:/Users/Your_Name directory.
