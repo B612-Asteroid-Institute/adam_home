@@ -2,8 +2,6 @@ import subprocess
 import tempfile
 import nbformat
 import os
-import sys
-
 
 # https://blog.thedataincubator.com/2016/06/testing-jupyter-notebooks/
 def _process_notebook(path):
@@ -42,10 +40,7 @@ def _process_notebook(path):
 
 
 def test():
-    # initial CWD = adam_home
     print("cwd: ", os.getcwd())
-    # export PYTHONPATH = ${PYTHONPATH}: /home/travis/build/B612-Asteroid-Institute/adam_home
-    sys.path.append('/home/travis/build/B612-Asteroid-Institute/adam_home')
     # adam_home/demos
     notebook_path = os.getcwd() + '/demos/single_run_demo.ipynb'
     nb, errors = _process_notebook(notebook_path)
