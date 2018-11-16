@@ -15,7 +15,7 @@ class AnonymousTest(unittest.TestCase):
     """
 
     def setUp(self):
-        self.config = ConfigManager(os.getcwd() + '/test_config.json').get_config()
+        self.config = ConfigManager(os.getcwd() + '/config/adam_config.json').get_config()
         self.config.set_token("")
         self.service = Service(self.config)
         self.assertTrue(self.service.setup())
