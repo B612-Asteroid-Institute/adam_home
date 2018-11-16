@@ -25,7 +25,7 @@ class PermissionsTest(unittest.TestCase):
                 pass  # No big deal. Probably it was already deleted.
 
     def setUp(self):
-        config = ConfigManager(os.getcwd() + '/test_config.json').get_config()
+        config = ConfigManager(os.getcwd() + '/config/adam_config.json').get_config()
         self.service = Service(config)
         self.assertTrue(self.service.setup())
         self.me = "b612.adam.test@gmail.com"
