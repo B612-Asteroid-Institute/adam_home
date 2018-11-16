@@ -3,6 +3,7 @@ import tempfile
 import nbformat
 import os
 
+
 # https://blog.thedataincubator.com/2016/06/testing-jupyter-notebooks/
 def _process_notebook(path):
     '''
