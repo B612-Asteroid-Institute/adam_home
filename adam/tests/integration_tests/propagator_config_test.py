@@ -18,7 +18,7 @@ class PropagatorConfigTest(unittest.TestCase):
     """
 
     def setUp(self):
-        config = ConfigManager(os.getcwd() + '/test_config.json').get_config()
+        config = ConfigManager(os.getcwd() + '/test_adam_config.json').get_config()
         self.service = Service(config)
         self.assertTrue(self.service.setup())
 

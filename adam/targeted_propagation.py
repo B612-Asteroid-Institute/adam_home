@@ -46,6 +46,8 @@ class TargetingParams(object):
     def fromJsonResponse(cls, response_targeting_params):
         return TargetingParams({
             'target_distance_from_earth': response_targeting_params['targetDistanceFromEarth'],
+            'initial_target_distance_from_earth':
+                response_targeting_params['initialTargetDistanceFromEarth'],
             'tolerance': response_targeting_params['tolerance'],
             'run_nominal_only': response_targeting_params['runNominalOnly'],
         })
@@ -55,6 +57,9 @@ class TargetingParams(object):
         Param options are:
             target_distance_from_earth (float):
                 Target distance from the center of the earth, in km. Required!
+            initial_target_distance_from_earth (float):
+                Initial target distance from the center of the earth, in km. If not
+                provided, defaults to a multiple of target_distance_from_earth.
             tolerance (float):
                 Tolerance on the target distance, in km. Must be > 0. Defaults to 1 km.
             run_nominal_only (boolean):
@@ -65,7 +70,7 @@ class TargetingParams(object):
         """
         # Make this a bit easier to get right by checking for parameters by unexpected
         # names.
-        supported_params = {'target_distance_from_earth',
+        supported_params = {'target_distance_from_earth', 'initial_target_distance_from_earth',
                             'tolerance', 'run_nominal_only'}
         extra_params = params.keys() - supported_params
         if len(extra_params) > 0:
@@ -74,15 +79,22 @@ class TargetingParams(object):
 
         # Required.
         self._target_distance_from_earth = params['target_distance_from_earth']
+        self._initial_target_distance_from_earth =\
+            params.get('initial_target_distance_from_earth') or -1
         self._tolerance = params.get('tolerance') or 1.0
         self._run_nominal_only = params.get('run_nominal_only') or False
 
     def __repr__(self):
-        return "Targeting params [%s, %s, %s]" % (
-            self._target_distance_from_earth, self._tolerance, self._run_nominal_only)
+        return "Targeting params [%s, %s, %s, %s]" % (
+            self._target_distance_from_earth,
+            self._initial_target_distance_from_earth,
+            self._tolerance, self._run_nominal_only)
 
     def get_target_distance_from_earth(self):
         return self._target_distance_from_earth
+
+    def get_initial_target_distance_from_earth(self):
+        return self._initial_target_distance_from_earth
 
     def get_tolerance(self):
         return self._tolerance
@@ -111,6 +123,8 @@ class TargetedPropagations(AdamObjects):
             },
             'targetingParameters': {
                 'targetDistanceFromEarth': targeting_params.get_target_distance_from_earth(),
+                'initialTargetDistanceFromEarth':
+                    targeting_params.get_initial_target_distance_from_earth(),
                 'tolerance': targeting_params.get_tolerance(),
                 'runNominalOnly': targeting_params.get_run_nominal_only(),
             },

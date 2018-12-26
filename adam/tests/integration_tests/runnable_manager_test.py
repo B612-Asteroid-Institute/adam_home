@@ -14,7 +14,7 @@ import os
 class RunnableManagerTest(unittest.TestCase):
 
     def setUp(self):
-        config = ConfigManager(os.getcwd() + '/test_config.json').get_config('dev')
+        config = ConfigManager(os.getcwd() + '/test_adam_config.json').get_config('dev')
         self.service = Service(config)
         self.assertTrue(self.service.setup())
         self.working_project = self.service.new_working_project()
