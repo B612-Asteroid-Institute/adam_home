@@ -6,6 +6,7 @@
 class PropagationParams(object):
 
     DEFAULT_CONFIG_ID = "00000000-0000-0000-0000-000000000001"
+    DEFAULT_EXECUTOR = "STK"
 
     @classmethod
     def fromJsonResponse(cls, response_prop_params, description):
@@ -16,6 +17,7 @@ class PropagationParams(object):
             'step_size': response_prop_params['step_duration_sec'],
             'propagator_uuid': response_prop_params['propagator_uuid'],
             'description': description,
+            'executor': response_prop_params['executor'],
         })
 
     def __init__(self, params):
@@ -30,6 +32,7 @@ class PropagationParams(object):
             propagator_uuid (str): propagator settings to use (default is the Sun,
                 all planets, and the Moon as point masses [no asteroids])
             description (str): human-readable description of the run
+            executor (str): particular type of software to use, defaults to STK
 
         Raises:
             KeyError if the given object does not include 'start_time' and 'end_time',
@@ -38,7 +41,8 @@ class PropagationParams(object):
         # Make this a bit easier to get right by checking for parameters by unexpected
         # names.
         supported_params = {'start_time', 'end_time', 'step_size',
-                            'propagator_uuid', 'project_uuid', 'description'}
+                            'propagator_uuid', 'project_uuid', 'description',
+                            'executor'}
         extra_params = params.keys() - supported_params
         if len(extra_params) > 0:
             raise KeyError("Unexpected parameters provided: %s" %
@@ -53,11 +57,13 @@ class PropagationParams(object):
             'propagator_uuid') or self.DEFAULT_CONFIG_ID
         self._project_uuid = params.get('project_uuid')
         self._description = params.get('description')
+        self._executor = params.get('executor') or self.DEFAULT_EXECUTOR
 
     def __repr__(self):
-        return "Batch params [%s, %s, %s, %s, %s, %s]" % (
+        return "Batch params [%s, %s, %s, %s, %s, %s, %s]" % (
             self._start_time, self._end_time, self._step_size,
-            self._propagator_uuid, self._project_uuid, self._description)
+            self._propagator_uuid, self._project_uuid, self._description,
+            self._executor)
 
     def get_start_time(self):
         return self._start_time
@@ -76,3 +82,6 @@ class PropagationParams(object):
 
     def get_description(self):
         return self._description
+
+    def get_executor(self):
+        return self._executor
