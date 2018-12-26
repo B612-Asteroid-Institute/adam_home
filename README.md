@@ -7,7 +7,7 @@
 
 Clone this repository using git (using SSH in this example):
 
-```git clone git@github.com:B612-Asteroid-Institute/adam.git```
+```git clone git@github.com:B612-Asteroid-Institute/adam_home.git```
 
 Then `cd` into the cloned repository and do one of the following depending on how you prefer your packages to be installed.
 
@@ -21,18 +21,15 @@ To install pre-requisite software using pip:
 
 Note that to use the `adam.stk` submodule you will need to have STK installed on your system. 
 
+Some jupyter notebooks use the tabulate package:
+
+```pip install tabulate```
+
 ## Installation for Developers
 
-To to add `adam` to your Python path: 
+Please refer to the team drive for "Developer OnBoarding/Defined_ADAMinstallInstruct.docx"
 
-```export PYTHONPATH=/path/to/adam/:$PYTHONPATH```
+## Installation for Users (Non-Developers)
 
-## Installation for Users
-
-To be added soon.
-
-## Testing Installation
-
-Using pytest (with coverage):
-
-```pytest adam --cov=adam```
+Go to: https://github.com/B612-Asteroid-Institute/adam_home
+Click on the green button to "Clone or Download". From the drop down, click on "Download Zip". Save "adam_home-master.zip" to your local computer. Unzip (extract) the files into your C:/Users/Your_Name directory.
