@@ -62,6 +62,7 @@ class TargetingParamsTest(unittest.TestCase):
     def test_from_json(self):
         json = {
             'targetDistanceFromEarth': 123,
+            'initialTargetDistanceFromEarth': 123,
             'tolerance': 321,
             'runNominalOnly': True,
         }
@@ -232,6 +233,7 @@ class TargetedPropagationsTest(unittest.TestCase):
             },
             "targetingParameters": {
                 "targetDistanceFromEarth": 123.0,
+                "initialTargetDistanceFromEarth": 123.0,
                 "tolerance": 1.0,
                 "runNominalOnly": False
             },
