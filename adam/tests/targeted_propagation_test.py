@@ -196,6 +196,7 @@ class TargetedPropagationsTest(unittest.TestCase):
                 "end_time": "BBB",
                 "step_duration_sec": "0",
                 "propagator_uuid": "00000000-0000-0000-0000-000000000001",
+                "executor": "stk",
                 "opm": {
                     "header": {
                         "originator": "ADAM_User",
