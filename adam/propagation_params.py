@@ -17,7 +17,7 @@ class PropagationParams(object):
             'step_size': response_prop_params['step_duration_sec'],
             'propagator_uuid': response_prop_params['propagator_uuid'],
             'description': description,
-            'executor': response_prop_params['executor'],
+            'executor': response_prop_params.get('executor', self.DEFAULT_EXECUTOR),
         })
 
     def __init__(self, params):

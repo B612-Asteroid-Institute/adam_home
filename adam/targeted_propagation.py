@@ -47,7 +47,7 @@ class TargetingParams(object):
         return TargetingParams({
             'target_distance_from_earth': response_targeting_params['targetDistanceFromEarth'],
             'initial_target_distance_from_earth':
-                response_targeting_params['initialTargetDistanceFromEarth'],
+                response_targeting_params.get('initialTargetDistanceFromEarth', -1),
             'tolerance': response_targeting_params['tolerance'],
             'run_nominal_only': response_targeting_params['runNominalOnly'],
         })
