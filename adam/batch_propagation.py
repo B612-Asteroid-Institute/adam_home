@@ -81,6 +81,7 @@ class BatchPropagations(AdamObjects):
                 'propagator_uuid': propagation_params.get_propagator_uuid(),
                 'step_duration_sec': propagation_params.get_step_size(),
                 'opmFromString': opm_params.generate_opm(),
+                'executor': propagation_params.get_executor(),
             },
             'project': project_uuid,
         }
