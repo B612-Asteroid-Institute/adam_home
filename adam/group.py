@@ -2,7 +2,7 @@
     group.py
 """
 
-from tabulate import tabulate
+# from tabulate import tabulate
 
 
 class Group(object):
@@ -105,9 +105,9 @@ class Groups(object):
         return [GroupMember(m['member_id'], m['member_type'])
                 for m in self._get_group_members(group)]
 
-    def print_group_members(self, group):
-        members = self._get_group_members(group)
-        print(tabulate(members, headers="keys", tablefmt="fancy_grid"))
+    # def print_group_members(self, group):
+    #    members = self._get_group_members(group)
+    #    print(tabulate(members, headers="keys", tablefmt="fancy_grid"))
 
     def _get_memberships(self, group=None):
         url = '/group_membership?recursive=true&expand=true'
@@ -124,9 +124,9 @@ class Groups(object):
         return [Group(g['uuid'], g.get('name'), g.get('description'))
                 for g in self._get_memberships(group)]
 
-    def print_group_memberships(self, group):
-        groups = self._get_memberships(group)
-        print(tabulate(groups, headers="keys", tablefmt="fancy_grid"))
+    # def print_group_memberships(self, group):
+    #    groups = self._get_memberships(group)
+    #    print(tabulate(groups, headers="keys", tablefmt="fancy_grid"))
 
     def get_my_memberships(self):
         return self.get_group_memberships(None)
