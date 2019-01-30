@@ -1,6 +1,6 @@
 numpy
 requests
-tabulate
+# tabulate
 pandas
 pytest
 pytest-cov
