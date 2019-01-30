@@ -2,7 +2,7 @@
     project.py
 """
 
-from tabulate import tabulate
+# from tabulate import tabulate
 
 
 class Project(object):
@@ -61,14 +61,14 @@ class Projects(object):
 
         return projects
 
-    def print_projects(self):
-        projects = self._get_projects()
+    # def print_projects(self):
+    #    projects = self._get_projects()
 
-        for p in projects:
-            if len(p['description']) > 50:
-                p['description'] = p['description'][:50] + "..."
+    #    for p in projects:
+    #        if len(p['description']) > 50:
+    #            p['description'] = p['description'][:50] + "..."
 
-        print(tabulate(projects, headers="keys", tablefmt="fancy_grid"))
+    #    print(tabulate(projects, headers="keys", tablefmt="fancy_grid"))
 
     def get_project(self, uuid):
         if uuid is None:
