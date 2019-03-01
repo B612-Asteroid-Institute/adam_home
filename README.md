@@ -24,6 +24,9 @@ Note that to use the `adam.stk` submodule you will need to have STK installed on
 Some jupyter notebooks use the tabulate package:
 
 ```pip install tabulate```
+Some jupyter notebooks use the astroquery package:
+
+```conda install -c astropy astroquery```
 
 ## Installation for Developers
 
