@@ -5,7 +5,7 @@
 from adam.batch import StateSummary
 from adam.batch import PropagationResults
 
-from tabulate import tabulate
+# from tabulate import tabulate
 
 
 class Batches(object):
@@ -93,10 +93,10 @@ class Batches(object):
             summaries[s['uuid']] = StateSummary(s)
         return summaries
 
-    def print_summaries(self, project, keys="batch_uuid,calc_state"):
-        batches = self._get_summaries(project)
+    # def print_summaries(self, project, keys="batch_uuid,calc_state"):
+    #    batches = self._get_summaries(project)
 
-        print(tabulate(batches, headers=keys, tablefmt="fancy_grid"))
+    #    print(tabulate(batches, headers=keys, tablefmt="fancy_grid"))
 
     def _get_part(self, state_summary, index):
         # Parts IDs are 1-indexed, not 0-indexed.
