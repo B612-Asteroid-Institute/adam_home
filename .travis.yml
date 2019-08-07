@@ -19,6 +19,7 @@ install:
 - hash -r
 - conda config --set always_yes yes --set changeps1 no
 - conda update conda
+- conda install tornado=5.1.1
 - conda info -a
 - conda env create -n test-environment python=$TRAVIS_PYTHON_VERSION -f requirements.txt
 - source activate test-environment
