@@ -2,7 +2,7 @@
     permission.py
 """
 
-from tabulate import tabulate
+# from tabulate import tabulate
 
 
 class Permission(object):
@@ -113,20 +113,20 @@ class Permissions(object):
 
         return permissions
 
-    def print_my_permissions(self, user_superuser_only=None):
-        permissions = self.get_my_permissions(user_superuser_only)
+    # def print_my_permissions(self, user_superuser_only=None):
+    #    permissions = self.get_my_permissions(user_superuser_only)
 
-        table = []
-        for k in permissions:
-            for p in permissions[k]:
-                via = "Group %s" % k if k != '' else 'Directly granted'
-                table.append({
-                    'Right': p.get_right(),
-                    'Target': "%s %s" % (p.get_target_type(), p.get_target_uuid()),
-                    'Permitted via': via
-                })
+    #    table = []
+    #    for k in permissions:
+    #        for p in permissions[k]:
+    #            via = "Group %s" % k if k != '' else 'Directly granted'
+    #            table.append({
+    #                'Right': p.get_right(),
+    #                'Target': "%s %s" % (p.get_target_type(), p.get_target_uuid()),
+    #                'Permitted via': via
+    #            })
 
-        print(tabulate(table, headers="keys", tablefmt="fancy_grid"))
+    #    print(tabulate(table, headers="keys", tablefmt="fancy_grid"))
 
     def get_group_permissions(self, group_uuid):
         code, response = self._rest.get(
@@ -142,17 +142,17 @@ class Permissions(object):
 
         return permissions
 
-    def print_group_permissions(self, group_uuid):
-        permissions = self.get_group_permissions(group_uuid)
+    # def print_group_permissions(self, group_uuid):
+    #    permissions = self.get_group_permissions(group_uuid)
 
-        table = []
-        for k in permissions:
-            for p in permissions[k]:
-                via = "Group %s" % k if k != group_uuid else 'Directly granted'
-                table.append({
-                    'Right': p.get_right(),
-                    'Target': "%s %s" % (p.get_target_type(), p.get_target_uuid()),
-                    'Permitted via': via
-                })
+    #    table = []
+    #    for k in permissions:
+    #        for p in permissions[k]:
+    #            via = "Group %s" % k if k != group_uuid else 'Directly granted'
+    #            table.append({
+    #                'Right': p.get_right(),
+    #                'Target': "%s %s" % (p.get_target_type(), p.get_target_uuid()),
+    #                'Permitted via': via
+    #            })
 
-        print(tabulate(table, headers="keys", tablefmt="fancy_grid"))
+    #    print(tabulate(table, headers="keys", tablefmt="fancy_grid"))
