@@ -5,8 +5,6 @@
 import numpy as np
 import pandas as pd
 
-__all__ = ["AstrogatorOutput"]
-
 class AstrogatorOutput:
     """Fetches output from an STK/Astrogator MCS
     
@@ -113,9 +111,17 @@ class AstrogatorOutput:
         tempArray = np.zeros([1,len(self.events)])
         for i,eventRow in enumerate(self.events):
             seg = gatorDefn.GetSegmentByName(eventRow[0])
-            tempArray[0,i] = seg.GetResultValue(eventRow[1]).Getin(eventRow[2]).value
-        print(tempArray.T)
-        print(tempArray.T.shape)
+            if seg.GetResultValue(eventRow[1]).Class.value == 'DATE':
+                #The following generates an error becasue the np.array is of type float.
+                if eventRow[2] in ['EpDay','EpMin','EpSec','EpYr','JDate','JED','ModJDate','EarthEpTU','GPSZ','JDateOff','SunEpTU']:
+                    tempArray[0,i] = float(seg.GetResultValue(eventRow[1]).Format(eventRow[2]).value)
+                else:
+                    print ('Format "{}" not supported (must be representable as a float). Substituting with "JDate".'.format(eventRow[2]))
+                    tempArray[0,i] = float(seg.GetResultValue(eventRow[1]).Format('JDate').value)
+            else:
+                 tempArray[0,i] = seg.GetResultValue(eventRow[1]).Getin(eventRow[2]).value
+        #print(tempArray.T)
+        print('1st Item: {:25}  Shape: {}'.format(tempArray[0,0],tempArray.T.shape))
         if self.results is None:
             self.results = tempArray.T
         else:
