@@ -2,7 +2,7 @@ import subprocess
 import tempfile
 import nbformat
 import os
-
+import pytest
 
 # https://blog.thedataincubator.com/2016/06/testing-jupyter-notebooks/
 def _process_notebook(path):
@@ -39,7 +39,7 @@ def _process_notebook(path):
 
     return nb, errors
 
-
+@pytest.mark.notebook
 def test():
     print("cwd: ", os.getcwd())
     # adam_home/demos
