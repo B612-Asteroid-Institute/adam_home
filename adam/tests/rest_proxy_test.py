@@ -169,8 +169,13 @@ class AuthenticatingRestProxyTest(unittest.TestCase):
         token = '; / ? : @ = &   < > # % { } | \\ ^ ~ [ ]'
         auth_rest = AuthenticatingRestProxy(rest, token)
 
+        # handle urlencode modules with and without the bugfix for https://bugs.python.org/issue16285 (Python >= 3.7)
+        # see also: https://stackoverflow.com/questions/51334226/python-why-is-now-included-in-the-set-of-reserved-characters-in-urllib-pars
+        import urllib
+        tilde = urllib.parse.quote('~')
+
         rest.expect_get("/test?a=1&b=2&token=%3B+%2F+%3F+%3A+%40+%3D+%26+++%3C+%3E"
-                        "+%23+%25+%7B+%7D+%7C+%5C+%5E+%7E+%5B+%5D", 200, {})
+                        "+%23+%25+%7B+%7D+%7C+%5C+%5E+{}+%5B+%5D".format(tilde), 200, {})
         auth_rest.get("/test?a=1&b=2")
 
     def test_delete(self):
