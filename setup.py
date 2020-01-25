@@ -61,5 +61,8 @@ setup(name="adam",
             "Operating System :: MacOS :: MacOS X"
       ],
       install_requires=['requests', 'pandas'],
-      packages=['adam', 'adam.stk']
+      packages=['adam', 'adam.stk'],
+      entry_points = {
+            'console_scripts': ['adam=adam.__main__:main'],
+      }
       )
