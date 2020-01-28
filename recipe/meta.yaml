@@ -17,10 +17,14 @@ requirements:
     - coveralls
     - flake8
     - nbconvert
+    - pyxdg
+    - pyyaml
   run:
     - python
     - requests
     - pandas
+    - pyxdg
+    - pyyaml
 
 test:
   imports:
