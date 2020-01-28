@@ -14,7 +14,6 @@ from adam.rest_proxy import AuthenticatingRestProxy
 
 import datetime
 
-
 class Service():
     """Module wrapping the REST API and associated client libraries. The goal of this
     module is to make it very easy and readable to do basic operations against a prod or
@@ -22,16 +21,22 @@ class Service():
 
     """
 
-    def __init__(self, config):
-        self.config = config
+    @classmethod
+    def from_config(cls, config):
+        return cls(url=config['url'], workspace=config['workspace'], token=config['token'])
+
+    def __init__(self, url, workspace, token):
+        self.url = url
+        self.workspace = workspace
+        self.token = token
+
         self.working_projects = []
 
     def new_working_project(self):
         timer = Timer()
         timer.start("Generate working project")
-        if self.config.get_workspace() != '':
-            project = self.projects.new_project(
-                self.config.get_workspace(), None,
+        if self.workspace:
+            project = self.projects.new_project(self.workspace, None,
                 "Test project created at " + str(datetime.datetime.now()))
             self.working_projects.append(project)
             print("Set up project with uuid " + project.get_uuid())
@@ -47,13 +52,13 @@ class Service():
         timer = Timer()
         timer.start("Setup")
 
-        rest = RetryingRestProxy(RestRequests(self.config.get_url()))
+        rest = RetryingRestProxy(RestRequests(self.url))
         auth = Auth(rest)
-        if not auth.authenticate(self.config.get_token()):
+        if not auth.authenticate(self.token):
             print("Could not authenticate.")
             return False
 
-        self.rest = AuthenticatingRestProxy(rest, self.config.get_token())
+        self.rest = AuthenticatingRestProxy(rest, self.token)
         self.projects = Projects(self.rest)
         self.batches = Batches(self.rest)
         self.groups = Groups(self.rest)
