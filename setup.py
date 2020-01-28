@@ -63,6 +63,6 @@ setup(name="adam",
       install_requires=['requests', 'pandas'],
       packages=['adam', 'adam.stk'],
       entry_points = {
-            'console_scripts': ['adam=adam.__main__:main'],
+            'console_scripts': ['adamctl=adam.__main__:main'],
       }
       )
