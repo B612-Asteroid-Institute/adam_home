@@ -1,4 +1,4 @@
-# pip development environment
+# conda development environment
 requests
 pandas
 pytest
@@ -8,3 +8,4 @@ flake8
 jupyter
 pyxdg
 pyyaml
+conda-build

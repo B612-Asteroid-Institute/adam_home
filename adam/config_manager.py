@@ -1,57 +1,105 @@
-import json
+import yaml
+import os, os.path
+import xdg.BaseDirectory as xdgb
 
+# filename of the config file (w/o the full path)
+ADAM_CONFIG_FN = "config"
 
-class Config(object):
-    def __init__(self, config):
-        self.config = config
+def _load_raw_config(config_file=None):
+    if config_file is None:
+        # get the default location (if exists)
+        config_dir = next(xdgb.load_config_paths("adam"), None)
+        if config_dir is not None:
+            def_config_file = os.path.join(config_dir, ADAM_CONFIG_FN)
+            if os.path.exists(def_config_file):
+                config_file = def_config_file
 
-    def get_environment(self):
-        return self.config['env']
+        if config_file is None:
+            return "", {}
 
-    def get_url(self):
-        return self.config['url']
+    # Load the config file (if we have it)
+    with open(config_file) as fp:
+        return config_file, yaml.safe_load(fp)
 
-    def get_token(self):
-        return self.config['token']
+def _store_raw_config(data, config_file=None):
+    # get place to write
+    if config_file is None:
+        config_dir = xdgb.save_config_path("adam")
+        config_file = os.path.join(config_dir, ADAM_CONFIG_FN)
 
-    def set_token(self, token):
-        self.config['token'] = token
+    # atomically replace the old file (if any) with the new one
+    # also ensure permissions are restrictive (since this file holds secrets)
+    config_file_tmp = config_file + "." + str(os.getpid())
+    fd = os.open(config_file_tmp, os.O_CREAT | os.O_WRONLY, mode=0o600)
+    with open(fd, "w") as fp:
+        yaml.dump(data, fp, indent=2)
+    os.rename(config_file_tmp, config_file)
 
-    def get_workspace(self):
-        return self.config['workspace']
-
-    def set_workspace(self, workspace):
-        self.config['workspace'] = workspace
-
+    return config_file
 
 class ConfigManager(object):
-    def __init__(self, file_name, raw_config=None):
+
+    def __init__(self, file_name=None, raw_config=None):
         """ Initializes from the given file. If a file name is not given,
             checks raw_config, where it would expect a python dictionary
             as would be parsed using json from the config file.
         """
-        if file_name is not None:
-            with open(file_name, 'r') as f:
-                self.raw_config = json.load(f)
-        elif raw_config is not None:
-            self.raw_config = raw_config
+        if raw_config is not None:
+            self._source_filename, self._dest_filename, self._config = "", "", raw_config
+        else:
+            self._source_filename, self._config = _load_raw_config(file_name)
+            self._dest_filename = file_name
+
+    def __delitem__(self, key):
+        *parents, key = key.split('.')
+
+        c = self._config
+        for k in parents:
+            c = c[k]
+
+        del c[key]
+
+    def __getitem__(self, key):
+        c = self._config
+        for k in key.split('.'):
+            c = c[k]
+        return c
+
+    def __setitem__(self, key, value):
+        *parents, key = key.split('.')
+
+        cfg = self._config
+        for k in parents:
+            try:
+                cfg = cfg[k]
+            except KeyError:
+                cfg = cfg[k] = {}
+
+        cfg[key] = value
 
     def get_config(self, environment=None):
+        # raises KeyError if environment not present, or
+        # a default environment is requested but not set
         if environment is None:
-            if 'default_env' in self.raw_config:
-                environment = self.raw_config['default_env']
+            # explicit default environment
+            environment = self._config.get('default_env', None)
+            if environment is None:
+                # first environment listed in the file
+                environment = next(iter(self._config['envs'].keys()))
 
-        if environment is None:
-            print('Error: no environment given, and no default environement specified.')
-            return None
+        return self._config['envs'][environment]
 
-        for config in self.raw_config['env_configs']:
-            if config['env'] == environment:
-                return Config(config)
+    def set_config(self, name, cfg):
+        if 'envs' not in self._config:
+            self._config['envs'] = {}
+        self._config['envs'][name] = cfg
 
-        print("Error: could not find config for environment %s" % (environment))
-        return None
+    def to_file(self, file_name=None):
+        if file_name is None:
+            file_name = self._dest_filename
+        _store_raw_config(self._config, file_name)
 
-    def to_file(self, file_name):
-        with open(file_name, 'w') as f:
-            json.dump(self.raw_config, f, indent=4)
+    def __str__(self):
+        ret = "# original config source: {}\n".format(self._source_filename)
+        ret += yaml.dump(self._config, indent=2)
+        return ret
