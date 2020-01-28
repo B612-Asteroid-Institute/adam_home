@@ -6,6 +6,26 @@ import xdg.BaseDirectory as xdgb
 ADAM_CONFIG_FN = "config"
 
 def _load_raw_config(config_file=None):
+    """Load ADAM config from default locations or ``config_file``
+    
+    Locates and loads the configuration information for ADAM. If
+    ``config_file`` is not None, loads it and returns the de-serialized
+    YAML. If ``config_file`` is None, follows the XDG Base Directory
+    specification to locate a file named ``$.../adam/config``, usually
+    ``~/.config/adam/config``.
+
+    Parameters
+    ----------
+    config_file : str
+        Path to config file to load, or None to search default locations.
+    
+    Returns
+    -------
+    dict
+        De-serialized configuration in the form of nested dictionaries.
+
+    """
+
     if config_file is None:
         # get the default location (if exists)
         config_dir = next(xdgb.load_config_paths("adam"), None)
@@ -22,6 +42,22 @@ def _load_raw_config(config_file=None):
         return config_file, yaml.safe_load(fp)
 
 def _store_raw_config(data, config_file=None):
+    """Save ADAM config to default location or ``config_file``
+
+    Saves the configuration in ``data`` (nested dicts) to ``config_file``
+    (if given) or to the default user-writable location given by the
+    XDG Base Directory specification (typically ``~/.config/adam/config``).
+    If the file already exists, atomically replaces it with the new data.
+    Permissions on the saved file are set to 0o0600.
+
+    Parameters
+    ----------
+    data : dict
+        Configuration data to save
+    config_file : str
+        Path to config file to save, or None to save to default location.
+    """
+
     # get place to write
     if config_file is None:
         config_dir = xdgb.save_config_path("adam")
@@ -38,11 +74,38 @@ def _store_raw_config(data, config_file=None):
     return config_file
 
 class ConfigManager(object):
+    """Configuration object for ADAM client
+
+    A dict-like object holding the loaded ADAM configuration file.
+    Individual items can be get/set/deleted via the ``[]`` notation.
+    The keys must be fully-qualified dot-separated names, such as::
+    
+        conf["envs.dev.workspace"] = " .... "
+    
+    When a key does not refer to a leaf node, returns a nested dict
+    of the key's children, i.e.::
+
+        conf["envs.dev"] = " .... "
+
+    returns ``dict(url=..., workspace=..., token=....)``.
+    """
 
     def __init__(self, file_name=None, raw_config=None):
-        """ Initializes from the given file. If a file name is not given,
-            checks raw_config, where it would expect a python dictionary
-            as would be parsed using json from the config file.
+        """Load the ADAM configuration
+
+        Loads ADAM configuration from ``file_name``, or default config file
+        if ``file_name==None``.  If ``raw_config`` is given, uses its
+        contents to load the configuration (``file_name`` is ignored in that
+        case).  The typical use is to instantiate this class w. 
+        ``file_name`` and ``raw_config`` set to None (i.e., read from the
+        default config file).
+
+        Parameters
+        ----------
+        file_name : str
+            Path to config file to load, or None to search default locations.
+        raw_config : dict
+            dict() of values to interpret as configuration data.
         """
         if raw_config is not None:
             self._source_filename, self._dest_filename, self._config = "", "", raw_config
@@ -78,6 +141,31 @@ class ConfigManager(object):
         cfg[key] = value
 
     def get_config(self, environment=None):
+        """Get configuration of an ADAM environment
+
+        If ``environment`` is given, equivalent to calling::
+        
+            self[f"envs.{environment}"]
+
+        If ``environment`` is None, and ``self["default_env"]`` is set,
+        equivalent to calling:
+        
+            self[f"envs.{self['default_env']}"]
+
+        If ``environment`` is None, and ``self["default_env"]`` is not set,
+        returns the first key in the ``self[envs]`` dict.
+
+        Parameters
+        ----------
+        environment : str
+            environment name (e.g., ``prod`` or ``dev``)
+
+        Raises
+        ------
+        KeyError
+            If the requested environment isn't found.
+        
+        """
         # raises KeyError if environment not present, or
         # a default environment is requested but not set
         if environment is None:
@@ -90,11 +178,34 @@ class ConfigManager(object):
         return self._config['envs'][environment]
 
     def set_config(self, name, cfg):
+        """Set configuration of an ADAM environment
+        
+        Equivalent to calling::
+        
+            self[f"envs.{name}"] = cfg
+
+        Parameters
+        ----------
+        environment : str
+            environment name (e.g., ``prod`` or ``dev``)
+        cfg : dict
+            environment data
+        """
         if 'envs' not in self._config:
             self._config['envs'] = {}
         self._config['envs'][name] = cfg
 
     def to_file(self, file_name=None):
+        """Save configuration to ``file_name`` or the default location
+
+        Saves to location proscribed by XDG spec (typically ``~/.config/adam/config``)
+        or to ``file_name``, if it's not set to ``None``.
+        
+        Parameters
+        ----------
+        file_name : str
+            Path to config file to save, or None to save to default location.
+        """
         if file_name is None:
             file_name = self._dest_filename
         _store_raw_config(self._config, file_name)
