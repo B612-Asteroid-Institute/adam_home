@@ -5,6 +5,7 @@ import yaml
 
 DEFAULT_PROD_URL = 'https://pro-equinox-162418.appspot.com/_ah/api/adam/v1'
 
+
 def config(args):
     cm = adam.ConfigManager()
 
@@ -28,11 +29,11 @@ def config(args):
     # print a key
     if args.key is not None:
         *parents, key = args.key.split('.')
-        res = { key: cm[args.key] }
+        res = {key: cm[args.key]}
 
         # build a tree (backwards)
         for k in reversed(parents):
-            res = { k: res }
+            res = {k: res}
 
         # dump as yaml
         print(yaml.dump(res))
@@ -40,6 +41,7 @@ def config(args):
 
     # print entire config (default action)
     print(cm)
+
 
 def login(args):
     cm = adam.ConfigManager()
@@ -50,12 +52,14 @@ def login(args):
 
         # OAuth web flow page
         o = urllib.parse.urlparse(url)
-        token_url = "%s://%s/%s" % (o.scheme, o.netloc, 'token.html')  # Yes, seriously. This is how it's done.
+        token_url = "%s://%s/%s" % (o.scheme, o.netloc, 'token.html')
 
         print("Setting up a service named '{}' with an endpoint at '{}'.".format(name, url))
-        print("Please go to {} in your web browser, log in using a GMail or GSuite account, and paste below the token which will be shown to you at the end.".format(token_url))
+        print("Please go to {} in your web browser, log in using a GMail or GSuite account, "
+              "and paste below the token which will be shown to you at the end.".format(token_url)
+              )
         if not no_browser:
-            print("We'll try to automatically open a web browser for you (press ENTER to continue).")
+            print("We'll try to automatically open a web browser for you (press ENTER to continue)")
             sys.stdin.readline()
 
             import webbrowser
@@ -79,6 +83,7 @@ def login(args):
         # log into the defaut 'prod' environment
         _do_login('prod', DEFAULT_PROD_URL, args.no_browser)
 
+
 def main(args=None):
     import argparse
 
@@ -99,11 +104,15 @@ def main(args=None):
     login_cmd = cmds.add_parser('login', help='Log into an ADAM server')
     login_cmd.add_argument('name', help="name of the upstream ADAM server", nargs='?')
     login_cmd.add_argument('url', help="ADAM server URL", nargs='?')
-    login_cmd.add_argument('--no-browser', action='store_true', help="don't try to open a browser, just print the login page URL. Useful when logging in on remote machines (e.g., via ssh)")
+    login_cmd.add_argument('--no-browser', action='store_true',
+                           help="don't try to open a browser, just print the login page URL. "
+                                "Useful when logging in on remote machines (e.g., via ssh)"
+                           )
     login_cmd.set_defaults(func=login)
 
     args = parser.parse_args()
     args.func(args)
+
 
 if __name__ == "__main__":
     sys.exit(main() or 0)

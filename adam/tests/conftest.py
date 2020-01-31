@@ -1,5 +1,6 @@
 import pytest
 
+
 def pytest_addoption(parser):
     parser.addoption(
         "--skip-notebooks", action="store_true", default=False, help="skip notebook tests"

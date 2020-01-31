@@ -4,6 +4,7 @@ import nbformat
 import os
 import pytest
 
+
 # https://blog.thedataincubator.com/2016/06/testing-jupyter-notebooks/
 def _process_notebook(path):
     '''
@@ -38,6 +39,7 @@ def _process_notebook(path):
             errors = 1
 
     return nb, errors
+
 
 @pytest.mark.notebook
 def test():
