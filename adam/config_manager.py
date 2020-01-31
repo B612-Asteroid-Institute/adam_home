@@ -1,13 +1,15 @@
 import yaml
-import os, os.path
+import os
+import os.path
 import xdg.BaseDirectory as xdgb
 
 # filename of the config file (w/o the full path)
 ADAM_CONFIG_FN = "config"
 
+
 def _load_raw_config(config_file=None):
     """Load ADAM config from default locations or ``config_file``
-    
+
     Locates and loads the configuration information for ADAM. If
     ``config_file`` is not None, loads it and returns the de-serialized
     YAML. If ``config_file`` is None, follows the XDG Base Directory
@@ -18,7 +20,7 @@ def _load_raw_config(config_file=None):
     ----------
     config_file : str
         Path to config file to load, or None to search default locations.
-    
+
     Returns
     -------
     dict
@@ -40,6 +42,7 @@ def _load_raw_config(config_file=None):
     # Load the config file (if we have it)
     with open(config_file) as fp:
         return config_file, yaml.safe_load(fp)
+
 
 def _store_raw_config(data, config_file=None):
     """Save ADAM config to default location or ``config_file``
@@ -73,15 +76,16 @@ def _store_raw_config(data, config_file=None):
 
     return config_file
 
+
 class ConfigManager(object):
     """Configuration object for ADAM client
 
     A dict-like object holding the loaded ADAM configuration file.
     Individual items can be get/set/deleted via the ``[]`` notation.
     The keys must be fully-qualified dot-separated names, such as::
-    
+
         conf["envs.dev.workspace"] = " .... "
-    
+
     When a key does not refer to a leaf node, returns a nested dict
     of the key's children, i.e.::
 
@@ -96,7 +100,7 @@ class ConfigManager(object):
         Loads ADAM configuration from ``file_name``, or default config file
         if ``file_name==None``.  If ``raw_config`` is given, uses its
         contents to load the configuration (``file_name`` is ignored in that
-        case).  The typical use is to instantiate this class w. 
+        case).  The typical use is to instantiate this class w.
         ``file_name`` and ``raw_config`` set to None (i.e., read from the
         default config file).
 
@@ -144,12 +148,12 @@ class ConfigManager(object):
         """Get configuration of an ADAM environment
 
         If ``environment`` is given, equivalent to calling::
-        
+
             self[f"envs.{environment}"]
 
         If ``environment`` is None, and ``self["default_env"]`` is set,
         equivalent to calling:
-        
+
             self[f"envs.{self['default_env']}"]
 
         If ``environment`` is None, and ``self["default_env"]`` is not set,
@@ -164,7 +168,7 @@ class ConfigManager(object):
         ------
         KeyError
             If the requested environment isn't found.
-        
+
         """
         # raises KeyError if environment not present, or
         # a default environment is requested but not set
@@ -179,9 +183,9 @@ class ConfigManager(object):
 
     def set_config(self, name, cfg):
         """Set configuration of an ADAM environment
-        
+
         Equivalent to calling::
-        
+
             self[f"envs.{name}"] = cfg
 
         Parameters
@@ -200,7 +204,7 @@ class ConfigManager(object):
 
         Saves to location proscribed by XDG spec (typically ``~/.config/adam/config``)
         or to ``file_name``, if it's not set to ``None``.
-        
+
         Parameters
         ----------
         file_name : str

@@ -14,6 +14,7 @@ from adam.rest_proxy import AuthenticatingRestProxy
 
 import datetime
 
+
 class Service():
     """Module wrapping the REST API and associated client libraries. The goal of this
     module is to make it very easy and readable to do basic operations against a prod or
@@ -36,8 +37,10 @@ class Service():
         timer = Timer()
         timer.start("Generate working project")
         if self.workspace:
-            project = self.projects.new_project(self.workspace, None,
-                "Test project created at " + str(datetime.datetime.now()))
+            project = self.projects.new_project(
+                        self.workspace, None,
+                        "Test project created at " + str(datetime.datetime.now())
+                      )
             self.working_projects.append(project)
             print("Set up project with uuid " + project.get_uuid())
             timer.stop()

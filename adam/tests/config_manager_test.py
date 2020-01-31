@@ -1,9 +1,10 @@
 from adam import ConfigManager
-import yaml
 import unittest
 import tempfile
 import pytest
 import os.path
+import yaml
+
 
 class ConfigManagerTest(unittest.TestCase):
     """Unit tests for config manager
@@ -20,7 +21,7 @@ class ConfigManagerTest(unittest.TestCase):
     def test_no_default(self):
         config = {
             'envs': {
-                'a' : {
+                'a': {
                     'url': 'https://a',
                     'workspace': 'a-a-a',
                     'token': 'aaa'
@@ -38,7 +39,7 @@ class ConfigManagerTest(unittest.TestCase):
         config = {
             'default_env': 'a',
             'envs': {
-                'a' : {
+                'a': {
                     'url': 'https://a',
                     'workspace': 'a-a-a',
                     'token': 'aaa'
@@ -60,7 +61,7 @@ class ConfigManagerTest(unittest.TestCase):
                     'workspace': 'b-b-b',
                     'token': 'bbb'
                 },
-                'a' : {
+                'a': {
                     'url': 'https://a',
                     'workspace': 'a-a-a',
                     'token': 'aaa'
