@@ -31,4 +31,4 @@ jobs:
     - name: Test with pytest
       run: |
         pip install pytest
-        pytest adam --cov=adam --ignore=adam/tests/integration_tests/hypercube_test.py --skip-notebooks
+        pytest adam --cov=adam --ignore=adam/tests/integration_tests --skip-notebooks
