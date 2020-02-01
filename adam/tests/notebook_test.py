@@ -14,18 +14,15 @@ def _process_notebook(path):
                     execution errors
     '''
     # convert *.ipynb from jupyter notebook to py notebook
-    with tempfile.NamedTemporaryFile(suffix=".ipynb") as fout:
+    with tempfile.TemporaryDirectory() as tmpdir:
+        outnbfn = os.path.join(tmpdir, "out.ipynb")
         args = ["jupyter", "nbconvert",
                 "--to", "notebook", "--execute",
                 "--ExecutePreprocessor.timeout=120",
                 "--ExecutePreprocessor.kernel_name=python3",
-                "--output", os.getcwd() + "/temp", path]
-        # submodule allows you to spawn new processes, connect to their input/
-        # output/error pipes, and obtain their return codes.
+                "--output", outnbfn, path]
         subprocess.check_call(args)
-        # seek() sets the file's current position.
-        fout.seek(0)
-        nb = nbformat.read(os.getcwd() + "/tempNB.ipynb", nbformat.current_nbformat)
+        nb = nbformat.read(outnbfn, nbformat.current_nbformat)
 
     stream_type = [output for cell in nb.cells if "outputs" in cell
                    for output in cell["outputs"]
