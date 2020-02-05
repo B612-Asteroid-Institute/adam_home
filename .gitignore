@@ -10,3 +10,5 @@ token.txt
 /*.egg-info
 /*.egg
 /dist/
+secrets
+test-config.yaml

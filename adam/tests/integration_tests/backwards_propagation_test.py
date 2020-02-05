@@ -1,34 +1,20 @@
-from adam import Service
 from adam import Batch
 from adam import PropagationParams
 from adam import OpmParams
 from adam import BatchRunManager
-from adam import ConfigManager
 
-import unittest
 import datetime
-import os
 
 import numpy as np
 import numpy.testing as npt
 
 
-class BackwardsPropagationTest(unittest.TestCase):
+class TestBackwardsPropagation:
     """Integration test of backwards propagation.
 
     """
 
-    def setUp(self):
-        config = ConfigManager(os.getcwd() + '/test_adam_config.json').get_config()
-        self.service = Service(config)
-        self.assertTrue(self.service.setup())
-        self.working_project = self.service.new_working_project()
-        self.assertIsNotNone(self.working_project)
-
-    def tearDown(self):
-        self.service.teardown()
-
-    def make_batch(self, state_vec, start_time, end_time):
+    def _make_batch(self, state_vec, start_time, end_time, working_project):
         start_time_str = start_time.isoformat() + 'Z'
         end_time_str = end_time.isoformat() + 'Z'
 
@@ -36,7 +22,7 @@ class BackwardsPropagationTest(unittest.TestCase):
             'start_time': start_time_str,
             'end_time': end_time_str,
             'step_size': 86400,
-            'project_uuid': self.working_project.get_uuid(),
+            'project_uuid': working_project.get_uuid(),
             'description': 'Created by test at ' + start_time_str
         })
         opm_params = OpmParams({
@@ -56,7 +42,7 @@ class BackwardsPropagationTest(unittest.TestCase):
 
         return Batch(propagation_params, opm_params)
 
-    def test_backwards_and_forwards(self):
+    def test_backwards_and_forwards(self, service, working_project):
         now = datetime.datetime.now()
         later = now + datetime.timedelta(10 * 365)  # 10 years
 
@@ -70,15 +56,15 @@ class BackwardsPropagationTest(unittest.TestCase):
         print("Starting at %s" % (state_vec))
 
         print("Propagating forward from %s to %s" % (now, later))
-        batch = self.make_batch(state_vec, now, later)
-        runner = BatchRunManager(self.service.get_batches_module(), [batch])
+        batch = self._make_batch(state_vec, now, later, working_project)
+        runner = BatchRunManager(service.get_batches_module(), [batch])
         runner.run()
         forward_end_state = batch.get_results().get_end_state_vector()
         print("Final state at %s" % forward_end_state)
 
         print("Propagating backward from %s to %s" % (later, now))
-        batch = self.make_batch(forward_end_state, later, now)
-        runner = BatchRunManager(self.service.get_batches_module(), [batch])
+        batch = self._make_batch(forward_end_state, later, now, working_project)
+        runner = BatchRunManager(service.get_batches_module(), [batch])
         runner.run()
         backwards_end_state = batch.get_results().get_end_state_vector()
         print("Final state at %s" % backwards_end_state)
@@ -88,7 +74,3 @@ class BackwardsPropagationTest(unittest.TestCase):
 
         npt.assert_allclose(difference[0:3], [0, 0, 0], rtol=0, atol=1e-3)
         npt.assert_allclose(difference[3:6], [0, 0, 0], rtol=0, atol=1e-10)
-
-
-if __name__ == '__main__':
-    unittest.main()
