@@ -28,7 +28,15 @@ jobs:
         ##flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         ##flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    - name: Install
+      run:
+        python setup.py install
     - name: Test with pytest
+      env:
+        CI_PROD_TOKEN: ${{ secrets.CI_PROD_TOKEN }}
+        CI_DEV_TOKEN: ${{ secrets.CI_DEV_TOKEN }}
       run: |
         pip install pytest
-        pytest adam --cov=adam --ignore=adam/tests/integration_tests/hypercube_test.py --skip-notebooks
+        cd demos
+        ../adam/tests/make-config.sh
+        ADAM_CONFIG="$PWD/../adam/tests/test-config.yaml" pytest ../adam --cov=adam

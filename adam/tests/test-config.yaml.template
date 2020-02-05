@@ -1,0 +1,32 @@
+#
+# This config is primarily used by GitHub Actions to run CI as
+# with b612.adam.test@gmail.com test account credentials. Used
+# by make-config.sh
+#
+# Assuming you've set up tokens for dev and prod environments in
+# environment variables CI_DEV_TOKEN and CI_PROD_TOKEN, run this
+# template through:
+#
+#   sed "s/\$CI_DEV_TOKEN/$CI_DEV_TOKEN/g; s/\$CI_PROD_TOKEN/$CI_PROD_TOKEN/g;" test-config.yaml.template > test-config.yaml
+#
+# to generate the YAML file. This is what make-config.sh does (in a secure
+# way).
+#
+default_env: prod
+envs:
+  dev:
+    token: $CI_DEV_TOKEN
+    url: https://adam-dev-193118.appspot.com/_ah/api/adam/v1
+    workspace: 88e2152d-e37e-437d-af88-65bca9374f34
+  prod:
+    token: $CI_PROD_TOKEN
+    url: https://pro-equinox-162418.appspot.com/_ah/api/adam/v1
+    workspace: 61c25677-c328-45c4-af22-a0a4d5e54826
+  local-prod:
+    token: $CI_PROD_TOKEN
+    url: http://localhost:8080/_ah/api/adam/v1
+    workspace: 61c25677-c328-45c4-af22-a0a4d5e54826
+  local-dev:
+    token: $CI_DEV_TOKEN
+    url: http://localhost:8080/_ah/api/adam/v1
+    workspace: 88e2152d-e37e-437d-af88-65bca9374f34

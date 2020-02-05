@@ -1,32 +1,17 @@
-from adam import Service
-from adam import ConfigManager
 from adam import Batch
 from adam import PropagationParams
 from adam import OpmParams
 from adam import BatchRunManager
 
-import unittest
-
-import os
 import datetime
 
 
-class HypercubeTest(unittest.TestCase):
+class TestHypercube:
     """Tests hypercube propagation.
 
     """
 
-    def setUp(self):
-        config = ConfigManager(os.getcwd() + '/test_adam_config.json').get_config()
-        self.service = Service(config)
-        self.assertTrue(self.service.setup())
-        self.working_project = self.service.new_working_project()
-        self.assertIsNotNone(self.working_project)
-
-    def tearDown(self):
-        self.service.teardown()
-
-    def new_hypercube_batch(self, hypercube):
+    def _new_hypercube_batch(self, hypercube, working_project):
         now = datetime.datetime.utcnow()
         later = now + datetime.timedelta(365 * 10)  # 10 years
 
@@ -34,7 +19,7 @@ class HypercubeTest(unittest.TestCase):
             'start_time': now.isoformat() + 'Z',
             'end_time': later.isoformat() + 'Z',
             'step_size': 0,
-            'project_uuid': self.working_project.get_uuid(),
+            'project_uuid': working_project.get_uuid(),
             'description': 'Created by test at ' + str(now) + 'Z'
         })
 
@@ -72,26 +57,22 @@ class HypercubeTest(unittest.TestCase):
 
         return Batch(propagation_params, opm_params)
 
-    def test_faces(self):
-        batch = self.new_hypercube_batch('FACES')
+    def test_faces(self, service, working_project):
+        batch = self._new_hypercube_batch('FACES', working_project)
 
-        runner = BatchRunManager(self.service.get_batches_module(), [batch])
+        runner = BatchRunManager(service.get_batches_module(), [batch])
         runner.run()
-        self.assertEqual('COMPLETED', batch.get_calc_state())
+        assert 'COMPLETED' == batch.get_calc_state()
 
         parts = batch.get_results().get_parts()
-        self.assertEqual(13, len(parts))
+        assert len(parts) == 13
 
-    def test_corners(self):
-        batch = self.new_hypercube_batch('CORNERS')
+    def test_corners(self, service, working_project):
+        batch = self._new_hypercube_batch('CORNERS', working_project)
 
-        runner = BatchRunManager(self.service.get_batches_module(), [batch])
+        runner = BatchRunManager(service.get_batches_module(), [batch])
         runner.run()
-        self.assertEqual('COMPLETED', batch.get_calc_state())
+        'COMPLETED' == batch.get_calc_state()
 
         parts = batch.get_results().get_parts()
-        self.assertEqual(65, len(parts))
-
-
-if __name__ == '__main__':
-    unittest.main()
+        assert len(parts) == 65

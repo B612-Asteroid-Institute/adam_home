@@ -1,34 +1,26 @@
 from adam import PropagationParams
 from adam import OpmParams
-from adam import ConfigManager
-from adam import Service
 from adam import StmPropagationModule
 
-import unittest
 import datetime
-import os
 
 import numpy as np
 import numpy.testing as npt
 
+import pytest
 
-class StmPropagationModuleTest(unittest.TestCase):
+
+@pytest.fixture(scope="class")
+def stm_module(service):
+    yield StmPropagationModule(service.get_batches_module())
+
+
+class TestStmPropagationModule:
     """Basic integration test to demonstrate use of service tester.
 
     """
 
-    def setUp(self):
-        config = ConfigManager(os.getcwd() + '/test_adam_config.json').get_config()
-        self.service = Service(config)
-        self.assertTrue(self.service.setup())
-        self.working_project = self.service.new_working_project()
-        self.assertIsNotNone(self.working_project)
-        self.stm_module = StmPropagationModule(self.service.get_batches_module())
-
-    def tearDown(self):
-        self.service.teardown()
-
-    def test_basic_stm(self):
+    def test_basic_stm(self, stm_module, working_project):
         state_vec = [130347560.13690618,
                      -74407287.6018632,
                      -35247598.541470632,
@@ -42,7 +34,7 @@ class StmPropagationModuleTest(unittest.TestCase):
         propagation_params = PropagationParams({
             'start_time': start_time.isoformat() + 'Z',
             'end_time': end_time.isoformat() + 'Z',
-            'project_uuid': self.working_project.get_uuid(),
+            'project_uuid': working_project.get_uuid(),
             'description': 'Created by test at ' + start_time.isoformat() + 'Z'
         })
 
@@ -51,10 +43,10 @@ class StmPropagationModuleTest(unittest.TestCase):
             'state_vector': state_vec,
         })
 
-        end_state, stm = self.stm_module.run_stm_propagation(
+        end_state, stm = stm_module.run_stm_propagation(
             propagation_params, opm_params)
 
-        end_state_V, stm_V = self.stm_module.run_stm_propagation(
+        end_state_V, stm_V = stm_module.run_stm_propagation(
             propagation_params, opm_params, only_dV=True)
 
         # Taken from printed output of ../state_stm_propagation.py
@@ -81,7 +73,3 @@ class StmPropagationModuleTest(unittest.TestCase):
 
         npt.assert_allclose(expected_end_state, np.array(end_state_V), rtol=1e-8, atol=0)
         npt.assert_allclose(expected_stm[:, 3:].getA(), stm_V.getA(), rtol=1e-8, atol=0)
-
-
-if __name__ == '__main__':
-    unittest.main()
