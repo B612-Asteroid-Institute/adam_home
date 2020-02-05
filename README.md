@@ -1,6 +1,6 @@
 #  ADAM: The Asteroid Detection, Analysis, and Mapping platform
 
-[![Build Status](https://www.travis-ci.org/B612-Asteroid-Institute/adam.svg?branch=master)](https://www.travis-ci.org/B612-Asteroid-Institute/adam)
+![Python package](https://github.com/B612-Asteroid-Institute/adam_home/workflows/Python%20package/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/B612-Asteroid-Institute/adam/badge.svg?branch=master)](https://coveralls.io/github/B612-Asteroid-Institute/adam?branch=master)
 
 ## Quick Start (User)
