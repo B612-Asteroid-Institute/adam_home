@@ -6,8 +6,6 @@ from adam import OpmParams
 
 import unittest
 
-import os
-
 
 class AnonymousTest(unittest.TestCase):
     """Tests anonymous access to API.
@@ -15,9 +13,9 @@ class AnonymousTest(unittest.TestCase):
     """
 
     def setUp(self):
-        self.config = ConfigManager(os.getcwd() + '/test_adam_config.json').get_config()
-        self.config.set_token("")
-        self.service = Service(self.config)
+        self.config = ConfigManager().get_config()
+        self.config["token"] = ""
+        self.service = Service.from_config(self.config)
         self.assertTrue(self.service.setup())
 
     def tearDown(self):

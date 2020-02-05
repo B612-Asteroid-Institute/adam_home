@@ -2,6 +2,7 @@ import subprocess
 import tempfile
 import nbformat
 import os
+import os.path
 import pytest
 
 
@@ -40,9 +41,7 @@ def _process_notebook(path):
 
 @pytest.mark.notebook
 def test():
-    print("cwd: ", os.getcwd())
-    # adam_home/demos
-    notebook_path = os.getcwd() + '/demos/single_run_demo.ipynb'
+    notebook_path = os.path.dirname(__file__) + '/../../demos/single_run_demo.ipynb'
     nb, errors = _process_notebook(notebook_path)
 
     # assert that errors is 0, otherwise fail
