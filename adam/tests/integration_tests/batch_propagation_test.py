@@ -1,28 +1,14 @@
-from adam import Service
 from adam import PropagationParams
 from adam import OpmParams
-from adam import ConfigManager
 from adam import BatchPropagation
 from adam import BatchPropagations
 
-import unittest
 import datetime
-import os
 
 
-class BatchPropagationTest(unittest.TestCase):
+class TestBatchPropagation:
 
-    def setUp(self):
-        config = ConfigManager(os.getcwd() + '/test_adam_config.json').get_config('dev')
-        self.service = Service(config)
-        self.assertTrue(self.service.setup())
-        self.working_project = self.service.new_working_project()
-        self.assertIsNotNone(self.working_project)
-
-    def tearDown(self):
-        self.service.teardown()
-
-    def new_batch_propagation(self):
+    def _new_batch_propagation(self):
         now = datetime.datetime.utcnow()
         later = now + datetime.timedelta(10 * 365)
 
@@ -79,46 +65,40 @@ class BatchPropagationTest(unittest.TestCase):
 
         return BatchPropagation(propagation_params, opm_params)
 
-    def test_batch_propagation(self):
-        batch_propagation = self.new_batch_propagation()
-        props = BatchPropagations(self.service.rest)
+    def test_batch_propagation(self, service, working_project):
+        batch_propagation = self._new_batch_propagation()
+        props = BatchPropagations(service.rest)
 
-        props.insert(batch_propagation, self.working_project.get_uuid())
+        props.insert(batch_propagation, working_project.get_uuid())
         uuid = batch_propagation.get_uuid()
-        self.assertIsNotNone(uuid)
+        assert uuid is not None
         print(uuid)
 
         runnable_state = props.get_runnable_state(uuid)
-        self.assertIsNotNone(runnable_state)
+        assert runnable_state is not None
         while (runnable_state.get_calc_state() != 'COMPLETED'):
             print(runnable_state.get_calc_state())
             runnable_state = props.get_runnable_state(uuid)
-            self.assertIsNotNone(runnable_state)
-        self.assertEqual('COMPLETED', runnable_state.get_calc_state())
-        self.assertIsNone(runnable_state.get_error())
+            assert runnable_state is not None
+        assert runnable_state.get_calc_state() == 'COMPLETED'
+        assert runnable_state.get_error() is None
 
-        runnable_state_list = props.get_runnable_states(
-            self.working_project.get_uuid())
-        self.assertEqual(1, len(runnable_state_list))
+        runnable_state_list = props.get_runnable_states(working_project.get_uuid())
+        assert len(runnable_state_list) == 1
 
         props.update_with_results(batch_propagation)
-        self.assertIsNotNone(batch_propagation)
+        assert batch_propagation is not None
 
         fresh_batch = props.get(uuid)
-        self.assertIsNotNone(fresh_batch)
+        assert fresh_batch is not None
 
         children = props.get_children(uuid)
-        self.assertEqual(len(batch_propagation.get_final_state_vectors()), len(children))
+        assert len(batch_propagation.get_final_state_vectors()) == len(children)
         for i in range(len(batch_propagation.get_final_state_vectors())):
-            self.assertEqual(
-                batch_propagation.get_final_state_vectors()[i],
-                children[i].get_final_state_vector())
+            assert batch_propagation.get_final_state_vectors()[i] == \
+                   children[i].get_final_state_vector()
 
         props.delete(uuid)
 
-        self.assertIsNone(props.get(uuid))
-        self.assertEqual(0, len(props.get_children(uuid)))
-
-
-if __name__ == '__main__':
-    unittest.main()
+        assert props.get(uuid) is None
+        assert len(props.get_children(uuid)) == 0

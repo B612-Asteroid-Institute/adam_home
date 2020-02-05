@@ -1,38 +1,64 @@
-# Asteroid Decision and Analysis Machine
+#  ADAM: The Asteroid Detection, Analysis, and Mapping platform
 
 [![Build Status](https://www.travis-ci.org/B612-Asteroid-Institute/adam.svg?branch=master)](https://www.travis-ci.org/B612-Asteroid-Institute/adam)
 [![Coverage Status](https://coveralls.io/repos/github/B612-Asteroid-Institute/adam/badge.svg?branch=master)](https://coveralls.io/github/B612-Asteroid-Institute/adam?branch=master)
 
-## Installing Dependencies
+## Quick Start (User)
 
-Clone this repository using git (using SSH in this example):
+```bash
+# grab the latest release of adam client
+conda install -c asteroid-institute adam
 
-```git clone git@github.com:B612-Asteroid-Institute/adam_home.git```
+# log in
+adamctl login
 
-Then `cd` into the cloned repository and do one of the following depending on how you prefer your packages to be installed.
+# set up your workspace
+adamctl config envs.prod.workspace "uuid-received-from-@AstrogatorJohn"
+```
 
-To install pre-requisite software using anaconda: 
+## Quick Start (Developer)
 
-```conda install -c defaults -c conda-forge --file requirements.txt```
+```bash
+# create a new conda environment with the necessary dev tools
+conda create -n adam-dev --file conda-requirements.txt
+conda activate adam-dev
 
-To install pre-requisite software using pip:
+# grab the source code & install it in dev mode
+git clone git@github.com:B612-Asteroid-Institute/adam_home
+cd adam_home
+python setup.py develop
 
-```pip install -r requirements.txt```
+# log in
+adamctl login
+# log into the 'dev' environment as well
+adamctl login dev https://adam-dev-193118.appspot.com/_ah/api/adam/v1
 
-Note that to use the `adam.stk` submodule you will need to have STK installed on your system. 
+# set up your workspaces
+adamctl config envs.prod.workspace "uuid-received-from-@AstrogatorJohn"
+adamctl config envs.dev.workspace "uuid-received-from-@AstrogatorJohn"
+```
 
-Some jupyter notebooks use the tabulate package:
+## Demos
 
-```pip install tabulate```
-Some jupyter notebooks use the astroquery package:
+Once you have the package installed, you should be able to run the demonstration
+notebooks found in the [demos/](demos/) directory.
 
-```conda install -c astropy astroquery```
+## Developing ADAM
 
-## Installation for Developers
+The ADAM client is a pure-python package that follows the [standard
+setuptools directory](https://python-packaging.readthedocs.io/en/latest/minimal.html) layout and installation mechanisms.
+The source code is in the [adam/](adam/) subdirectory, the tests are in
+[adam/tests/](adam/tests/). A number of demo notebooks are provided in [demos/](demos/). Conda
+package recipe files are in [recipe/](recipe/). [`setup.py`](setup.py) in the root of the
+repository handles the install, as well as the creation of the [`setupctl`
+script via an
+entrypoint](https://setuptools.readthedocs.io/en/latest/setuptools.html#automatic-script-creation).
 
-Please refer to the team drive for "Developer OnBoarding/Defined_ADAMinstallInstruct.docx"
+A typical development loop will consist of:
 
-## Installation for Users (Non-Developers)
+  * Running `python setup.py develop`, to add the source code onto your
+    `$PYTHONPATH`. This is needed only once.
+  * Making some changes to the package in `adam/`
+  * Testing with `pytest adam --cov=adam --ignore=adam/tests/integration_tests`
+  * Commit, push, PR.
 
-Go to: https://github.com/B612-Asteroid-Institute/adam_home
-Click on the green button to "Clone or Download". From the drop down, click on "Download Zip". Save "adam_home-master.zip" to your local computer. Unzip (extract) the files into your C:/Users/Your_Name directory.

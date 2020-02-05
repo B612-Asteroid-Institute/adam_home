@@ -1,36 +1,20 @@
-from adam import Service
 from adam import Batch
 from adam import PropagationParams
 from adam import OpmParams
 from adam import BatchRunManager
-from adam import ConfigManager
-
-import unittest
-import os
 
 import numpy as np
 import numpy.testing as npt
 
 
-class ReferenceFrameTest(unittest.TestCase):
+class TestReferenceFrame:
     """Integration test of using different reference frames.
 
     """
 
-    def setUp(self):
-        config = ConfigManager(
-            os.getcwd() + '/test_adam_config.json').get_config('dev')
-        self.service = Service(config)
-        self.assertTrue(self.service.setup())
-        self.working_project = self.service.new_working_project()
-        self.assertIsNotNone(self.working_project)
-
-    def tearDown(self):
-        self.service.teardown()
-
     # This test and the following test are exactly the same propagation, but are done
     # in two different reference frames.
-    def test_icrf(self):
+    def test_icrf(self, service, working_project):
         start_time_str = "2000-01-01T11:58:55.816Z"
         end_time_str = "2009-07-21T21:55:08.813Z"
 
@@ -41,7 +25,7 @@ class ReferenceFrameTest(unittest.TestCase):
             'start_time': start_time_str,
             'end_time': end_time_str,
             'step_size': 86400,
-            'project_uuid': self.working_project.get_uuid(),
+            'project_uuid': working_project.get_uuid(),
             'description': 'Created by test at ' + start_time_str
         })
         opm_params = OpmParams({
@@ -52,7 +36,7 @@ class ReferenceFrameTest(unittest.TestCase):
             'ref_frame': 'ICRF',
         })
         batch = Batch(propagation_params, opm_params)
-        runner = BatchRunManager(self.service.get_batches_module(), [batch])
+        runner = BatchRunManager(service.get_batches_module(), [batch])
         runner.run()
         end_state = batch.get_results().get_end_state_vector()
         expected_end_state = [73978163.61069362, -121822760.05571477, -52811158.83249758,
@@ -66,9 +50,9 @@ class ReferenceFrameTest(unittest.TestCase):
         npt.assert_allclose(difference[3:6], [0, 0, 0], rtol=0, atol=.00002)
 
         ephem = batch.get_results().get_parts()[-1].get_ephemeris()
-        self.assertTrue("ICRF" in ephem)
+        assert "ICRF" in ephem
 
-    def test_sun_ememe(self):
+    def test_sun_ememe(self, service, working_project):
         start_time_str = "2000-01-01T11:58:55.816Z"
         end_time_str = "2009-07-21T21:55:08.813Z"
 
@@ -79,7 +63,7 @@ class ReferenceFrameTest(unittest.TestCase):
             'start_time': start_time_str,
             'end_time': end_time_str,
             'step_size': 86400,
-            'project_uuid': self.working_project.get_uuid(),
+            'project_uuid': working_project.get_uuid(),
             'description': 'Created by test at ' + start_time_str
         })
         opm_params = OpmParams({
@@ -91,7 +75,7 @@ class ReferenceFrameTest(unittest.TestCase):
         })
 
         batch = Batch(propagation_params, opm_params)
-        runner = BatchRunManager(self.service.get_batches_module(), [batch])
+        runner = BatchRunManager(service.get_batches_module(), [batch])
         runner.run()
         end_state = batch.get_results().get_end_state_vector()
         # The output state is expected to be in ICRF.
@@ -112,9 +96,5 @@ class ReferenceFrameTest(unittest.TestCase):
         # the ephemeris file doesn't support all reference frames, so if it encounters one that
         # isn't supported, it'll choose a similar one.
         ephem = batch.get_results().get_parts()[-1].get_ephemeris()
-        self.assertTrue("ICRF" in ephem)
-        self.assertFalse("EMEME" in ephem)
-
-
-if __name__ == '__main__':
-    unittest.main()
+        assert "ICRF" in ephem
+        assert "EMEME" not in ephem

@@ -2,6 +2,8 @@ import subprocess
 import tempfile
 import nbformat
 import os
+import os.path
+import pytest
 
 
 # https://blog.thedataincubator.com/2016/06/testing-jupyter-notebooks/
@@ -13,18 +15,15 @@ def _process_notebook(path):
                     execution errors
     '''
     # convert *.ipynb from jupyter notebook to py notebook
-    with tempfile.NamedTemporaryFile(suffix=".ipynb") as fout:
+    with tempfile.TemporaryDirectory() as tmpdir:
+        outnbfn = os.path.join(tmpdir, "out.ipynb")
         args = ["jupyter", "nbconvert",
                 "--to", "notebook", "--execute",
                 "--ExecutePreprocessor.timeout=120",
                 "--ExecutePreprocessor.kernel_name=python3",
-                "--output", os.getcwd() + "/temp", path]
-        # submodule allows you to spawn new processes, connect to their input/
-        # output/error pipes, and obtain their return codes.
+                "--output", outnbfn, path]
         subprocess.check_call(args)
-        # seek() sets the file's current position.
-        fout.seek(0)
-        nb = nbformat.read(os.getcwd() + "/tempNB.ipynb", nbformat.current_nbformat)
+        nb = nbformat.read(outnbfn, nbformat.current_nbformat)
 
     stream_type = [output for cell in nb.cells if "outputs" in cell
                    for output in cell["outputs"]
@@ -40,10 +39,9 @@ def _process_notebook(path):
     return nb, errors
 
 
+@pytest.mark.notebook
 def test():
-    print("cwd: ", os.getcwd())
-    # adam_home/demos
-    notebook_path = os.getcwd() + '/demos/single_run_demo.ipynb'
+    notebook_path = os.path.dirname(__file__) + '/../../demos/single_run_demo.ipynb'
     nb, errors = _process_notebook(notebook_path)
 
     # assert that errors is 0, otherwise fail
