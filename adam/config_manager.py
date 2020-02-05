@@ -29,6 +29,10 @@ def _load_raw_config(config_file=None):
     """
 
     if config_file is None:
+        # see if location is overridden via the environment
+        config_file = os.environ.get("ADAM_CONFIG", None)
+
+    if config_file is None:
         # get the default location (if exists)
         config_dir = next(xdgb.load_config_paths("adam"), None)
         if config_dir is not None:
@@ -61,7 +65,12 @@ def _store_raw_config(data, config_file=None):
         Path to config file to save, or None to save to default location.
     """
 
-    # get place to write
+    # get the place to write to from the environment
+    if config_file is None:
+        # see if location is overridden via the environment
+        config_file = os.environ.get("ADAM_CONFIG", None)
+
+    # get place to write from XDG spec
     if config_file is None:
         config_dir = xdgb.save_config_path("adam")
         config_file = os.path.join(config_dir, ADAM_CONFIG_FN)
