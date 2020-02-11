@@ -19,13 +19,15 @@ adamctl config envs.prod.workspace "uuid-received-from-@AstrogatorJohn"
 ## Quick Start (Developer)
 
 ```bash
+# grab the source code
+git clone git@github.com:B612-Asteroid-Institute/adam_home
+cd adam_home
+
 # create a new conda environment with the necessary dev tools
 conda create -n adam-dev --file conda-requirements.txt
 conda activate adam-dev
 
-# grab the source code & install it in dev mode
-git clone git@github.com:B612-Asteroid-Institute/adam_home
-cd adam_home
+# install ADAM in dev mode
 python setup.py develop
 
 # log in
