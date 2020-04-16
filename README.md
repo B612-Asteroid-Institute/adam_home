@@ -10,7 +10,7 @@ Use the `adamctl` tool to configure your ADAM workspace before you run the noteb
 There are 2 required configuration IDs you'll need:
 
   * Your login token, which you can get using the commands below
-  * A workspace id, for which you'll need to submit a request to either Carise or John
+  * A workspace id (ask Carise or John for this)
 
 ```bash
 # grab the latest release of adam client
@@ -20,7 +20,7 @@ conda install -c asteroid-institute adam
 adamctl login
 
 # set up your workspace
-adamctl config envs.prod.workspace "uuid-received-from-@AstrogatorJohn"
+adamctl config envs.prod.workspace "uuid-received-from-carise"
 ```
 
 To view your configured environments:
