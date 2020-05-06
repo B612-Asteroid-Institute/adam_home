@@ -9,14 +9,14 @@ Use the `adamctl` tool to configure your ADAM workspace before you run the noteb
 
 There are 2 required configuration IDs you'll need:
 
-  * Your login token, which you can get using the commands below
+  * Your login token, which you can get using the commands below (Google account required for login)
   * A workspace id (ask Carise or John for this)
 
 ```bash
 # grab the latest release of adam client
 conda install -c asteroid-institute adam
 
-# log in, defaults to prod
+# log in with Google account, defaults to prod
 adamctl login
 
 # set up your workspace
