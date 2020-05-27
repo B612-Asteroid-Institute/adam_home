@@ -43,7 +43,8 @@ class PropagationParams(object):
         # names.
         supported_params = {'start_time', 'end_time', 'step_size',
                             'propagator_uuid', 'project_uuid', 'description',
-                            'executor', 'propagationType', 'monteCarloDraws', 'keplerianSigma'}
+                            'executor', 'propagationType', 'monteCarloDraws', 'keplerianSigma',
+                            'cartesianSigma'}
         extra_params = params.keys() - supported_params
         if len(extra_params) > 0:
             raise KeyError("Unexpected parameters provided: %s" %
@@ -63,6 +64,7 @@ class PropagationParams(object):
         self._propagation_type = params.get('propagationType')
         self._monte_carlo_draws = params.get('monteCarloDraws')
         self._keplerian_sigma = params.get('keplerianSigma')
+        self._cartesian_sigma = params.get('cartesianSigma')
 
     def __repr__(self):
         return "Batch params [%s, %s, %s, %s, %s, %s, %s]" % (
@@ -99,3 +101,6 @@ class PropagationParams(object):
 
     def get_keplerian_sigma(self):
         return self._keplerian_sigma
+
+    def get_cartesian_sigma(self):
+        return self._cartesian_sigma
