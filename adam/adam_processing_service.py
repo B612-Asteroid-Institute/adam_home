@@ -32,11 +32,11 @@ class ApsResults:
         return self._results
 
 
-class BatchProcessingResults(ApsResults):
+class BatchPropagationResults(ApsResults):
     @classmethod
     def fromRESTwithRawIds(self, rest, project_uuid, job_uuid):
         results_processor = ApsRestServiceResultsProcessor(rest, project_uuid)
-        return BatchProcessingResults(results_processor, job_uuid)
+        return BatchPropagationResults(results_processor, job_uuid)
 
     def __init__(self, results_processor, job_uuid):
         ApsResults.__init__(self, results_processor, job_uuid)

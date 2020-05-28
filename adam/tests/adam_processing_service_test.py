@@ -1,6 +1,7 @@
+import pytest
 from adam import AdamProcessingService, ConfigManager, AuthenticatingRestProxy, RestRequests, PropagationParams, \
     OpmParams
-from adam_processing_service import ApsResults, BatchProcessingResults
+from adam_processing_service import ApsResults, BatchPropagationResults
 
 
 class TestAdamProcessingService:
@@ -82,11 +83,12 @@ class TestApsResultClass:
         print(results.check_status())
 
     def test_get_empty_results(self):
-        results = ApsResults.fromRESTwithRawIds(self.rest, self.workspace, '31a02f1b-0398-431f-b048-c9c9aa5128e4')
-        print(results.get_results())
+        with pytest.raises(RuntimeError) as err:
+            results = ApsResults.fromRESTwithRawIds(self.rest, self.workspace, '31a02f1b-0398-431f-b048-c9c9aa5128e4')
+            print(results.get_results())
 
 
-class TestApsResultClass:
+class TestBatchPropagationResultClass:
     def setup_method(self, method):
         self.setup_actual_aps()
 
@@ -98,15 +100,15 @@ class TestApsResultClass:
         self.aps=AdamProcessingService(rest)
 
     def test_get_final_positions(self):
-        results = BatchProcessingResults.fromRESTwithRawIds(self.rest, '0dc1e8b0-4f92-46ad-8838-c9e9eca6935c', '093a2424-9dfb-4cae-88bf-a9077659e8ca')
+        results = BatchPropagationResults.fromRESTwithRawIds(self.rest, '0dc1e8b0-4f92-46ad-8838-c9e9eca6935c', '093a2424-9dfb-4cae-88bf-a9077659e8ca')
         print(results.get_final_positions())
 
     def test_get_result_ephemeris_count(self):
-        results = BatchProcessingResults.fromRESTwithRawIds(self.rest, '0dc1e8b0-4f92-46ad-8838-c9e9eca6935c',
+        results = BatchPropagationResults.fromRESTwithRawIds(self.rest, '0dc1e8b0-4f92-46ad-8838-c9e9eca6935c',
                                                             '093a2424-9dfb-4cae-88bf-a9077659e8ca')
         print(results.get_result_ephemeris_count())
 
     def test_get_result_ephemeris(self):
-        results = BatchProcessingResults.fromRESTwithRawIds(self.rest, '0dc1e8b0-4f92-46ad-8838-c9e9eca6935c',
+        results = BatchPropagationResults.fromRESTwithRawIds(self.rest, '0dc1e8b0-4f92-46ad-8838-c9e9eca6935c',
                                                             '093a2424-9dfb-4cae-88bf-a9077659e8ca')
         print(results.get_result_ephemeris(2))
