@@ -99,7 +99,7 @@ class AdamProcessingService:
         results_processor = ApsRestServiceResultsProcessor(self._rest, project)
         job_uuid = response['uuid']
 
-        return ApsResults(results_processor, job_uuid)
+        return BatchPropagationResults(results_processor, job_uuid)
 
     def _build_batch_creation_data(self, propagation_params, opm_params):
         propagation_params_json = {'start_time': propagation_params.get_start_time(),

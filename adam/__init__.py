@@ -28,4 +28,4 @@ from adam.stk import *
 from adam.targeted_propagation import TargetedPropagation
 from adam.targeted_propagation import TargetedPropagations
 from adam.targeted_propagation import TargetingParams
-from adam.adam_processing_service import AdamProcessingService
+from adam.adam_processing_service import *
