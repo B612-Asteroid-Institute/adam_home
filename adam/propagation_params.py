@@ -44,7 +44,8 @@ class PropagationParams(object):
         supported_params = {'start_time', 'end_time', 'step_size',
                             'propagator_uuid', 'project_uuid', 'description',
                             'executor', 'propagationType', 'monteCarloDraws', 'keplerianSigma',
-                            'cartesianSigma'}
+                            'cartesianSigma', 'stopOnImpact', 'stopOnCloseApproach', 'stopOnImpactDistanceMeters',
+                            'closeApproachRadiusFromTargetMeters'}
         extra_params = params.keys() - supported_params
         if len(extra_params) > 0:
             raise KeyError("Unexpected parameters provided: %s" %
@@ -65,6 +66,13 @@ class PropagationParams(object):
         self._monte_carlo_draws = params.get('monteCarloDraws')
         self._keplerian_sigma = params.get('keplerianSigma')
         self._cartesian_sigma = params.get('cartesianSigma')
+        self._stop_on_impact = params.get('stopOnImpact')
+        self._stop_on_close_approach = params.get('stopOnCloseApproach')
+        self._stop_on_impact_distance_meters = params.get('stopOnImpactDistanceMeters')
+        self._stop_on_close_approach_after_epoch = params.get('stopOnCloseApproachAfterEpoch')
+        if self._stop_on_close_approach_after_epoch is None:
+            self._stop_on_close_approach_after_epoch = self._end_time
+        self._close_approach_radius_from_target_meters = params.get('closeApproachRadiusFromTargetMeters')
 
     def __repr__(self):
         return "Batch params [%s, %s, %s, %s, %s, %s, %s]" % (
@@ -104,3 +112,18 @@ class PropagationParams(object):
 
     def get_cartesian_sigma(self):
         return self._cartesian_sigma
+
+    def get_stop_on_impact(self):
+        return self._stop_on_impact
+
+    def get_stop_on_close_approach(self):
+        return self._stop_on_close_approach
+
+    def get_stop_on_impact_distance_meters(self):
+        return self._stop_on_impact_distance_meters
+
+    def get_stop_on_close_approach_after_epoch(self):
+        return self._stop_on_close_approach_after_epoch
+
+    def get_close_approach_radius_from_target_meters(self):
+        return self._close_approach_radius_from_target_meters

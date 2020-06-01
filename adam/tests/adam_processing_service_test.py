@@ -56,13 +56,20 @@ class TestAdamProcessingService:
             'project_uuid': self.workspace,
             'keplerianSigma': keplerian_sigma,
             'monteCarloDraws': draws,
-            'propagationType': 'MONTE_CARLO'
+            'propagationType': 'MONTE_CARLO',
+            'description': 'Unit Test Run',
+            'stopOnImpact': True,
+            'step_size': 86400,
+            'stopOnCloseApproach': False,
+            'stopOnImpactDistanceMeters': 500000,
+            'closeApproachRadiusFromTargetMeters': 7000000000
         })
 
         opm_params = OpmParams({
             'epoch': '2017-10-04T00:00:00Z',
             'keplerian_elements': keplerian_elements,
         })
+
         response = self.aps.execute_batch_propagation(self.workspace, propagation_params, opm_params)
         print(response)
 
@@ -99,16 +106,28 @@ class TestBatchPropagationResultClass:
         self.rest = rest
         self.aps=AdamProcessingService(rest)
 
+    def test_get_summary(self):
+        results = BatchPropagationResults.fromRESTwithRawIds(self.rest, '0dc1e8b0-4f92-46ad-8838-c9e9eca6935c', '285332fd-91e9-4e48-843d-36495caaf915')
+        summary = results.get_summary()
+        print(summary)
+
     def test_get_final_positions(self):
-        results = BatchPropagationResults.fromRESTwithRawIds(self.rest, '0dc1e8b0-4f92-46ad-8838-c9e9eca6935c', '093a2424-9dfb-4cae-88bf-a9077659e8ca')
-        print(results.get_final_positions())
+        results = BatchPropagationResults.fromRESTwithRawIds(self.rest, '0dc1e8b0-4f92-46ad-8838-c9e9eca6935c', '285332fd-91e9-4e48-843d-36495caaf915')
+        print("Misses: ")
+        print(results.get_final_positions(BatchPropagationResults.PositionOrbitType.MISS))
+
+        print("Close Approaches: ")
+        print(results.get_final_positions(BatchPropagationResults.PositionOrbitType.CLOSE_APPROACH))
+
+        print("Impacts:")
+        print(results.get_final_positions(BatchPropagationResults.PositionOrbitType.IMPACT))
 
     def test_get_result_ephemeris_count(self):
         results = BatchPropagationResults.fromRESTwithRawIds(self.rest, '0dc1e8b0-4f92-46ad-8838-c9e9eca6935c',
-                                                            '093a2424-9dfb-4cae-88bf-a9077659e8ca')
+                                                            '285332fd-91e9-4e48-843d-36495caaf915')
         print(results.get_result_ephemeris_count())
 
     def test_get_result_ephemeris(self):
         results = BatchPropagationResults.fromRESTwithRawIds(self.rest, '0dc1e8b0-4f92-46ad-8838-c9e9eca6935c',
-                                                            '093a2424-9dfb-4cae-88bf-a9077659e8ca')
+                                                            '285332fd-91e9-4e48-843d-36495caaf915')
         print(results.get_result_ephemeris(2))

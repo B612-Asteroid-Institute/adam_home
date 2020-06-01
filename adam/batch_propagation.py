@@ -84,16 +84,8 @@ class BatchPropagations(AdamObjects):
                 'step_duration_sec': propagation_params.get_step_size(),
                 'opmFromString': opm_params.generate_opm(),
                 'executor': propagation_params.get_executor(),
-                'keplerianSigma': propagation_params.get_keplerian_sigma(),
                 'monteCarloDraws': propagation_params.get_monte_carlo_draws(),
                 'propagationType': propagation_params.get_propagation_type(),
-                # TODO: wire this in
-                'stopOnImpact': False,
-                'cartesianSigma': {},
-                'stopOnCloseApproach': False,
-                'stopOnImpactDistanceMeters': 0,
-                'stopOnCloseApproachAfterEpoch': None,
-                'closeApproachRadiusFromTargetMeters': 0
             },
             'project': project_uuid,
         }
