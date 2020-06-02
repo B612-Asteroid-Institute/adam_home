@@ -94,6 +94,10 @@ class TestApsResultClass:
             results = ApsResults.fromRESTwithRawIds(self.rest, self.workspace, '31a02f1b-0398-431f-b048-c9c9aa5128e4')
             print(results.get_results())
 
+    # def test_wait_for_complete(self):
+        # results = ApsResults.fromRESTwithRawIds(self.rest, self.workspace, '18937261-1973-4a77-8e2c-c02e8afe0d45')
+        # results.wait_for_complete(60, True)
+
 
 class TestBatchPropagationResultClass:
     def setup_method(self, method):

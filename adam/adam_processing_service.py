@@ -1,5 +1,4 @@
 import json
-import sys
 import time
 import urllib
 from enum import Enum
@@ -29,17 +28,22 @@ class ApsResults:
 
     # TODO make this work
     def wait_for_complete(self, max_wait_sec=60, print_waiting = False):
-        sleep_time_sec = 0.1
-        t0 = time.clock()
+        sleep_time_sec = 1.0
+        t0 = time.perf_counter()
         status = self.check_status()
         last_status = ''
+        count = 0
         while status != 'COMPLETED':
             if print_waiting:
                 if last_status != status:
                     print(status)
-                sys.stdout.write('.')
-                sys.stdout.flush()
-            if (time.clock() - t0) > max_wait_sec:
+                    count = 0
+                if count == 40:
+                    count = 0
+                    print()
+                print('.', end='')
+            elapsed = time.perf_counter() - t0
+            if elapsed > max_wait_sec:
                 raise RuntimeError(f'Computation has exceeded desired wait period of {max_wait_sec} sec.')
             last_status = status
             time.sleep(sleep_time_sec)
