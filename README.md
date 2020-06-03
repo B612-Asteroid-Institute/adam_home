@@ -5,7 +5,7 @@
 
 ## Quick Start (User)
 
-### Mac/Linux
+### Mac/Linux/WSL
 
 Use the `adamctl` tool to configure your ADAM workspace before you run the notebooks that call the ADAM API. The configuration usually only needs to be done once per environment.
 
@@ -31,7 +31,7 @@ To view your configured environments:
 adamctl config
 ```
 
-### Windows (Anaconda Powershell prompt)
+### Windows, non-WSL
 
 coming soon
 
