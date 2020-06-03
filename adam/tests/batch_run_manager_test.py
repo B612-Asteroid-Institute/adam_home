@@ -52,7 +52,7 @@ class MockBatches:
         expectation = self.expected_new_batch.pop(0)
         if not expectation[0].get_propagation_params() == propagation_params and \
                 expectation[0].get_opm_params() == opm_params:
-            raise AssertionError("Expected call to new_batch with %, got %" %
+            raise AssertionError("Expected call to new_batch with %s, got %s" %
                                  (expectation[0], propagation_params + "\n" + opm_params))
 
         return expectation[1]
