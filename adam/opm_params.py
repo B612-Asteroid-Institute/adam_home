@@ -158,9 +158,9 @@ class OpmParams(object):
             raise KeyError(
                 "Either state_vector or keplerian_elements must be provided.")
 
-        supported_keplerian_elements = {'semi_major_axis_km', 'eccentricity', 'inclination_deg',
-                                        'ra_of_asc_node_deg', 'arg_of_pericenter_deg',
-                                        'true_anomaly_deg', 'gm'}
+        # supported_keplerian_elements = {'semi_major_axis_km', 'eccentricity', 'inclination_deg',
+        #                               'ra_of_asc_node_deg', 'arg_of_pericenter_deg',
+        #                                'true_anomaly_deg', 'gm'}
         # if 'keplerian_elements' in params.keys():
         #     keplerian_params = params['keplerian_elements'].keys()
         #     if not supported_keplerian_elements == keplerian_params:
@@ -235,20 +235,24 @@ class OpmParams(object):
         if self._keplerian_elements is not None:
             if ('true_anomaly_deg') in self._keplerian_elements:
                 keplerian_elements = \
-                    ("SEMI_MAJOR_AXIS = %s\n" % (self._keplerian_elements['semi_major_axis_km'])) + \
+                    ("SEMI_MAJOR_AXIS = %s\n" %
+                        (self._keplerian_elements['semi_major_axis_km'])) + \
                     ("ECCENTRICITY = %s\n" % (self._keplerian_elements['eccentricity'])) + \
                     ("INCLINATION = %s\n" % (self._keplerian_elements['inclination_deg'])) + \
-                    ("RA_OF_ASC_NODE = %s\n" % (self._keplerian_elements['ra_of_asc_node_deg'])) + \
+                    ("RA_OF_ASC_NODE = %s\n" %
+                        (self._keplerian_elements['ra_of_asc_node_deg'])) + \
                     ("ARG_OF_PERICENTER = %s\n" %
                         (self._keplerian_elements['arg_of_pericenter_deg'])) + \
                     ("TRUE_ANOMALY = %s\n" % (self._keplerian_elements['true_anomaly_deg'])) + \
                     ("GM = %s\n" % (self._keplerian_elements['gm']))
             if ('mean_anomaly_deg') in self._keplerian_elements:
                 keplerian_elements = \
-                    ("SEMI_MAJOR_AXIS = %s\n" % (self._keplerian_elements['semi_major_axis_km'])) + \
+                    ("SEMI_MAJOR_AXIS = %s\n" %
+                        (self._keplerian_elements['semi_major_axis_km'])) + \
                     ("ECCENTRICITY = %s\n" % (self._keplerian_elements['eccentricity'])) + \
                     ("INCLINATION = %s\n" % (self._keplerian_elements['inclination_deg'])) + \
-                    ("RA_OF_ASC_NODE = %s\n" % (self._keplerian_elements['ra_of_asc_node_deg'])) + \
+                    ("RA_OF_ASC_NODE = %s\n" %
+                        (self._keplerian_elements['ra_of_asc_node_deg'])) + \
                     ("ARG_OF_PERICENTER = %s\n" %
                         (self._keplerian_elements['arg_of_pericenter_deg'])) + \
                     ("MEAN_ANOMALY = %s\n" % (self._keplerian_elements['mean_anomaly_deg'])) + \

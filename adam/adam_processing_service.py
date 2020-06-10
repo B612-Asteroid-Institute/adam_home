@@ -3,8 +3,12 @@ import time
 import urllib
 from enum import Enum
 
+from adam import PropagationParams, OpmParams
+
 
 class ApsResults:
+    """API for retrieving job details"""
+
     @classmethod
     def fromRESTwithRawIds(self, rest, project_uuid, job_uuid):
         results_processor = ApsRestServiceResultsProcessor(rest, project_uuid)
@@ -20,14 +24,26 @@ class ApsResults:
         return f'{self.json()}'
 
     def json(self):
-        return { 'job_uuid': self._job_uuid,
-                 'results': self._results}
+        return {'job_uuid': self._job_uuid,
+                'results': self._results}
 
     def check_status(self):
         return self._rp.check_status(self._job_uuid)['status']
 
     # TODO make this work
-    def wait_for_complete(self, max_wait_sec=60, print_waiting = False):
+    def wait_for_complete(self, max_wait_sec=60, print_waiting=False):
+        """Polls the job until the job completes.
+
+        Args:
+            max_wait_sec (int): the maximum time in seconds to run the wait.
+                Defaults to 60.
+            print_waiting (boolean): Whether to print the waiting status messages.
+                Defaults to False.
+
+        Returns:
+            str: the job status.
+        """
+
         sleep_time_sec = 1.0
         t0 = time.perf_counter()
         status = self.check_status()
@@ -44,7 +60,8 @@ class ApsResults:
                 print('.', end='')
             elapsed = time.perf_counter() - t0
             if elapsed > max_wait_sec:
-                raise RuntimeError(f'Computation has exceeded desired wait period of {max_wait_sec} sec.')
+                raise RuntimeError(
+                    f'Computation has exceeded desired wait period of {max_wait_sec} sec.')
             last_status = status
             time.sleep(sleep_time_sec)
             status = self.check_status()
@@ -58,7 +75,10 @@ class ApsResults:
 
 
 class BatchPropagationResults(ApsResults):
+    """API for retrieving propagation results and summaries"""
+
     class PositionOrbitType(Enum):
+        """The type of orbit position in relation to a target body."""
         MISS = 'MISS'
         CLOSE_APPROACH = 'CLOSE_APPROACH'
         IMPACT = 'IMPACT'
@@ -74,6 +94,24 @@ class BatchPropagationResults(ApsResults):
         self._summary = None
 
     def get_summary(self, force_update=False):
+        """Get the propagation results summary.
+
+        Args:
+            force_update(boolean): True if calling this method should be re-executed,
+                otherwise False (default).
+
+        Returns:
+            dict: A summary of propagation results.
+
+            {
+                'misses': number of misses,
+                'close_approach': number of close approaches,
+                'impacts': number of impacts,
+                'total': total number of runs in the batch,
+                'pc': probability of collision
+            }
+        """
+
         self.__update_results(force_update)
         # {"totalMisses": 6, "totalImpacts": 0, "totalCloseApproaches": 12}
         misses = self._summary.get('totalMisses')
@@ -96,6 +134,16 @@ class BatchPropagationResults(ApsResults):
         }
 
     def get_final_positions(self, position_orbit_type: PositionOrbitType, force_update=False):
+        """Get the final positions of all propagated objects in the job.
+
+        Args:
+            position_orbit_type (PositionOrbitType): the type of orbit position to filter.
+            force_update (boolean): whether the request should be re-executed.
+
+        Returns:
+            list: A list of the final orbit positions, filtered by the position_orbit_type.
+        """
+
         self.__update_results(force_update)
         position_type_string = position_orbit_type.value
         final_positions = self._detailedOutputs['finalPositionsByType'].get(position_type_string)
@@ -106,6 +154,15 @@ class BatchPropagationResults(ApsResults):
         return return_data
 
     def get_result_ephemeris_count(self, force_update=False):
+        """Get the number of ephemerides.
+
+        Args:
+            force_update (boolean): whether the request should be re-executed.
+
+        Returns:
+            int: the number of ephemerides generated from the propagation.
+        """
+
         self.__update_results(force_update)
         ephemeris = self._detailedOutputs.get('ephemeris')
         if ephemeris is None:
@@ -116,6 +173,15 @@ class BatchPropagationResults(ApsResults):
         return len(ephemeris_objects)
 
     def get_result_ephemeris(self, run_number, force_update=False):
+        """Get an ephemeris for a particular run in the batch.
+
+        Args:
+            force_update (boolean): whether the request should be re-executed.
+
+        Returns:
+            str: the ephemeris file as a string.
+        """
+
         self.__update_results(force_update)
         ephemeris = self._detailedOutputs['ephemeris']
         ephemeris_resource_name = ephemeris['ephemerisResourcePath'][run_number]
@@ -135,6 +201,8 @@ class BatchPropagationResults(ApsResults):
 
 
 class AdamProcessingService:
+    """The ADAM service handling operations related to jobs."""
+
     def __init__(self, rest):
         self._rest = rest
 
@@ -142,11 +210,32 @@ class AdamProcessingService:
         return "Adam Processing Service Class"
 
     def get_jobs(self, project):
+        """Get the jobs within a certain workspace (project).
+
+        Args:
+            project (str): The workspace (project) id.
+
+        Returns:
+            list: a list of jobs within the workspace (project).
+        """
         code, response = self._rest.get(f'/aps/{project}/jobs')
         return response
 
-    def execute_batch_propagation(self, project, propagation_params, opm_params):
-        #
+    def execute_batch_propagation(self,
+                                  project,
+                                  propagation_params: PropagationParams,
+                                  opm_params: OpmParams) -> BatchPropagationResults:
+        """Create a new job to run a batch propagation.
+
+        Args:
+            project (str): The workspace (project) id.
+            propagation_params (PropagationParams): Parameters for the propagation.
+            opm_params (OpmParams): Parameters specific to the OPM.
+
+        Returns:
+            BatchPropagationResults: a reference to batch propagation object.
+        """
+
         data = self._build_batch_creation_data(propagation_params, opm_params)
 
         code, response = self._rest.post(f'/aps/{project}/propagation/batch', data)
@@ -172,10 +261,13 @@ class AdamProcessingService:
             'stopOnImpact': propagation_params.get_stop_on_impact(),
             'cartesianSigma': propagation_params.get_cartesian_sigma(),
             'stopOnCloseApproach': propagation_params.get_stop_on_close_approach(),
-            'stopOnImpactDistanceMeters': propagation_params.get_stop_on_impact_distance_meters(),
-            'stopOnCloseApproachAfterEpoch': propagation_params.get_stop_on_close_approach_after_epoch(),
-            'closeApproachRadiusFromTargetMeters': propagation_params.get_close_approach_radius_from_target_meters()
-       }
+            'stopOnImpactDistanceMeters':
+                propagation_params.get_stop_on_impact_distance_meters(),
+            'stopOnCloseApproachAfterEpoch':
+                propagation_params.get_stop_on_close_approach_after_epoch(),
+            'closeApproachRadiusFromTargetMeters':
+                propagation_params.get_close_approach_radius_from_target_meters()
+        }
 
         if propagation_params.get_cartesian_sigma() is not None:
             propagation_params_json['cartesianSigma'] = propagation_params.get_cartesian_sigma()
@@ -188,11 +280,12 @@ class AdamProcessingService:
             'opm_string': opm_params.generate_opm(),
         }
 
-
         return data
 
 
 class ApsRestServiceResultsProcessor:
+    """AdamProcessingService REST service to check job status and results"""
+
     def __init__(self, rest, project):
         self._rest = rest
         self._project = project
@@ -201,6 +294,15 @@ class ApsRestServiceResultsProcessor:
         return "Adam Results Processing Class"
 
     def check_status(self, job_uuid):
+        """Check the status of a job.
+
+        Args:
+            job_uuid (str): the job id.
+
+        Returns:
+            str: the job status.
+        """
+
         code, response = self._rest.get(f'/aps/{self._project}/job/{job_uuid}/status')
         if code != 200:
             raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
@@ -208,11 +310,24 @@ class ApsRestServiceResultsProcessor:
         return response
 
     def get_results(self, job_uuid):
+        """Get the results of a job.
+
+        Args:
+            job_uuid (str): The job id.
+
+        Returns:
+            str: the job result, in JSON format.
+
+            {
+                "uuid": the id of the result record,
+                "jobUuid": the job id,
+                "outputSummaryJson": the output summary (e.g. counts),
+                "outputDetailsJson": the output details (e.g. final positions)
+            }
+        """
+
         code, response = self._rest.get(f'/aps/{self._project}/job/{job_uuid}/result')
         if code != 200:
             raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
 
         return response
-
-
-
