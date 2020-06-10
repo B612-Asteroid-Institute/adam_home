@@ -12,3 +12,6 @@ token.txt
 /dist/
 secrets
 test-config.yaml
+venv/
+build/
+.idea/
