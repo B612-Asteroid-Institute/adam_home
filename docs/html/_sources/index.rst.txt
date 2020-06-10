@@ -1,0 +1,16 @@
+ADAM client
+=======================================
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+:doc:`adam`
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
