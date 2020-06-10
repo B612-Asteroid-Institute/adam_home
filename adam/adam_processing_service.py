@@ -101,15 +101,16 @@ class BatchPropagationResults(ApsResults):
                 otherwise False (default).
 
         Returns:
-            dict: A summary of propagation results.
+            dict: A summary of propagation results::
 
-            {
-                'misses': number of misses,
-                'close_approach': number of close approaches,
-                'impacts': number of impacts,
-                'total': total number of runs in the batch,
-                'pc': probability of collision
-            }
+                {
+                    'misses': number of misses,
+                    'close_approach': number of close approaches,
+                    'impacts': number of impacts,
+                    'total': total number of runs in the batch,
+                    'pc': probability of collision
+                }
+
         """
 
         self.__update_results(force_update)
@@ -316,14 +317,14 @@ class ApsRestServiceResultsProcessor:
             job_uuid (str): The job id.
 
         Returns:
-            str: the job result, in JSON format.
+            str: The job result, in JSON format::
 
-            {
-                "uuid": the id of the result record,
-                "jobUuid": the job id,
-                "outputSummaryJson": the output summary (e.g. counts),
-                "outputDetailsJson": the output details (e.g. final positions)
-            }
+                {
+                    "uuid": id of the result record (string),
+                    "jobUuid": job id (string),
+                    "outputSummaryJson": the output summary e.g. counts (json),
+                    "outputDetailsJson": the output details e.g. final positions (json)
+                }
         """
 
         code, response = self._rest.get(f'/aps/{self._project}/job/{job_uuid}/result')
