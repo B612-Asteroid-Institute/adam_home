@@ -70,6 +70,20 @@ class TestStmPropagationModule:
 
         npt.assert_allclose(expected_end_state, np.array(end_state), rtol=1e-8, atol=0)
         npt.assert_allclose(expected_stm.getA(), stm.getA(), rtol=1e-8, atol=0)
+        # test fails due to
+        #>       npt.assert_allclose(expected_stm.getA(), stm.getA(), rtol=1e-8, atol=0)
+        # E       AssertionError:
+        # E       Not equal to tolerance rtol=1e-08, atol=0
+        # E
+        # E       Mismatched elements: 27 / 36 (75%)
+        # E       Max absolute difference: 3.50506322
+        # E       Max relative difference: 4.08872328e-06
+        # E        x: array([[ 9.708748e+00, -1.215636e+00, -9.269676e-01,  5.342146e+07,
+        # E                1.643300e+07,  5.300949e+06],
+        # E              [ 7.111719e+00, -3.242025e+00, -5.930381e-01,  3.902784e+07,...
+        # E        y: array([[ 9.708748e+00, -1.215636e+00, -9.269677e-01,  5.342146e+07,
+        # E                1.643300e+07,  5.300949e+06],
+        # E              [ 7.111719e+00, -3.242025e+00, -5.930376e-01,  3.902784e+07,...
 
         npt.assert_allclose(expected_end_state, np.array(end_state_V), rtol=1e-8, atol=0)
         npt.assert_allclose(expected_stm[:, 3:].getA(), stm_V.getA(), rtol=1e-8, atol=0)

@@ -54,7 +54,7 @@ class PropagatorConfigs(object):
         return "PropagatorConfigs module"
 
     def get_configs(self):
-        code, response = self._rest.get('/config')
+        code, response = self._rest.get('/config/propagator')
 
         if code != 200:
             raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
@@ -70,10 +70,10 @@ class PropagatorConfigs(object):
         if uuid is None:
             raise KeyError("UUID is required.")
 
-        code, response = self._rest.get('/config/' + uuid)
+        code, response = self._rest.get('/config/propagator/' + uuid)
 
         if code == 404:
-            # Project not found.
+            # Config not found.
             return None
         elif code != 200:
             raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
@@ -101,7 +101,7 @@ class PropagatorConfigs(object):
                     raise KeyError("Value for " + p + " must be one of " +
                                    "POINT_MASS, OMIT, or SPHERICAL_HARMONICS.")
 
-        code, response = self._rest.post('/config', config_json)
+        code, response = self._rest.post('/config/propagator', config_json)
 
         if code != 200:
             raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
@@ -109,7 +109,7 @@ class PropagatorConfigs(object):
         return PropagatorConfig(response)
 
     def delete_config(self, uuid):
-        code = self._rest.delete('/config/' + uuid)
+        code = self._rest.delete('/config/propagator/' + uuid)
 
         if code != 204:
             raise RuntimeError("Server status code: %s" % (code))
