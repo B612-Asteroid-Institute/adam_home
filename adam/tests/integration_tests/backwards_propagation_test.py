@@ -79,7 +79,7 @@ class TestBackwardsPropagation:
         # were small (the commented-out lines below). This was back in April 2018, so probably
         # ADAM was also using STK 2017r(something) and not 2018r3, which is the version ADAM
         # is currently using. Could the same propagation be calculated with slight differences?
-        #npt.assert_allclose(difference[0:3], [0, 0, 0], rtol=0, atol=1e-3)
-        #npt.assert_allclose(difference[3:6], [0, 0, 0], rtol=0, atol=1e-10)
+        # npt.assert_allclose(difference[0:3], [0, 0, 0], rtol=0, atol=1e-3)
+        # npt.assert_allclose(difference[3:6], [0, 0, 0], rtol=0, atol=1e-10)
         npt.assert_allclose(difference[0:3], [0, 0, 0], rtol=0, atol=1e-2)
         npt.assert_allclose(difference[3:6], [0, 0, 0], rtol=0, atol=1e-8)

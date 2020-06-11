@@ -71,7 +71,7 @@ class TestStmPropagationModule:
         npt.assert_allclose(expected_end_state, np.array(end_state), rtol=1e-8, atol=0)
         npt.assert_allclose(expected_stm.getA(), stm.getA(), rtol=1e-8, atol=0)
         # test fails due to
-        #>       npt.assert_allclose(expected_stm.getA(), stm.getA(), rtol=1e-8, atol=0)
+        # >       npt.assert_allclose(expected_stm.getA(), stm.getA(), rtol=1e-8, atol=0)
         # E       AssertionError:
         # E       Not equal to tolerance rtol=1e-08, atol=0
         # E
