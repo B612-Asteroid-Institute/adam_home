@@ -10,9 +10,10 @@ from adam import AuthenticatingRestProxy
 import time
 import os
 
-# Reads your config from a file in current directory. For instructions on setting this up, see config_demo notebook.
-config = ConfigManager(os.getcwd() + '/config.json').get_config()
-auth_rest = AuthenticatingRestProxy(RestRequests(config.get_url()), config.get_token())
+# ConfigManager loads the config set up via adamctl.
+# See the README at https://github.com/B612-Asteroid-Institute/adam_home/blob/master/README.md
+config = ConfigManager().get_config()
+auth_rest = AuthenticatingRestProxy(RestRequests(config['url']), config['token'])
 
 # Example inputs
 
