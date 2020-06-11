@@ -1,22 +1,12 @@
 import pytest
-from adam_processing_service import ApsResults, BatchPropagationResults
 
-from adam import AdamProcessingService, ConfigManager, AuthenticatingRestProxy, \
-    RestRequests, PropagationParams, OpmParams
+from adam import PropagationParams, OpmParams
+from adam.adam_processing_service import ApsResults, BatchPropagationResults
 
 
 class TestAdamProcessingService:
-    def setup_method(self, method):
-        self.setup_actual_aps()
 
-    def setup_actual_aps(self):
-        config = ConfigManager().get_config('localdev')
-        rest = AuthenticatingRestProxy(RestRequests(config['url']), config['token'])
-        self.workspace = config['workspace']
-        self.rest = rest
-        self.aps = AdamProcessingService(rest)
-
-    def test_submit_batch(self):
+    def test_submit_batch(self, service):
         keplerian_elements = {
             'semi_major_axis_km': 448793612,
             'eccentricity': 0.1,
@@ -53,7 +43,7 @@ class TestAdamProcessingService:
             'start_time': '2017-10-04T00:00:00Z',  # propagation start time in ISO format
             'end_time': '2017-10-11T00:00:00Z',  # propagation end time in ISO format
 
-            'project_uuid': self.workspace,
+            'project_uuid': service.workspace,
             'keplerianSigma': keplerian_sigma,
             'monteCarloDraws': draws,
             'propagationType': 'MONTE_CARLO',
@@ -70,31 +60,22 @@ class TestAdamProcessingService:
             'keplerian_elements': keplerian_elements,
         })
 
-        response = self.aps.execute_batch_propagation(
-            self.workspace, propagation_params, opm_params)
+        response = service.processing_service.execute_batch_propagation(
+            service.workspace, propagation_params, opm_params)
         print(response)
 
 
 class TestApsResultClass:
-    def setup_method(self, method):
-        self.setup_actual_aps()
 
-    def setup_actual_aps(self):
-        config = ConfigManager().get_config('localdev')
-        rest = AuthenticatingRestProxy(RestRequests(config['url']), config['token'])
-        self.workspace = config['workspace']
-        self.rest = rest
-        self.aps = AdamProcessingService(rest)
-
-    def test_get_status(self):
+    def test_get_status(self, service):
         results = ApsResults.fromRESTwithRawIds(
-            self.rest, self.workspace, '31a02f1b-0398-431f-b048-c9c9aa5128e4')
+            service.rest, service.workspace, '31a02f1b-0398-431f-b048-c9c9aa5128e4')
         print(results.check_status())
 
-    def test_get_empty_results(self):
+    def test_get_empty_results(self, service):
         with pytest.raises(RuntimeError):
             results = ApsResults.fromRESTwithRawIds(
-                self.rest, self.workspace, '31a02f1b-0398-431f-b048-c9c9aa5128e4')
+                service.rest, service.workspace, '31a02f1b-0398-431f-b048-c9c9aa5128e4')
             print(results.get_results())
 
     # def test_wait_for_complete(self):
@@ -104,27 +85,18 @@ class TestApsResultClass:
 
 
 class TestBatchPropagationResultClass:
-    def setup_method(self, method):
-        self.setup_actual_aps()
 
-    def setup_actual_aps(self):
-        config = ConfigManager().get_config('localdev')
-        rest = AuthenticatingRestProxy(RestRequests(config['url']), config['token'])
-        self.workspace = config['workspace']
-        self.rest = rest
-        self.aps = AdamProcessingService(rest)
-
-    def test_get_summary(self):
+    def test_get_summary(self, service):
         results = BatchPropagationResults.fromRESTwithRawIds(
-            self.rest,
+            service.rest,
             '0dc1e8b0-4f92-46ad-8838-c9e9eca6935c',
             '285332fd-91e9-4e48-843d-36495caaf915')
         summary = results.get_summary()
         print(summary)
 
-    def test_get_final_positions(self):
+    def test_get_final_positions(self, service):
         results = BatchPropagationResults.fromRESTwithRawIds(
-            self.rest,
+            service.rest,
             '0dc1e8b0-4f92-46ad-8838-c9e9eca6935c',
             '285332fd-91e9-4e48-843d-36495caaf915')
         print("Misses: ")
@@ -136,16 +108,16 @@ class TestBatchPropagationResultClass:
         print("Impacts:")
         print(results.get_final_positions(BatchPropagationResults.PositionOrbitType.IMPACT))
 
-    def test_get_result_ephemeris_count(self):
+    def test_get_result_ephemeris_count(self, service):
         results = BatchPropagationResults.fromRESTwithRawIds(
-            self.rest,
+            service.rest,
             '0dc1e8b0-4f92-46ad-8838-c9e9eca6935c',
             '285332fd-91e9-4e48-843d-36495caaf915')
         print(results.get_result_ephemeris_count())
 
-    def test_get_result_ephemeris(self):
+    def test_get_result_ephemeris(self, service):
         results = BatchPropagationResults.fromRESTwithRawIds(
-            self.rest,
+            service.rest,
             '0dc1e8b0-4f92-46ad-8838-c9e9eca6935c',
             '285332fd-91e9-4e48-843d-36495caaf915')
         print(results.get_result_ephemeris(2))
