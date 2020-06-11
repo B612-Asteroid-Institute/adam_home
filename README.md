@@ -1,9 +1,11 @@
-#  ADAM: The Asteroid Detection, Analysis, and Mapping platform
+#  ADAM: The Asteroid Decision, Analysis, and Mapping platform
 
 [![Python package](https://github.com/B612-Asteroid-Institute/adam_home/workflows/Python%20package/badge.svg)](https://github.com/B612-Asteroid-Institute/adam_home/actions?query=workflow%3A%22Python+package%22)
 [![Coverage Status](https://coveralls.io/repos/github/B612-Asteroid-Institute/adam/badge.svg?branch=master)](https://coveralls.io/github/B612-Asteroid-Institute/adam?branch=master)
 
 ## Quick Start (User)
+
+### Mac/Linux/WSL
 
 Use the `adamctl` tool to configure your ADAM workspace before you run the notebooks that call the ADAM API. The configuration usually only needs to be done once per environment.
 
@@ -28,6 +30,10 @@ To view your configured environments:
 ```bash
 adamctl config
 ```
+
+### Windows, non-WSL
+
+coming soon
 
 
 ## Quick Start (Developer)

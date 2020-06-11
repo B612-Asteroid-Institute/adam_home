@@ -12,6 +12,7 @@ token.txt
 /dist/
 secrets
 test-config.yaml
-venv/
 build/
+venv/
+.DS_Store
 .idea/
