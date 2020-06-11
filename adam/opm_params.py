@@ -215,33 +215,48 @@ class OpmParams(object):
         # from the user. If no state vector is specified, use dummy values.
         state_vector = self._state_vector or [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         base_opm = "CCSDS_OPM_VERS = 2.0\n" + \
-            ("CREATION_DATE = %s\n" % datetime.utcnow()) + \
-            ("ORIGINATOR = %s\n" % self._originator) + \
-            "COMMENT Cartesian coordinate system\n" + \
-            ("OBJECT_NAME = %s\n" % self._object_name) + \
-            ("OBJECT_ID = %s\n" % self._object_id) + \
-            ("CENTER_NAME = %s\n" % self._center_name) + \
-            ("REF_FRAME = %s\n" % self._ref_frame) + \
-            "TIME_SYSTEM = UTC\n" + \
-            ("EPOCH = %s\n" % self._epoch) + \
-            ("X = %s\n" % (state_vector[0])) + \
-            ("Y = %s\n" % (state_vector[1])) + \
-            ("Z = %s\n" % (state_vector[2])) + \
-            ("X_DOT = %s\n" % (state_vector[3])) + \
-            ("Y_DOT = %s\n" % (state_vector[4])) + \
-            ("Z_DOT = %s\n" % (state_vector[5]))
+                   ("CREATION_DATE = %s\n" % datetime.utcnow()) + \
+                   ("ORIGINATOR = %s\n" % self._originator) + \
+                   "COMMENT Cartesian coordinate system\n" + \
+                   ("OBJECT_NAME = %s\n" % self._object_name) + \
+                   ("OBJECT_ID = %s\n" % self._object_id) + \
+                   ("CENTER_NAME = %s\n" % self._center_name) + \
+                   ("REF_FRAME = %s\n" % self._ref_frame) + \
+                   "TIME_SYSTEM = UTC\n" + \
+                   ("EPOCH = %s\n" % self._epoch) + \
+                   ("X = %s\n" % (state_vector[0])) + \
+                   ("Y = %s\n" % (state_vector[1])) + \
+                   ("Z = %s\n" % (state_vector[2])) + \
+                   ("X_DOT = %s\n" % (state_vector[3])) + \
+                   ("Y_DOT = %s\n" % (state_vector[4])) + \
+                   ("Z_DOT = %s\n" % (state_vector[5]))
 
         keplerian_elements = ""
         if self._keplerian_elements is not None:
-            keplerian_elements = \
-                ("SEMI_MAJOR_AXIS = %s\n" % (self._keplerian_elements['semi_major_axis_km'])) + \
-                ("ECCENTRICITY = %s\n" % (self._keplerian_elements['eccentricity'])) + \
-                ("INCLINATION = %s\n" % (self._keplerian_elements['inclination_deg'])) + \
-                ("RA_OF_ASC_NODE = %s\n" % (self._keplerian_elements['ra_of_asc_node_deg'])) + \
-                ("ARG_OF_PERICENTER = %s\n" %
-                    (self._keplerian_elements['arg_of_pericenter_deg'])) + \
-                ("TRUE_ANOMALY = %s\n" % (self._keplerian_elements['true_anomaly_deg'])) + \
-                ("GM = %s\n" % (self._keplerian_elements['gm']))
+            if ('true_anomaly_deg') in self._keplerian_elements:
+                keplerian_elements = \
+                    ("SEMI_MAJOR_AXIS = %s\n" %
+                     (self._keplerian_elements['semi_major_axis_km'])) + \
+                    ("ECCENTRICITY = %s\n" % (self._keplerian_elements['eccentricity'])) + \
+                    ("INCLINATION = %s\n" % (self._keplerian_elements['inclination_deg'])) + \
+                    ("RA_OF_ASC_NODE = %s\n" %
+                     (self._keplerian_elements['ra_of_asc_node_deg'])) + \
+                    ("ARG_OF_PERICENTER = %s\n" %
+                     (self._keplerian_elements['arg_of_pericenter_deg'])) + \
+                    ("TRUE_ANOMALY = %s\n" % (self._keplerian_elements['true_anomaly_deg'])) + \
+                    ("GM = %s\n" % (self._keplerian_elements['gm']))
+            if ('mean_anomaly_deg') in self._keplerian_elements:
+                keplerian_elements = \
+                    ("SEMI_MAJOR_AXIS = %s\n" %
+                     (self._keplerian_elements['semi_major_axis_km'])) + \
+                    ("ECCENTRICITY = %s\n" % (self._keplerian_elements['eccentricity'])) + \
+                    ("INCLINATION = %s\n" % (self._keplerian_elements['inclination_deg'])) + \
+                    ("RA_OF_ASC_NODE = %s\n" %
+                     (self._keplerian_elements['ra_of_asc_node_deg'])) + \
+                    ("ARG_OF_PERICENTER = %s\n" %
+                     (self._keplerian_elements['arg_of_pericenter_deg'])) + \
+                    ("MEAN_ANOMALY = %s\n" % (self._keplerian_elements['mean_anomaly_deg'])) + \
+                    ("GM = %s\n" % (self._keplerian_elements['gm']))
 
         spacecraft_params = \
             ("MASS = %s\n" % self._mass) + \

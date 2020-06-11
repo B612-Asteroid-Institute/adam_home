@@ -2,17 +2,18 @@
     service.py
 """
 
-from adam.auth import Auth
+import datetime
+
 from adam import Batches
+from adam.adam_processing_service import AdamProcessingService
+from adam.auth import Auth
 from adam.group import Groups
 from adam.permission import Permissions
 from adam.project import Projects
-from adam.timer import Timer
+from adam.rest_proxy import AuthenticatingRestProxy
 from adam.rest_proxy import RestRequests
 from adam.rest_proxy import RetryingRestProxy
-from adam.rest_proxy import AuthenticatingRestProxy
-
-import datetime
+from adam.timer import Timer
 
 
 class Service():
@@ -66,6 +67,7 @@ class Service():
         self.batches = Batches(self.rest)
         self.groups = Groups(self.rest)
         self.permissions = Permissions(self.rest)
+        self.processing_service = AdamProcessingService(self.rest)
 
         timer.stop()
         return True
