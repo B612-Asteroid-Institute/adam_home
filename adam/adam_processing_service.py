@@ -253,7 +253,6 @@ class AdamProcessingService:
         propagation_params_json = {
             'start_time': propagation_params.get_start_time(),
             'end_time': propagation_params.get_end_time(),
-            'description': propagation_params.get_description(),
             'step_duration_sec': propagation_params.get_step_size(),
             'propagator_uuid': propagation_params.get_propagator_uuid(),
             'project': propagation_params.get_project_uuid(),
@@ -279,6 +278,7 @@ class AdamProcessingService:
         data = {
             'templatePropagationParameters': propagation_params_json,
             'opm_string': opm_params.generate_opm(),
+            'description': propagation_params.get_description(),
         }
 
         return data
