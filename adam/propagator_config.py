@@ -46,6 +46,7 @@ class PropagatorConfigs(object):
     PUBLIC_CONFIG_ALL_PLANETS_AND_MOON = "00000000-0000-0000-0000-000000000001"
     PUBLIC_CONFIG_SUN_ONLY = "00000000-0000-0000-0000-000000000002"
     PUBLIC_CONFIG_ALL_PLANETS_AND_MOON_AND_ASTEROIDS = "00000000-0000-0000-0000-000000000003"
+    REST_ENDPOINT_PREFIX = '/config/propagator'
 
     def __init__(self, rest):
         self._rest = rest
@@ -54,7 +55,7 @@ class PropagatorConfigs(object):
         return "PropagatorConfigs module"
 
     def get_configs(self):
-        code, response = self._rest.get('/config/propagator')
+        code, response = self._rest.get(self.REST_ENDPOINT_PREFIX)
 
         if code != 200:
             raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
@@ -63,14 +64,14 @@ class PropagatorConfigs(object):
 
     # There is no print_configs method. This is much more easily done
     # by viewing the raw json by navigating in a browser to
-    # https://adam-dev-193118.appspot.com/_ah/api/adam/v1/config?token=<your token>
-    # or http://pro-equinox-162418.appspot.com/_ah/api/adam/v1/config?token=<your token>
+    # https://adam-dev-193118.appspot.com/_ah/api/adam/v1/config/propagator?token=<your token>
+    # or http://pro-equinox-162418.appspot.com/_ah/api/adam/v1/config/propagator?token=<your token>
 
     def get_config(self, uuid):
         if uuid is None:
             raise KeyError("UUID is required.")
 
-        code, response = self._rest.get('/config/propagator/' + uuid)
+        code, response = self._rest.get(f'{self.REST_ENDPOINT_PREFIX}/{uuid}')
 
         if code == 404:
             # Config not found.
@@ -101,7 +102,7 @@ class PropagatorConfigs(object):
                     raise KeyError("Value for " + p + " must be one of " +
                                    "POINT_MASS, OMIT, or SPHERICAL_HARMONICS.")
 
-        code, response = self._rest.post('/config/propagator', config_json)
+        code, response = self._rest.post(self.REST_ENDPOINT_PREFIX, config_json)
 
         if code != 200:
             raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
@@ -109,7 +110,7 @@ class PropagatorConfigs(object):
         return PropagatorConfig(response)
 
     def delete_config(self, uuid):
-        code = self._rest.delete('/config/propagator/' + uuid)
+        code = self._rest.delete(f'{self.REST_ENDPOINT_PREFIX}/{uuid}')
 
         if code != 204:
             raise RuntimeError("Server status code: %s" % (code))

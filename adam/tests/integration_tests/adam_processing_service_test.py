@@ -47,7 +47,7 @@ class TestAdamProcessingService:
             'keplerianSigma': keplerian_sigma,
             'monteCarloDraws': draws,
             'propagationType': 'MONTE_CARLO',
-            'description': 'Unit Test Run',
+            'description': 'Integration Test Run',
             'stopOnImpact': True,
             'step_size': 86400,
             'stopOnCloseApproach': False,
@@ -62,9 +62,10 @@ class TestAdamProcessingService:
 
         response = service.processing_service.execute_batch_propagation(
             service.workspace, propagation_params, opm_params)
-        print(response)
+        assert response.job_id() is not None
 
 
+@pytest.mark.skip(reason="make tests assert and create actual job ids")
 class TestApsResultClass:
 
     def test_get_status(self, service):
@@ -84,6 +85,7 @@ class TestApsResultClass:
     # results.wait_for_complete(60, True)
 
 
+@pytest.mark.skip(reason="make tests assert and create actual job ids")
 class TestBatchPropagationResultClass:
 
     def test_get_summary(self, service):

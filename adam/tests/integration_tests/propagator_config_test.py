@@ -1,9 +1,10 @@
+import pytest
+
 from adam import Batch
 from adam import BatchRunManager
 from adam import OpmParams
 from adam import PropagationParams
 from adam import PropagatorConfigs
-import pytest
 
 
 class TestPropagatorConfig:

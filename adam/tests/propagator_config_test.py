@@ -1,7 +1,8 @@
+import unittest
+
 from adam import PropagatorConfigs
 from adam.propagator_config import PropagatorConfig
 from adam.rest_proxy import _RestProxyForTest
-import unittest
 
 FULL_CONFIG_JSON_INPUT = {
     "project": "00000000-0000-0000-0000-000000000001",
@@ -18,22 +19,22 @@ FULL_CONFIG_JSON_INPUT = {
     "pluto": "POINT_MASS",
     "moon": "POINT_MASS",
     "asteroids": [
-            "Ceres",
-            "Pallas",
-            "Juno",
-            "Vesta",
-            "Hebe",
-            "Iris",
-            "Hygeia",
-            "Eunomia",
-            "Psyche",
-            "Amphitrite",
-            "Europa",
-            "Cybele",
-            "Sylvia",
-            "Thisbe",
-            "Davida",
-            "Interamnia"
+        "Ceres",
+        "Pallas",
+        "Juno",
+        "Vesta",
+        "Hebe",
+        "Iris",
+        "Hygeia",
+        "Eunomia",
+        "Psyche",
+        "Amphitrite",
+        "Europa",
+        "Cybele",
+        "Sylvia",
+        "Thisbe",
+        "Davida",
+        "Interamnia"
     ],
 }
 
@@ -88,14 +89,16 @@ class PropagatorConfigsTest(unittest.TestCase):
             return True
 
         expected_data = {'project': 'project'}
-        rest.expect_post("/config", check_input, 200, {'uuid': 'uuid', 'project': 'project'})
+        rest.expect_post(PropagatorConfigs.REST_ENDPOINT_PREFIX, check_input, 200,
+                         {'uuid': 'uuid', 'project': 'project'})
         config = configs.new_config({'project': 'project'})
         self.assertEqual("uuid", config.get_uuid())
         self.assertEqual("project", config.get_project())
         self.assertEqual(None, config.get_description())
 
         expected_data = FULL_CONFIG_JSON_INPUT
-        rest.expect_post("/config", check_input, 200, FULL_CONFIG_JSON_OUTPUT)
+        rest.expect_post(PropagatorConfigs.REST_ENDPOINT_PREFIX, check_input, 200,
+                         FULL_CONFIG_JSON_OUTPUT)
         config = configs.new_config(FULL_CONFIG_JSON_INPUT)
         self.assertEqual(FULL_CONFIG_JSON_OUTPUT, config.get_config_json())
 
@@ -109,21 +112,25 @@ class PropagatorConfigsTest(unittest.TestCase):
         rest = _RestProxyForTest()
         configs = PropagatorConfigs(rest)
 
-        rest.expect_get("/config/aaa", 200, {'uuid': 'aaa', 'project': 'bbb'})
+        rest.expect_get(f"{PropagatorConfigs.REST_ENDPOINT_PREFIX}/aaa", 200,
+                        {'uuid': 'aaa', 'project': 'bbb'})
         config = configs.get_config('aaa')
         self.assertEqual('aaa', config.get_uuid())
         self.assertEqual('bbb', config.get_project())
 
-        rest.expect_get("/config/00000000-0000-0000-0000-000000000003",
-                        200, FULL_CONFIG_JSON_OUTPUT)
+        # the public config exists
+        rest.expect_get(
+            f"{PropagatorConfigs.REST_ENDPOINT_PREFIX}/00000000-0000-0000-0000-000000000003",
+            200, FULL_CONFIG_JSON_OUTPUT)
         config = configs.get_config("00000000-0000-0000-0000-000000000003")
         self.assertEqual(FULL_CONFIG_JSON_OUTPUT, config.get_config_json())
 
-        rest.expect_get("/config/aaa", 404, {})
+        # propagator config with id "aaa" does not exist
+        rest.expect_get(f"{PropagatorConfigs.REST_ENDPOINT_PREFIX}/aaa", 404, {})
         config = configs.get_config('aaa')
         self.assertIsNone(config)
 
-        rest.expect_get("/config/aaa", 403, {})
+        rest.expect_get(f"{PropagatorConfigs.REST_ENDPOINT_PREFIX}/aaa", 403, {})
         with self.assertRaises(RuntimeError):
             config = configs.get_config('aaa')
 
@@ -131,11 +138,11 @@ class PropagatorConfigsTest(unittest.TestCase):
         rest = _RestProxyForTest()
         configs_module = PropagatorConfigs(rest)
 
-        rest.expect_get("/config", 200, {'items': []})
+        rest.expect_get(PropagatorConfigs.REST_ENDPOINT_PREFIX, 200, {'items': []})
         configs = configs_module.get_configs()
         self.assertEqual(0, len(configs))
 
-        rest.expect_get("/config", 200, {'items': [
+        rest.expect_get(PropagatorConfigs.REST_ENDPOINT_PREFIX, 200, {'items': [
             {'uuid': 'aaa', 'project': 'bbb'},
             {'uuid': 'ccc', 'project': 'ddd'}
         ]})
@@ -150,15 +157,15 @@ class PropagatorConfigsTest(unittest.TestCase):
         rest = _RestProxyForTest()
         configs = PropagatorConfigs(rest)
 
-        rest.expect_delete("/config/aaa", 204)
+        rest.expect_delete(f"{PropagatorConfigs.REST_ENDPOINT_PREFIX}/aaa", 204)
         configs.delete_config('aaa')
 
         # 200 isn't a valid return value for delete calls right now
-        rest.expect_delete("/config/aaa", 200)
+        rest.expect_delete(f"{PropagatorConfigs.REST_ENDPOINT_PREFIX}/aaa", 200)
         with self.assertRaises(RuntimeError):
             configs.delete_config('aaa')
 
-        rest.expect_delete("/config/aaa", 404)
+        rest.expect_delete(f"{PropagatorConfigs.REST_ENDPOINT_PREFIX}/aaa", 404)
         with self.assertRaises(RuntimeError):
             configs.delete_config('aaa')
 
