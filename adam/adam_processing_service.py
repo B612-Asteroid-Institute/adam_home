@@ -23,6 +23,9 @@ class ApsResults:
     def __str__(self):
         return f'{self.json()}'
 
+    def job_id(self):
+        return self._job_uuid
+
     def json(self):
         return {'job_uuid': self._job_uuid,
                 'results': self._results}
@@ -219,7 +222,7 @@ class AdamProcessingService:
         Returns:
             list: a list of jobs within the workspace (project).
         """
-        code, response = self._rest.get(f'/aps/{project}/jobs')
+        code, response = self._rest.get(f'/projects/{project}/jobs')
         return response
 
     def execute_batch_propagation(self,
@@ -239,7 +242,7 @@ class AdamProcessingService:
 
         data = self._build_batch_creation_data(propagation_params, opm_params)
 
-        code, response = self._rest.post(f'/aps/{project}/propagation/batch', data)
+        code, response = self._rest.post(f'/projects/{project}/jobs', data)
 
         if code != 200:
             raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
@@ -304,7 +307,7 @@ class ApsRestServiceResultsProcessor:
             str: the job status.
         """
 
-        code, response = self._rest.get(f'/aps/{self._project}/job/{job_uuid}/status')
+        code, response = self._rest.get(f'/projects/{self._project}/jobs/{job_uuid}/status')
         if code != 200:
             raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
 
@@ -327,7 +330,7 @@ class ApsRestServiceResultsProcessor:
                 }
         """
 
-        code, response = self._rest.get(f'/aps/{self._project}/job/{job_uuid}/result')
+        code, response = self._rest.get(f'/projects/{self._project}/jobs/{job_uuid}/result')
         if code != 200:
             raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
 
