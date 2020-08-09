@@ -146,8 +146,8 @@ class OpmParams(object):
         supported_params = {'epoch', 'state_vector', 'keplerian_elements', 'originator',
                             'object_name', 'object_id', 'center_name', 'ref_frame', 'mass',
                             'solar_rad_area', 'solar_rad_coeff', 'drag_area', 'drag_coeff',
-                            'covariance', 'perturbation', 'hypercube', 'initial_maneuver'}
-        extra_params = params.keys() - supported_params
+                            'covariance', 'keplerian_covariance', 'perturbation', 'hypercube', 'initial_maneuver'}
+        extra_params = self.check_params(supported_params, params)
         if len(extra_params) > 0:
             raise KeyError("Unexpected parameters provided: %s" %
                            (extra_params))
@@ -160,10 +160,11 @@ class OpmParams(object):
 
         supported_keplerian_elements = {'semi_major_axis_km', 'eccentricity', 'inclination_deg',
                                         'ra_of_asc_node_deg', 'arg_of_pericenter_deg',
-                                        'true_anomaly_deg', 'gm'}
+                                        'true_anomaly_deg', 'mean_anomaly_deg', 'gm'}
         if 'keplerian_elements' in params.keys():
             keplerian_params = params['keplerian_elements'].keys()
-            if not supported_keplerian_elements == keplerian_params:
+            extra_keplerian_params = self.check_params(supported_keplerian_elements, keplerian_params)
+            if len(extra_keplerian_params) > 0:
                 raise KeyError("Unexpected keplerian elements provided. Values for exactly "
                                "the following must be given: %s" % (supported_keplerian_elements))
 
@@ -184,6 +185,7 @@ class OpmParams(object):
         self._drag_coeff = params.get('drag_coeff') or 2.2
 
         self._covariance = params.get('covariance')
+        self._keplerian_covariance = params.get('keplerian_covariance')
         self._perturbation = params.get('perturbation')
         self._hypercube = params.get('hypercube')
 
@@ -232,8 +234,10 @@ class OpmParams(object):
                    ("Z_DOT = %s\n" % (state_vector[5]))
 
         keplerian_elements = ""
+        using_mean_anomaly = True
         if self._keplerian_elements is not None:
             if ('true_anomaly_deg') in self._keplerian_elements:
+                using_mean_anomaly = False
                 keplerian_elements = \
                     ("SEMI_MAJOR_AXIS = %s\n" %
                      (self._keplerian_elements['semi_major_axis_km'])) + \
@@ -302,4 +306,46 @@ class OpmParams(object):
                        ("MAN_DV_2 = %s\n" % (self._initial_maneuver[1])) + \
                        ("MAN_DV_3 = %s\n" % (self._initial_maneuver[2]))
 
-        return base_opm + keplerian_elements + spacecraft_params + covariance + maneuver
+        keplerian_covariance = ""
+        anomaly_angle_cov = ""
+        if self._keplerian_covariance is not None:
+            if using_mean_anomaly:
+                anomaly_angle_cov = ("USER_DEFINED_CM_A = %s\n" % (self._keplerian_covariance[15])) + \
+                                    ("USER_DEFINED_CM_E = %s\n" % (self._keplerian_covariance[16])) + \
+                                    ("USER_DEFINED_CM_I = %s\n" % (self._keplerian_covariance[17])) + \
+                                    ("USER_DEFINED_CM_O = %s\n" % (self._keplerian_covariance[18])) + \
+                                    ("USER_DEFINED_CM_W = %s\n" % (self._keplerian_covariance[19])) + \
+                                    ("USER_DEFINED_CM_M = %s\n" % (self._keplerian_covariance[20]))
+            else:
+                anomaly_angle_cov = ("USER_DEFINED_CT_A = %s\n" % (self._keplerian_covariance[15])) + \
+                                    ("USER_DEFINED_CT_E = %s\n" % (self._keplerian_covariance[16])) + \
+                                    ("USER_DEFINED_CT_I = %s\n" % (self._keplerian_covariance[17])) + \
+                                    ("USER_DEFINED_CT_O = %s\n" % (self._keplerian_covariance[18])) + \
+                                    ("USER_DEFINED_CT_W = %s\n" % (self._keplerian_covariance[19])) + \
+                                    ("USER_DEFINED_CT_T = %s\n" % (self._keplerian_covariance[20]))
+
+            covariance = ("USER_DEFINED_CA_A = %s\n" % (self._keplerian_covariance[0])) + \
+                         ("USER_DEFINED_CE_A = %s\n" % (self._keplerian_covariance[1])) + \
+                         ("USER_DEFINED_CE_E = %s\n" % (self._keplerian_covariance[2])) + \
+                         ("USER_DEFINED_CI_A = %s\n" % (self._keplerian_covariance[3])) + \
+                         ("USER_DEFINED_CI_E = %s\n" % (self._keplerian_covariance[4])) + \
+                         ("USER_DEFINED_CI_I = %s\n" % (self._keplerian_covariance[5])) + \
+                         ("USER_DEFINED_CO_A = %s\n" % (self._keplerian_covariance[6])) + \
+                         ("USER_DEFINED_CO_E = %s\n" % (self._keplerian_covariance[7])) + \
+                         ("USER_DEFINED_CO_I = %s\n" % (self._keplerian_covariance[8])) + \
+                         ("USER_DEFINED_CO_O = %s\n" % (self._keplerian_covariance[9])) + \
+                         ("USER_DEFINED_CW_A = %s\n" % (self._keplerian_covariance[10])) + \
+                         ("USER_DEFINED_CW_E = %s\n" % (self._keplerian_covariance[11])) + \
+                         ("USER_DEFINED_CW_I = %s\n" % (self._keplerian_covariance[12])) + \
+                         ("USER_DEFINED_CW_O = %s\n" % (self._keplerian_covariance[13])) + \
+                         ("USER_DEFINED_CW_W = %s\n" % (self._keplerian_covariance[14])) + \
+                         anomaly_angle_cov
+
+        return base_opm + keplerian_elements + spacecraft_params + covariance + maneuver + keplerian_covariance
+
+    def check_params(self, allowed, actual):
+        extra_items = []
+        for item in actual:
+            if item not in allowed:
+                extra_items.append(item)
+        return extra_items
