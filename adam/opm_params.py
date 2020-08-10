@@ -147,7 +147,7 @@ class OpmParams(object):
                             'object_name', 'object_id', 'center_name', 'ref_frame', 'mass',
                             'solar_rad_area', 'solar_rad_coeff', 'drag_area', 'drag_coeff',
                             'covariance', 'keplerian_covariance', 'perturbation', 'hypercube', 'initial_maneuver'}
-        extra_params = self.check_params(supported_params, params)
+        extra_params = self.__check_params(supported_params, params)
         if len(extra_params) > 0:
             raise KeyError("Unexpected parameters provided: %s" %
                            (extra_params))
@@ -163,7 +163,7 @@ class OpmParams(object):
                                         'true_anomaly_deg', 'mean_anomaly_deg', 'gm'}
         if 'keplerian_elements' in params.keys():
             keplerian_params = params['keplerian_elements'].keys()
-            extra_keplerian_params = self.check_params(supported_keplerian_elements, keplerian_params)
+            extra_keplerian_params = self.__check_params(supported_keplerian_elements, keplerian_params)
             if len(extra_keplerian_params) > 0:
                 raise KeyError("Unexpected keplerian elements provided. Values for exactly "
                                "the following must be given: %s" % (supported_keplerian_elements))
@@ -343,7 +343,7 @@ class OpmParams(object):
 
         return base_opm + keplerian_elements + spacecraft_params + covariance + maneuver + keplerian_covariance
 
-    def check_params(self, allowed, actual):
+    def __check_params(self, allowed, actual):
         extra_items = []
         for item in actual:
             if item not in allowed:
