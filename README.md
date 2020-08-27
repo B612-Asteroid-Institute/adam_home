@@ -5,6 +5,46 @@
 
 ## Quick Start (User)
 
+### Docker
+
+With Docker downloaded and installed on your system, run the following commands.
+
+## Create an .env
+
+Start up your favorite text editor and paste the uuid into the file as follows:
+
+```UUID=uuid-received-from-@AstrogatorJohn```
+
+Or you can pass it in at runtime by adding:
+
+```-e "UUID=uuid-received-from-@AstrogatorJohn"```
+
+Save the file in the `adam_home` directory as `.env`.
+
+## Pulling
+
+To pull the image from the Docker repo, run:
+
+```docker pull jfabdo/adamhome:latest```
+
+## Building
+
+If, instead of pulling a prebuilt container, you would like to build it from scratch, run the following commands:
+
+To build the container, run:
+
+```docker build --tag adamhome .```
+
+## Running
+
+If you have a `.env` file, run the following command:
+
+```docker run -e "NOTEBOOK=name-of-notebook-you-want-to-run" jfabdo/adamhome```
+
+If you want to pass in your UUID at runtime instead of using a `.env` file, run:
+
+```docker run -e "UUID=uuid-received-from-@AstrogatorJohn" -e "NOTEBOOK=name-of-notebook-you-want-to-run" jfabdo/adamhome```
+
 ### Mac/Linux/WSL
 
 Use the `adamctl` tool to configure your ADAM workspace before you run the notebooks that call the ADAM API. The configuration usually only needs to be done once per environment.
