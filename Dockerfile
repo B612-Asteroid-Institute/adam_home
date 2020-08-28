@@ -11,10 +11,12 @@ RUN conda create -n adam-dev --file conda-requirements.txt \
   && conda init bash \
   && . /root/.bashrc \
   && conda activate adam-dev \
-  && python setup.py develop 
-
-CMD  adamctl login \
+  && python setup.py develop \
+  && adamctl login \
   && adamctl login dev https://adam-dev-193118.appspot.com/_ah/api/adam/v1 \
   && adamctl config envs.prod.workspace "$UUID" \
-  && adamctl config envs.dev.workspace "$UUID" \
-  && jupyter nbconvert --to python $NOTEBOOK
+  && adamctl config envs.dev.workspace "$UUID" 
+
+ENV PATH $PATH
+
+CMD jupyter nbconvert --to python $NOTEBOOK
