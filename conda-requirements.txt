@@ -1,11 +1,11 @@
 # conda development environment
-requests
-pandas
-pytest
-pytest-cov
+conda-build
 coveralls
 flake8
 jupyter
+pandas
+pytest
+pytest-cov
 pyxdg
 pyyaml
-conda-build
+requests

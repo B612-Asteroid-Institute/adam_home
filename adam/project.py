@@ -11,7 +11,9 @@ class Project(object):
         self._description = description
 
     def __repr__(self):
-        return "Project %s" % (self._uuid)
+        return (
+            f"Project(uuid=${self._uuid}, parent=${self._parent}, "
+            f"name=${self._name}, description=${self._description})")
 
     def get_uuid(self):
         return self._uuid
@@ -34,10 +36,15 @@ class Projects(object):
     REST_ENDPOINT_PREFIX = '/projects'
 
     def __init__(self, rest):
+        """Initialize the Projects API client.
+
+        Args:
+            rest (RestProxy): a RestProxy that makes calls to the ADAM API.
+        """
         self._rest = rest
 
     def __repr__(self):
-        return "Projects module"
+        return f"Projects(${self._rest})"
 
     def _get_projects(self):
         code, response = self._rest.get(self.REST_ENDPOINT_PREFIX)

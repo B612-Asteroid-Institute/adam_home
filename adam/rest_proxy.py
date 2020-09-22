@@ -9,10 +9,65 @@
         - _RestProxyForTest: mocks methods and exposes extra functionality to add expectations.
 """
 
-import json
-import requests
-import urllib
 import datetime
+import functools
+import json
+
+import requests
+import yaml
+
+from adam import ConfigManager
+from adam.config_profile import ADAM_CONFIG_PROFILE
+
+
+class AccessTokenRefresher(object):
+    """Performs token refresh if the user's access token has expired."""
+
+    @staticmethod
+    def refresh_access_token(func):
+        """Decorator for methods that should attempt to refresh the access token.
+
+        This mainly applies to REST calls made with authentication information. Firebase
+        automatically expires the access token (aka the Firebase ID token) after an hour. The ADAM
+        server and client will leave the token verification up to Firebase. When an access token
+        expires, ADAM will request a new one from Firebase, given the user's refresh token.
+
+        After an access token is refreshed, it will be saved to the user's ADAM configuration for
+        the current configuration profile. The configuration profile corresponds to the environments
+        saved by adamctl.
+        """
+
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            # Attempt to execute the method. If it succeeds, move on.
+            response_code, response_body = func(*args, **kwargs)
+            if response_code != 401:
+                return response_code, response_body
+
+            print('Token refresh needed')
+            cm = ConfigManager()
+            config = cm.get_config(environment=ADAM_CONFIG_PROFILE.profile_name)
+
+            # If access token expired, refresh the access token.
+            refresh_token_url = f"{config.get('url')}/users/{config.get('user_id', '-')}/idToken"
+            request_body = {
+                'refreshToken': config.get('refresh_token')
+            }
+            response = requests.post(refresh_token_url, json=request_body)
+            refresh_response_body = response.json()
+            refresh_response_code = response.status_code
+            print(refresh_response_code)
+            print(refresh_response_body)
+
+            # Update the access token in the ADAM config, then write out the file.
+            config_key = f'envs.{ADAM_CONFIG_PROFILE.profile_name}.access_token'
+            cm[config_key] = yaml.safe_load(refresh_response_body.get('idToken'))
+            cm.to_file()
+
+            # Then re-execute the method again.
+            return func(*args, **kwargs)
+
+        return wrapper
 
 
 class RestProxy(object):
@@ -23,43 +78,43 @@ class RestProxy(object):
     def post(self, path, data_dict):
         """Send POST request to the server
 
-        This function is intended to be overriden by derived classes to POST a
-        request to a real or proxy server
+        This function is intended to be overridden by derived classes to POST a
+        resource to a real or proxy server
 
         Args:
             path (str): the path to send the POST to
             data_dict (dict): dictionary to be sent in the body of the POST
 
         Returns:
-            Pair of code and json data (when overriden)
+            Pair of code and json data (when overridden)
 
         Raises:
-            NotImplementedError: if this does not get overriden by the derived classes
+            NotImplementedError: if this does not get overridden by the derived classes
         """
         raise NotImplementedError("Got interface, need implementation")
 
     def get(self, path):
         """Send GET request to the server
 
-        This function is intended to be overriden by derived classes to GET a
-        request from a real or proxy server
+        This function is intended to be overridden by derived classes to GET a
+        resource from a real or proxy server
 
         Args:
             path (str): the path to send the GET request to
 
         Returns:
-            Pair of code and json data (when overriden)
+            Pair of code and json data (when overridden)
 
         Raises:
-            NotImplementedError: if this does not get overriden by the derived classes
+            NotImplementedError: if this does not get overridden by the derived classes
         """
         raise NotImplementedError("Got interface, need implementation")
 
     def delete(self, path):
         """Send DELETE request to the server
 
-        This function is intended to be overriden by derived classes to DELETE a
-        request from a real or proxy server
+        This function is intended to be overridden by derived classes to DELETE a
+        resource from a real or proxy server
 
         Args:
             path (str): the path to send the DELETE request to
@@ -79,35 +134,20 @@ class AuthenticatingRestProxy(RestProxy):
 
     """
 
-    def __init__(self, rest_proxy, token):
+    def __init__(self, rest_proxy):
         self._rest_proxy = rest_proxy
-        self._token = token
 
-    def _add_token_to_path(self, path):
-        if self._token == "":
-            # No addition needed.
-            return path
-
-        parsed = list(urllib.parse.urlparse(path))
-        query = urllib.parse.parse_qs(parsed[4])
-        query['token'] = self._token
-        # doseq=True is required to avoid very strange encodings of all existing values.
-        # Existing values are parsed as lists by parse_qs, but then the lists are encoded
-        # as strings (like a=%5B%271%27%5D (encoded a=['1']) instead of a=1).
-        parsed[4] = urllib.parse.urlencode(query, doseq=True)
-        return urllib.parse.urlunparse(parsed)
-
+    @AccessTokenRefresher.refresh_access_token
     def post(self, path, data_dict):
-        data_dict['token'] = self._token
-        return self._rest_proxy.post(path, data_dict)
+        return self._rest_proxy.post(path, data_dict, use_credentials=True)
 
+    @AccessTokenRefresher.refresh_access_token
     def get(self, path):
-        path = self._add_token_to_path(path)
-        return self._rest_proxy.get(path)
+        return self._rest_proxy.get(path, use_credentials=True)
 
+    @AccessTokenRefresher.refresh_access_token
     def delete(self, path):
-        path = self._add_token_to_path(path)
-        return self._rest_proxy.delete(path)
+        return self._rest_proxy.delete(path, use_credentials=True)
 
 
 class LoggingRestProxy(RestProxy):
@@ -206,80 +246,108 @@ class RetryingRestProxy(RestProxy):
 class RestRequests(RestProxy):
     """Implementation using requests package
 
-    This class is used to send actual requests to the server.
-
+    This class is used to send requests to the server.
     """
 
-    # Default base URL corresponding to ADAM project.
-    DEFAULT_BASE_URL = 'https://pro-equinox-162418.appspot.com/_ah/api/adam/v1'
+    def __init__(self):
+        """Initialize client with some ADAM configuration."""
 
-    def __init__(self, base_url=DEFAULT_BASE_URL):
-        """Initialize with the give base URL. All paths for requests will be appended
-        to this URL.
+        self._config = None
 
+    def _add_requests_args(self, **kwargs):
+        """Add more keyword arguments for requests method calls.
+
+        Args:
+            kwargs (dict): Additional arguments to configure requests method calls
         """
-        self._base_url = base_url
+        req_kwargs = {}
+        if 'use_credentials' in kwargs and kwargs['use_credentials']:
+            req_kwargs['auth'] = BearerAuthc(self._config.get('access_token'))
+        return req_kwargs
 
-    def post(self, path, data_dict):
+    def base_url(self):
+        return self._config.get('url')
+
+    def _load_config(self, force=False):
+        if self._config is None or force:
+            self._config = ConfigManager().get_config(environment=ADAM_CONFIG_PROFILE.profile_name)
+
+    def _maybe_reload_config(self, **kwargs):
+        force_reload = kwargs.get('force_reload_config', False)
+        self._load_config(force=force_reload)
+
+    def post(self, path, data_dict, **kwargs):
         """Send POST request to the server
 
-        This function is used to POST a request to the actual server
+        This function is used to POST a resource to the server
 
         Args:
             path (str): the path to send the POST to
             data_dict (dict): dictionary to be sent in the body of the POST
+            kwargs (dict): Additional arguments for requests.post()
 
         Returns:
             Pair of code and json data (actual from server)
         """
-        req = requests.post(self._base_url + path, data=json.dumps(data_dict))
-        req_json = {}
-        try:
-            req_json = req.json()
-        except ValueError:
-            # TODO(laura): make the rest server return json responses, always
-            print("Received non-JSON response from API: " +
-                  str(req.status_code) + ", " + str(req.content))
-        return req.status_code, req_json
 
-    def get(self, path):
+        self._maybe_reload_config(**kwargs)
+        additional_args = self._add_requests_args(**kwargs)
+        response = requests.post(self.base_url() + path, json=data_dict, **additional_args)
+        try:
+            print(response.status_code)
+            return response.status_code, response.json()
+        except ValueError as e:
+            # TODO: make the rest server return json responses, always
+            print("Received non-JSON response from API: " +
+                  str(response.status_code) + ", " + str(response.content))
+            raise e
+
+    def get(self, path, **kwargs):
         """Send GET request to the server
 
-        This function is used to GET a request from the server
+        This function is used to GET a resource from the server
 
         Args:
             path (str): the path to send the GET request to
+            kwargs (dict): Additional arguments for requests.get()
 
         Returns:
             Pair of code and json data
         """
-        req = requests.get(self._base_url + path)
+
+        self._maybe_reload_config(**kwargs)
+        additional_args = self._add_requests_args(**kwargs)
+        req = requests.get(self.base_url() + path, **additional_args)
         req_json = {}
         try:
             req_json = req.json()
         except ValueError:
-            # TODO(laura): make the rest server return json responses, always
+            # TODO: make the rest server return json responses, always
             print("Received non-JSON response from API: " +
                   str(req.status_code) + ", " + str(req.content))
         return req.status_code, req_json
 
-    def delete(self, path):
+    def delete(self, path, **kwargs):
         """Send DELETE request to the server
 
-        This function is used to DELETE a request from the server
+        This function is used to DELETE a resource from the server
 
         Args:
             path (str): the path to send the DELETE request to
+            kwargs (dict): Additional arguments for requests.delete()
 
         Returns:
             Pair of code and json data
         """
-        req = requests.delete(self._base_url + path)
-        return req.status_code
+
+        self._maybe_reload_config(**kwargs)
+        additional_args = self._add_requests_args(**kwargs)
+        req = requests.delete(self.base_url() + path, **additional_args)
+        return req.status_code, None
 
 
 class _RestProxyForTest(RestProxy):
-    """Implementation using REST proxy
+    """Implementation using REST proxy for test purposes
 
     This class is used to send requests to a proxy server for testing purposes.
 
@@ -443,3 +511,14 @@ class _RestProxyForTest(RestProxy):
             raise AssertionError("Expected DELETE request to %s, got %s" % (exp[1], path))
 
         return exp[3]
+
+
+class BearerAuthc(requests.auth.AuthBase):
+    """Attaches bearer token to request."""
+
+    def __init__(self, token):
+        self._token = token
+
+    def __call__(self, r):
+        r.headers["authorization"] = f"Bearer {self._token}"
+        return r

@@ -131,7 +131,7 @@ class OpmParams(object):
             perturbation (int): sigma perturbation on state vector
             hypercube (str): hypercube propagation type (e.g. 'FACES' or 'CORNERS')
 
-            initial_maneuver (list): An array with 3 elements representing intial dx, dy, dz
+            initial_maneuver (list): An array with 3 elements representing initial dx, dy, dz
                 in velocity-orbit-normal coordinates (dx is in direction of velocity,
                 dy is orbit-normal, and dz is in direction of x cross y).
                 Assumed to take place at state vector epoch.
@@ -146,7 +146,8 @@ class OpmParams(object):
         supported_params = {'epoch', 'state_vector', 'keplerian_elements', 'originator',
                             'object_name', 'object_id', 'center_name', 'ref_frame', 'mass',
                             'solar_rad_area', 'solar_rad_coeff', 'drag_area', 'drag_coeff',
-                            'covariance', 'keplerian_covariance', 'perturbation', 'hypercube', 'initial_maneuver'}
+                            'covariance', 'keplerian_covariance', 'perturbation', 'hypercube',
+                            'initial_maneuver'}
         extra_params = self.__check_params(supported_params, params)
         if len(extra_params) > 0:
             raise KeyError("Unexpected parameters provided: %s" %
@@ -163,7 +164,8 @@ class OpmParams(object):
                                         'true_anomaly_deg', 'mean_anomaly_deg', 'gm'}
         if 'keplerian_elements' in params.keys():
             keplerian_params = params['keplerian_elements'].keys()
-            extra_keplerian_params = self.__check_params(supported_keplerian_elements, keplerian_params)
+            extra_keplerian_params = self.__check_params(supported_keplerian_elements,
+                                                         keplerian_params)
             if len(extra_keplerian_params) > 0:
                 raise KeyError("Unexpected keplerian elements provided. Values for exactly "
                                "the following must be given: %s" % (supported_keplerian_elements))
@@ -310,18 +312,28 @@ class OpmParams(object):
         anomaly_angle_cov = ""
         if self._keplerian_covariance is not None:
             if using_mean_anomaly:
-                anomaly_angle_cov = ("USER_DEFINED_CM_A = %s\n" % (self._keplerian_covariance[15])) + \
-                                    ("USER_DEFINED_CM_E = %s\n" % (self._keplerian_covariance[16])) + \
-                                    ("USER_DEFINED_CM_I = %s\n" % (self._keplerian_covariance[17])) + \
-                                    ("USER_DEFINED_CM_O = %s\n" % (self._keplerian_covariance[18])) + \
-                                    ("USER_DEFINED_CM_W = %s\n" % (self._keplerian_covariance[19])) + \
+                anomaly_angle_cov = ("USER_DEFINED_CM_A = %s\n" % (
+                self._keplerian_covariance[15])) + \
+                                    ("USER_DEFINED_CM_E = %s\n" % (
+                                    self._keplerian_covariance[16])) + \
+                                    ("USER_DEFINED_CM_I = %s\n" % (
+                                    self._keplerian_covariance[17])) + \
+                                    ("USER_DEFINED_CM_O = %s\n" % (
+                                    self._keplerian_covariance[18])) + \
+                                    ("USER_DEFINED_CM_W = %s\n" % (
+                                    self._keplerian_covariance[19])) + \
                                     ("USER_DEFINED_CM_M = %s\n" % (self._keplerian_covariance[20]))
             else:
-                anomaly_angle_cov = ("USER_DEFINED_CT_A = %s\n" % (self._keplerian_covariance[15])) + \
-                                    ("USER_DEFINED_CT_E = %s\n" % (self._keplerian_covariance[16])) + \
-                                    ("USER_DEFINED_CT_I = %s\n" % (self._keplerian_covariance[17])) + \
-                                    ("USER_DEFINED_CT_O = %s\n" % (self._keplerian_covariance[18])) + \
-                                    ("USER_DEFINED_CT_W = %s\n" % (self._keplerian_covariance[19])) + \
+                anomaly_angle_cov = ("USER_DEFINED_CT_A = %s\n" % (
+                self._keplerian_covariance[15])) + \
+                                    ("USER_DEFINED_CT_E = %s\n" % (
+                                    self._keplerian_covariance[16])) + \
+                                    ("USER_DEFINED_CT_I = %s\n" % (
+                                    self._keplerian_covariance[17])) + \
+                                    ("USER_DEFINED_CT_O = %s\n" % (
+                                    self._keplerian_covariance[18])) + \
+                                    ("USER_DEFINED_CT_W = %s\n" % (
+                                    self._keplerian_covariance[19])) + \
                                     ("USER_DEFINED_CT_T = %s\n" % (self._keplerian_covariance[20]))
 
             covariance = ("USER_DEFINED_CA_A = %s\n" % (self._keplerian_covariance[0])) + \

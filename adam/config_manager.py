@@ -199,7 +199,7 @@ class ConfigManager(object):
 
         Parameters
         ----------
-        environment : str
+        name : str
             environment name (e.g., ``prod`` or ``dev``)
         cfg : dict
             environment data

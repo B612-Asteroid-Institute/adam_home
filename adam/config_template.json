@@ -4,13 +4,17 @@
             "env": "prod",
             "url": "https://pro-equinox-162418.appspot.com/_ah/api/adam/v1",
             "workspace": "",
-            "token": ""
+            "token": "",
+            "access_token": "",
+            "refresh_token": ""
         },
         {
             "env": "dev",
             "url": "https://adam-dev-193118.appspot.com/_ah/api/adam/v1",
             "workspace": "",
-            "token": ""
+            "token": "",
+            "access_token": "",
+            "refresh_token": ""
         }
     ],
     "default_env": "prod"
