@@ -1,7 +1,11 @@
+import json
 import sys
-import adam
 import urllib
+
 import yaml
+
+import adam
+import adam.errors as adam_errors
 
 DEFAULT_PROD_URL = 'https://pro-equinox-162418.appspot.com/_ah/api/adam/v1'
 
@@ -67,10 +71,32 @@ def login(args):
 
         # user's token
         from getpass import getpass
-        token = getpass("Token: ")
+        creds = getpass("Credentials: ")
+        access_token = None
+        refresh_token = None
 
-        if token and auth.authenticate(token):
-            cm.set_config(name, dict(url=url, token=token))
+        try:
+            parsed_creds = json.loads(creds)
+            if parsed_creds:
+                access_token = parsed_creds.get('accessToken')
+                refresh_token = parsed_creds.get('refreshToken')
+            else:
+                raise adam_errors.CredentialsMissingError(
+                    "ADAM credentials were parsed and found to be empty. "
+                    "Check that you've copy-pasted them correctly.")
+            if not access_token or not refresh_token:
+                raise adam_errors.CredentialsMissingError(
+                    "Missing accessToken or refreshToken from ADAM credentials. "
+                    "Check that you've copy-pasted them correctly.")
+        except json.JSONDecodeError as e:
+            raise adam_errors.CredentialsParseError(
+                e,
+                "Failed to parse ADAM credentials. The expected format is a JSON object with "
+                "'accessToken' and 'refreshToken' fields")
+
+        if access_token and refresh_token and auth.authenticate(access_token):
+            cm.set_config(name,
+                          dict(url=url, access_token=access_token, refresh_token=refresh_token))
             cm.to_file()
             print('Welcome, ' + auth.get_user())
         else:
@@ -80,7 +106,7 @@ def login(args):
         # log into a user-specified service
         _do_login(args.name, args.url, args.no_browser)
     else:
-        # log into the defaut 'prod' environment
+        # log into the default 'prod' environment
         _do_login('prod', DEFAULT_PROD_URL, args.no_browser)
 
 

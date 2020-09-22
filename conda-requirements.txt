@@ -1,11 +1,13 @@
 # conda development environment
-requests
-pandas
-pytest
-pytest-cov
+astroquery
+conda-build
 coveralls
 flake8
 jupyter
+matplotlib
+pandas
+pytest
+pytest-cov
 pyxdg
 pyyaml
-conda-build
+requests
