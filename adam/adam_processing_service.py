@@ -110,7 +110,6 @@ class BatchPropagationResults(ApsResults):
                     'misses': number of misses,
                     'close_approach': number of close approaches,
                     'impacts': number of impacts,
-                    'total': total number of runs in the batch,
                     'pc': probability of collision
                 }
 
@@ -127,13 +126,11 @@ class BatchPropagationResults(ApsResults):
         impacts = self._summary.get('totalImpacts')
         if impacts is None:
             impacts = 0
-        total = misses + close_approaches + impacts
-        probability = impacts / total
+        probability = impacts / (misses + impacts)
         return {
             'misses': misses,
             'close_approach': close_approaches,
             'impacts': impacts,
-            'total': total,
             'pc': probability
         }
 
