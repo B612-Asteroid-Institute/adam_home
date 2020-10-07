@@ -8,3 +8,4 @@ flake8
 jupyter
 pyxdg
 pyyaml
+matplotlib
