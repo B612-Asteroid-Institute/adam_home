@@ -3,7 +3,7 @@ import time
 import urllib
 from enum import Enum
 
-from adam import PropagationParams, OpmParams
+from adam import PropagationParams, OpmParams, stk
 
 
 class ApsResults:
@@ -173,7 +173,7 @@ class BatchPropagationResults(ApsResults):
             return 0
         return len(ephemeris_objects)
 
-    def get_result_ephemeris(self, run_number, force_update=False):
+    def get_result_raw_ephemeris(self, run_number, force_update=False):
         """Get an ephemeris for a particular run in the batch.
 
         Args:
@@ -190,9 +190,23 @@ class BatchPropagationResults(ApsResults):
         if not base_url.endswith('/'):
             base_url = base_url + '/'
         url = urllib.parse.urljoin(base_url, ephemeris_resource_name)
-        print(url)
         with urllib.request.urlopen(url) as response:
             return response.read().decode('utf-8')
+
+    def get_result_ephemeris(self, run_number, force_update=False):
+        """Get an ephemeris for a particular run in the batch as a Panda DataFrame
+
+        Args:
+            force_update (boolean): whether the request should be re-executed.
+
+        Returns:
+            ephemeris: Ephemeris from file as a Panda DataFrame
+        """
+
+        ephemeris_text = self.get_result_raw_ephemeris(run_number, force_update)
+        ephemeris = stk.io.ephemeris_file_data_to_dataframe(ephemeris_text.splitlines())
+        return ephemeris
+
 
     def __update_results(self, force_update):
         if force_update or self._detailedOutputs is None:
@@ -221,6 +235,21 @@ class AdamProcessingService:
         """
         code, response = self._rest.get(f'/projects/{project}/jobs')
         return response
+
+    def get_job_results(self, project, job_id):
+        """Get the job results for a specific job for a specific project.
+
+        Args:
+            project (str): The workspace (project) id.
+            job_id (str): The job id.
+
+        Returns:
+            result (ApsResults): a result object that can be used to query for data about the submitted job
+        """
+        results_processor = ApsRestServiceResultsProcessor(self._rest, project)
+
+        return BatchPropagationResults(results_processor, job_id)
+
 
     def execute_batch_propagation(self,
                                   project,
