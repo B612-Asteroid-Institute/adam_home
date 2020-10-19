@@ -200,13 +200,12 @@ class BatchPropagationResults(ApsResults):
             force_update (boolean): whether the request should be re-executed.
 
         Returns:
-            ephemeris: Ephemeris from file as a Panda DataFrame
+            ephemeris: Ephemeris from file as a Pandas DataFrame
         """
 
         ephemeris_text = self.get_result_raw_ephemeris(run_number, force_update)
         ephemeris = stk.io.ephemeris_file_data_to_dataframe(ephemeris_text.splitlines())
         return ephemeris
-
 
     def __update_results(self, force_update):
         if force_update or self._detailedOutputs is None:
