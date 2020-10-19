@@ -1,4 +1,7 @@
+from adam.astro_utils import icrf_to_jpl_ecliptic
+import datetime
 import numpy as np
+import pandas as pd
 
 # Could replace these with a config class import 
 STK_VERSION = "11.1"
@@ -275,3 +278,76 @@ def convertPointingsToVectorInterval(vectorFileName, intervalFileName, exposureS
     createIntervalFile(intervalFileName, exposureStart, exposureEnd, epochStart, verbose=verbose)
                          
     return
+
+
+def ephemeris_file_data_to_dataframe(stk_file_text):
+    """Given the text of an STK Ephemeris file read it into a Pandas DataFrame. Assumes the Ephemeris file has
+    data in a sun centered ICRF frame with units of meters, seconds
+
+    Args:
+        stk_file_text (list[str]): Contents of an STK Ephemeris file as an array of strings, one for each line
+
+    Returns:
+        dataFrame (pd.DataFrame): Data frame containing the cartesian position and velocity in the JPL Ecliptic frame
+        in units of kilometers, seconds, and the same time scale as the Ephemeris File
+
+     TODO:
+        * Perform time frame transformations
+        * Handle cases where units or frames could be different (but won't handle all cases)
+
+    """
+    ref_epoch = None
+    ephem_started = False
+    ephem_data = []
+    current_line = 0
+    for raw_line in stk_file_text:
+        line = raw_line.strip().lower()
+        if not ephem_started and line.startswith('ephemeristimeposvel'):
+            ephem_started = True
+            continue
+
+        if line.startswith('scenarioepoch'):
+            epoch_str = line[13:].strip()
+            epoch_datetime = datetime.datetime.strptime(epoch_str, '%d %b %Y %H:%M:%S.%f')
+            ref_epoch = np.datetime64(epoch_datetime)
+
+        # if line.startswith('numberofephemerispoints'):
+        #     point_count = int(line[23:])
+        #     ephem_data = np.empty(point_count, dtype=object)
+
+        if line.startswith('centralbody'):
+            body = line[11:].strip()
+            if not body == 'sun':
+                raise ValueError('Central body must be the Sun')
+
+        if line.startswith('CoordinateSystem'):
+            frame = line[16:].strip()
+            if not frame == 'icrf':
+                raise ValueError('Coordinate frame must be ICRF')
+
+        if not ephem_started:
+            continue
+
+        if len(line) == 0:
+            continue
+
+        if line.startswith('end'):
+            break
+
+
+        state_str = raw_line.split()
+        epoch_sec = float(state_str[0])
+        epoch_dt = np.timedelta64(int(epoch_sec * 1000), 'ms')
+        epoch = ref_epoch + epoch_dt
+        x = float(state_str[1]) / 1000.0
+        y = float(state_str[2]) / 1000.0
+        z = float(state_str[3]) / 1000.0
+        vx = float(state_str[4]) / 1000.0
+        vy = float(state_str[5]) / 1000.0
+        vz = float(state_str[6]) / 1000.0
+        ecliptic_state = icrf_to_jpl_ecliptic(x, y, z, vx, vy, vz)
+        state = [epoch] + ecliptic_state
+        ephem_data.append(np.array(state))
+        current_line += 1
+
+    return pd.DataFrame(data=ephem_data, columns=['Epoch', 'X', 'Y', 'Z', 'Vx', 'Vy', 'Vz'])
