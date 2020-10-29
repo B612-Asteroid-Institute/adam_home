@@ -9,7 +9,6 @@ from adam.batch_propagation import BatchPropagations
 from adam.batch_run_manager import BatchRunManager
 from adam.batches import Batches
 from adam.config_manager import ConfigManager
-from adam.config_profile import *
 from adam.group import Groups
 from adam.opm_params import OpmParams
 from adam.opm_params import OpmParams

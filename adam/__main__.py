@@ -48,11 +48,12 @@ def config(args):
 
 
 def login(args):
+    """Retrieve ADAM credentials."""
+
     cm = adam.ConfigManager()
 
     def _do_login(name, url, no_browser):
-        rest = adam.RestRequests(url)
-        auth = adam.Auth(rest)
+        auth = adam.Auth(adam.AuthenticatingRestProxy(adam.RestRequests()))
 
         # OAuth web flow page
         o = urllib.parse.urlparse(url)
@@ -69,7 +70,7 @@ def login(args):
             import webbrowser
             webbrowser.open(token_url)
 
-        # user's token
+        # user's credentials
         from getpass import getpass
         creds = getpass("Credentials: ")
         access_token = None
@@ -94,9 +95,10 @@ def login(args):
                 "Failed to parse ADAM credentials. The expected format is a JSON object with "
                 "'accessToken' and 'refreshToken' fields")
 
-        if access_token and refresh_token and auth.authenticate(access_token):
+        if access_token and refresh_token and auth.authenticate():
             cm.set_config(name,
-                          dict(url=url, access_token=access_token, refresh_token=refresh_token))
+                          dict(url=url, access_token=access_token, refresh_token=refresh_token,
+                               user=auth.get_user()))
             cm.to_file()
             print('Welcome, ' + auth.get_user())
         else:

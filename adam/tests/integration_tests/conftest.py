@@ -1,6 +1,7 @@
+import pytest
+
 from adam import ConfigManager
 from adam import Service
-import pytest
 
 
 @pytest.fixture(scope="class")
@@ -10,12 +11,12 @@ def service(request):
     env = marker.args[0] if marker else None
 
     config = ConfigManager().get_config(env)
-    service = Service.from_config(config)
-    assert service.setup()
+    adam_service = Service.from_config(config)
+    assert adam_service.setup()
 
-    yield service
+    yield adam_service
 
-    service.teardown()
+    adam_service.teardown()
 
 
 @pytest.fixture(scope="class")

@@ -4,6 +4,8 @@ from adam.rest_proxy import RetryingRestProxy
 import unittest
 
 
+# TODO: fix this so that we are testing with fake access tokens
+
 class RetryingRestProxyTest(unittest.TestCase):
     """Unit tests for retrying rest proxy.
     """
@@ -128,7 +130,7 @@ class AuthenticatingRestProxyTest(unittest.TestCase):
     def test_post(self):
         rest = _RestProxyForTest()
         token = 'my_token'
-        auth_rest = AuthenticatingRestProxy(rest, token)
+        auth_rest = AuthenticatingRestProxy(rest)
 
         expected_data = {}
 
@@ -148,47 +150,29 @@ class AuthenticatingRestProxyTest(unittest.TestCase):
 
     def test_get(self):
         rest = _RestProxyForTest()
-        token = 'my_token'
-        auth_rest = AuthenticatingRestProxy(rest, token)
+        auth_rest = AuthenticatingRestProxy(rest)
 
-        rest.expect_get("/test?token=my_token", 200, {})
+        rest.expect_get("/test", 200, {})
         auth_rest.get("/test")
 
-        rest.expect_get("/test?a=1&b=2&token=my_token", 200, {})
+        rest.expect_get("/test?a=1&b=2", 200, {})
         auth_rest.get("/test?a=1&b=2")
 
-        rest.expect_get("/test?a=1&b=2&token=my_token", 4123, {'c': 3})
+        rest.expect_get("/test?a=1&b=2", 4123, {'c': 3})
         code, response = auth_rest.get("/test?a=1&b=2")
         self.assertEqual(code, 4123)
         self.assertEqual(response, {'c': 3})
-
-    def test_get_unsafe_url_characters(self):
-        rest = _RestProxyForTest()
-        # All the unsafe and reserved characters
-        #pylint: disable=W1401 # NOQA
-        token = '; / ? : @ = &   < > # % { } | \\ ^ ~ [ ]'
-        auth_rest = AuthenticatingRestProxy(rest, token)
-
-        # handle urlencode modules with and without the bugfix for
-        # https://bugs.python.org/issue16285 (Python >= 3.7).
-        # see also: https://stackoverflow.com/questions/51334226/python-why-is-now-included-in-the-set-of-reserved-characters-in-urllib-pars # noqa: E501
-        import urllib
-        tilde = urllib.parse.quote('~')
-
-        rest.expect_get("/test?a=1&b=2&token=%3B+%2F+%3F+%3A+%40+%3D+%26+++%3C+%3E"
-                        "+%23+%25+%7B+%7D+%7C+%5C+%5E+{}+%5B+%5D".format(tilde), 200, {})
-        auth_rest.get("/test?a=1&b=2")
 
     def test_delete(self):
         # DELETE behaves exactly like GET, so only the basics are tested.
         rest = _RestProxyForTest()
         token = 'my_token'
-        auth_rest = AuthenticatingRestProxy(rest, token)
+        auth_rest = AuthenticatingRestProxy(rest)
 
-        rest.expect_delete("/test?token=my_token", 200)
+        rest.expect_delete("/test", 200)
         auth_rest.delete("/test")
 
-        rest.expect_delete("/test?a=1&b=2&token=my_token", 200)
+        rest.expect_delete("/test?a=1&b=2", 200)
         auth_rest.delete("/test?a=1&b=2")
 
 

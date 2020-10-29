@@ -28,16 +28,6 @@ class Auth(object):
         """
         return f"Auth({self._rest})"
 
-    def get_token(self):
-        """Accessor for token.
-
-        Returns:
-            Stored token. If accessed before call to authenticate, will be empty.
-
-        TODO: remove
-        """
-        return self._token
-
     def get_user(self):
         """Accessor for user email.
 

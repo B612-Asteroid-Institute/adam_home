@@ -17,7 +17,6 @@ import requests
 import yaml
 
 from adam import ConfigManager
-from adam.config_profile import ADAM_CONFIG_PROFILE
 
 
 class AccessTokenRefresher(object):
@@ -45,7 +44,8 @@ class AccessTokenRefresher(object):
                 return response_code, response_body
 
             cm = ConfigManager()
-            config = cm.get_config(environment=ADAM_CONFIG_PROFILE.profile_name)
+            default_env = cm.get_default_env()
+            config = cm.get_config(environment=default_env)
 
             # If access token expired, refresh the access token.
             refresh_token_url = f"{config.get('url')}/users/{config.get('user_id', '-')}/idToken"
@@ -54,10 +54,9 @@ class AccessTokenRefresher(object):
             }
             response = requests.post(refresh_token_url, json=request_body)
             refresh_response_body = response.json()
-            refresh_response_code = response.status_code
 
             # Update the access token in the ADAM config, then write out the file.
-            config_key = f'envs.{ADAM_CONFIG_PROFILE.profile_name}.access_token'
+            config_key = f'envs.{default_env}.access_token'
             cm[config_key] = yaml.safe_load(refresh_response_body.get('idToken'))
             cm.to_file()
 
@@ -274,7 +273,8 @@ class RestRequests(RestProxy):
 
     def _load_config(self, force_load=False):
         if self._config is None or force_load:
-            self._config = ConfigManager().get_config(environment=ADAM_CONFIG_PROFILE.profile_name)
+            cm = ConfigManager()
+            self._config = cm.get_config(environment=cm.get_default_env())
 
     def _maybe_reload_config(self, **kwargs):
         # TODO: maybe make this a decorator?
@@ -299,7 +299,6 @@ class RestRequests(RestProxy):
         additional_args = self._add_requests_args(**kwargs)
         response = requests.post(self.base_url() + path, json=data_dict, **additional_args)
         try:
-            print(response.status_code)
             return response.status_code, response.json()
         except ValueError as e:
             # TODO: make the rest server return json responses, always
@@ -404,7 +403,7 @@ class _RestProxyForTest(RestProxy):
         """
         self._expectations.append(('DELETE', path, None, code, None))
 
-    def post(self, path, data_dict):
+    def post(self, path, data_dict, **kwargs):
         """Imitate sending POST request to server.
 
         This function is used to imitate POSTing a request to a server for testing
@@ -453,7 +452,7 @@ class _RestProxyForTest(RestProxy):
         # Return code and response data
         return exp[3], exp[4]
 
-    def get(self, path):
+    def get(self, path, **kwargs):
         """Imitate sending GET request to server
 
         This function is used to imitate GETting a request from the server for testing
@@ -496,7 +495,7 @@ class _RestProxyForTest(RestProxy):
         # Return code and response data
         return exp[3], exp[4]
 
-    def delete(self, path):
+    def delete(self, path, **kwargs):
         if len(self._expectations) == 0:
             raise AssertionError("Did not expect any calls, got DELETE")
 

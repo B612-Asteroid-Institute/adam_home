@@ -8,7 +8,6 @@ from adam import Batches
 from adam import ConfigManager
 from adam.adam_processing_service import AdamProcessingService
 from adam.auth import Auth
-from adam.config_profile import ADAM_CONFIG_PROFILE
 from adam.group import Groups
 from adam.permission import Permissions
 from adam.project import Projects
@@ -28,20 +27,26 @@ class Service(object):
     @classmethod
     def from_config(cls, config=None):
         if config is None:
-            config = ConfigManager().get_config(environment=ADAM_CONFIG_PROFILE.profile_name)
+            cm = ConfigManager()
+            config = cm.get_config(environment=cm.get_default_env())
         return cls(url=config['url'], project=config['workspace'])
 
     def __init__(self, url, project):
+        """Initialize the Service module.
+
+        Args:
+            url (str): The URL of the ADAM server to send requests to.
+            project (str): The ADAM project id, under which to create other working projects.
+        """
         self.url = url
         self.project = project
-
         self.working_projects = []
 
     def new_working_project(self, project_name=None):
         """Creates a new project under the root project (workspace) in the ADAM configuration.
 
         Args:
-            project_name (str): The name for the new project.
+            project_name (str): The name for the new project (optional).
 
         Returns:
             Project: the newly created project, or None, if there is no configured root project.
@@ -85,6 +90,7 @@ class Service(object):
         return True
 
     def teardown(self):
+        """Delete all working projects that were created in this Jupyter session."""
         timer = Timer()
         timer.start("Teardown")
         for project in self.working_projects:
