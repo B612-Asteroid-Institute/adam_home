@@ -39,6 +39,7 @@ def _process_notebook(path):
     return nb, errors
 
 
+@pytest.mark.skip("Set up integration test environment and run notebook against it")
 @pytest.mark.notebook
 def test():
     notebook_path = os.path.dirname(__file__) + '/../../demos/single_run_demo.ipynb'

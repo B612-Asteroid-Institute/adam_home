@@ -135,7 +135,7 @@ class Projects(object):
         Raises:
             RuntimeError if the server returns a non-204.
         """
-        code = self._rest.delete(f'{self.REST_ENDPOINT_PREFIX}/{uuid}')
+        code, _ = self._rest.delete(f'{self.REST_ENDPOINT_PREFIX}/{uuid}')
 
         if code != 204:
             raise RuntimeError("Server status code: %s" % (code))

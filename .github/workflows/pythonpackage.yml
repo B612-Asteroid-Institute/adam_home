@@ -36,4 +36,4 @@ jobs:
         pip install pytest
         cd demos
         ../adam/tests/make-config.sh
-        ADAM_CONFIG="$PWD/../adam/tests/test-config.yaml" pytest ../adam --cov=adam
+        ADAM_CONFIG="$PWD/../adam/tests/test-config.yaml" pytest ../adam --cov=adam --ignore=tests/integration_test

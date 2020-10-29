@@ -12,6 +12,7 @@
 import datetime
 import functools
 import json
+from collections import namedtuple
 
 import requests
 import yaml
@@ -201,7 +202,7 @@ class LoggingRestProxy(RestProxy):
         end = datetime.datetime.now()
         print("|    Call duration: " + str(end - start))
         print("--------------------------------------------------------")
-        return code
+        return code, None
 
 
 class RetryingRestProxy(RestProxy):
@@ -238,12 +239,12 @@ class RetryingRestProxy(RestProxy):
 
     def delete(self, path, **kwargs):
         for i in range(self._num_tries):
-            code = self._rest_proxy.delete(path, **kwargs)
+            code, response = self._rest_proxy.delete(path, **kwargs)
             if code not in self._retry_codes or i == self._num_tries - 1:
                 break
             print("Encountered error %s calling delete on %s. Retrying (attempt %s)" %
                   (code, path, i + 2))
-        return code
+        return code, response
 
 
 class RestRequests(RestProxy):
@@ -277,7 +278,6 @@ class RestRequests(RestProxy):
             self._config = cm.get_config(environment=cm.get_default_env())
 
     def _maybe_reload_config(self, **kwargs):
-        # TODO: maybe make this a decorator?
         force_reload = 'force_reload_config' in kwargs and kwargs['force_reload_config'] is True
         self._load_config(force_load=force_reload)
 
@@ -365,7 +365,7 @@ class _RestProxyForTest(RestProxy):
         """
         self._expectations = []
 
-    def expect_post(self, path, data_func, code, resp_data):
+    def expect_post(self, path, data_func, code, resp_data, **kwargs):
         """Expectations for POST method
 
         This function defines the expectations for a POST method.
@@ -375,10 +375,12 @@ class _RestProxyForTest(RestProxy):
             data_func (func): function to validate the input data to send to the POST
             code (int): return code from POST
             resp_data (dict): response data returned from POST
-        """
-        self._expectations.append(('POST', path, data_func, code, resp_data))
+            kwargs (dict): Additional arguments to configure requests method calls
 
-    def expect_get(self, path, code, resp_data):
+        """
+        self._expectations.append(('POST', path, data_func, code, resp_data, kwargs))
+
+    def expect_get(self, path, code, resp_data, **kwargs):
         """Expectations for GET method
 
         This function defines the expectations for a GET method.
@@ -387,10 +389,11 @@ class _RestProxyForTest(RestProxy):
             path (str): the path to send the GET request to
             code (int): return code from GET
             resp_data (dict): response data returned from GET
+            kwargs (dict): Additional arguments to configure requests method calls
         """
-        self._expectations.append(('GET', path, None, code, resp_data))
+        self._expectations.append(('GET', path, None, code, resp_data, kwargs))
 
-    def expect_delete(self, path, code):
+    def expect_delete(self, path, code, **kwargs):
         """Expectations for DELETE method.
 
         This function defines the expectations for a DELETE method.
@@ -398,10 +401,11 @@ class _RestProxyForTest(RestProxy):
         Args:
             path (str): the path to send the DELETE request to
             code (int): return code from DELETE
+            kwargs (dict): Additional arguments to configure requests method calls
 
         Note that delete methods do not generally return data.
         """
-        self._expectations.append(('DELETE', path, None, code, None))
+        self._expectations.append(('DELETE', path, None, code, None, kwargs))
 
     def post(self, path, data_dict, **kwargs):
         """Imitate sending POST request to server.
@@ -514,7 +518,7 @@ class _RestProxyForTest(RestProxy):
             # path does not match expected one
             raise AssertionError("Expected DELETE request to %s, got %s" % (exp[1], path))
 
-        return exp[3]
+        return exp[3], exp[4]
 
 
 class BearerAuthc(requests.auth.AuthBase):

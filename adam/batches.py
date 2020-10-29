@@ -64,7 +64,7 @@ class Batches(object):
         return summaries
 
     def delete_batch(self, uuid):
-        code = self._rest.delete('/batch/' + uuid)
+        code, _ = self._rest.delete('/batch/' + uuid)
 
         if code != 204:
             raise RuntimeError("Server status code: %s" % (code))
