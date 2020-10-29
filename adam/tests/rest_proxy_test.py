@@ -1,9 +1,9 @@
-from adam.rest_proxy import _RestProxyForTest
+import unittest
+from unittest import mock
+
 from adam.rest_proxy import AuthenticatingRestProxy
 from adam.rest_proxy import RetryingRestProxy
-import unittest
-
-from unittest import mock
+from adam.rest_proxy import _RestProxyForTest
 
 
 # TODO: fix this so that we are testing with fake access tokens
@@ -144,7 +144,6 @@ class AuthenticatingRestProxyTest(unittest.TestCase):
 
         auth_rest.delete("/delete_something")
         mocked_rest.delete.assert_called_with('/delete_something', use_credentials=True)
-
 
     def test_post(self):
         rest = _RestProxyForTest()

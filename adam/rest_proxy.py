@@ -12,7 +12,6 @@
 import datetime
 import functools
 import json
-from collections import namedtuple
 
 import requests
 import yaml

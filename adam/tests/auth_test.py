@@ -1,9 +1,14 @@
-from adam import Auth
-from adam.rest_proxy import _RestProxyForTest
 import json
 import unittest
 
+from adam import Auth
+from adam.rest_proxy import _RestProxyForTest
 
+
+# This test suite is testing authentication, but authentication is not really done through this
+# API. Authentication (i.e. adding authentication credentials to HTTP requests) is handled in
+# AuthenticatingRestProxy. Keeping this class here for now, but the test should be rewritten for
+# real use cases (e.g. just testing that the auth.Auth() class is doing the right thing).
 class AuthTest(unittest.TestCase):
     """Unit tests for auth module
 
@@ -19,7 +24,6 @@ class AuthTest(unittest.TestCase):
         self.assertEqual(auth.get_logged_in(), False)
 
         # A successful authentication should store token and set user to returned value.
-        good_token = 'good'
         rest.expect_get('/me', 200,
                         {'email': 'a@b.com', 'loggedIn': True})
         auth.authenticate()
@@ -31,15 +35,13 @@ class AuthTest(unittest.TestCase):
         rest = _RestProxyForTest()
         auth = Auth(rest)
 
-        # Authenticate in order to fill in email/logged_in/token so that next test
+        # Authenticate in order to fill in email/logged_in so that next test
         # can verify that these are cleared.
-        good_token = 'good'
         rest.expect_get('/me', 200,
                         {'email': 'a@b.com', 'loggedIn': True})
         auth.authenticate()
 
         # An unsuccessful authentication should clear token and other values.
-        bad_token = 'bad'
         # An example of the few ways that the server might reject a user. Others look
         # like this with different messages.
         server_error_on_bad_token = """
@@ -68,9 +70,8 @@ class AuthTest(unittest.TestCase):
         rest = _RestProxyForTest()
         auth = Auth(rest)
 
-        # Authenticate in order to fill in email/logged_in/token so that next test
+        # Authenticate in order to fill in email/logged_in so that next test
         # can verify that these are cleared.
-        good_token = 'good'
         rest.expect_get('/me', 200,
                         {'email': 'a@b.com', 'loggedIn': True})
         auth.authenticate()
@@ -89,7 +90,6 @@ class AuthTest(unittest.TestCase):
 
         # Authenticate in order to fill in email/logged_in/token so that next test
         # can verify that these are not cleared.
-        good_token = 'good'
         rest.expect_get('/me', 200,
                         {'email': 'a@b.com', 'loggedIn': True})
         auth.authenticate()
