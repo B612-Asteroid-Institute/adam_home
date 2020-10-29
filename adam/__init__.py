@@ -31,3 +31,4 @@ from adam.targeted_propagation import TargetingParams
 
 # This goes here temporarily, to avoid circular imports if we sort the import statements.
 from adam.adam_processing_service import *
+from adam.astro_utils import *

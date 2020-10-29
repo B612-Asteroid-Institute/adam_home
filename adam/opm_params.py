@@ -347,8 +347,8 @@ class OpmParams(object):
                 ("USER_DEFINED_CW_W = %s\n" % (self._keplerian_covariance[14])) + \
                 anomaly_angle_cov
 
-        return base_opm + keplerian_elements + spacecraft_params + covariance + maneuver + \
-            keplerian_covariance
+        return (base_opm + keplerian_elements + spacecraft_params +
+                covariance + maneuver + keplerian_covariance)
 
     def __check_params(self, allowed, actual):
         extra_items = []
