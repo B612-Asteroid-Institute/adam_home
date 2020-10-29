@@ -329,24 +329,26 @@ class OpmParams(object):
                                         self._keplerian_covariance[19])) + \
                                     ("USER_DEFINED_CT_T = %s\n" % (self._keplerian_covariance[20]))
 
-            covariance = ("USER_DEFINED_CA_A = %s\n" % (self._keplerian_covariance[0])) + \
-                         ("USER_DEFINED_CE_A = %s\n" % (self._keplerian_covariance[1])) + \
-                         ("USER_DEFINED_CE_E = %s\n" % (self._keplerian_covariance[2])) + \
-                         ("USER_DEFINED_CI_A = %s\n" % (self._keplerian_covariance[3])) + \
-                         ("USER_DEFINED_CI_E = %s\n" % (self._keplerian_covariance[4])) + \
-                         ("USER_DEFINED_CI_I = %s\n" % (self._keplerian_covariance[5])) + \
-                         ("USER_DEFINED_CO_A = %s\n" % (self._keplerian_covariance[6])) + \
-                         ("USER_DEFINED_CO_E = %s\n" % (self._keplerian_covariance[7])) + \
-                         ("USER_DEFINED_CO_I = %s\n" % (self._keplerian_covariance[8])) + \
-                         ("USER_DEFINED_CO_O = %s\n" % (self._keplerian_covariance[9])) + \
-                         ("USER_DEFINED_CW_A = %s\n" % (self._keplerian_covariance[10])) + \
-                         ("USER_DEFINED_CW_E = %s\n" % (self._keplerian_covariance[11])) + \
-                         ("USER_DEFINED_CW_I = %s\n" % (self._keplerian_covariance[12])) + \
-                         ("USER_DEFINED_CW_O = %s\n" % (self._keplerian_covariance[13])) + \
-                         ("USER_DEFINED_CW_W = %s\n" % (self._keplerian_covariance[14])) + \
-                         anomaly_angle_cov
+            covariance = \
+                ("USER_DEFINED_CA_A = %s\n" % (self._keplerian_covariance[0])) + \
+                ("USER_DEFINED_CE_A = %s\n" % (self._keplerian_covariance[1])) + \
+                ("USER_DEFINED_CE_E = %s\n" % (self._keplerian_covariance[2])) + \
+                ("USER_DEFINED_CI_A = %s\n" % (self._keplerian_covariance[3])) + \
+                ("USER_DEFINED_CI_E = %s\n" % (self._keplerian_covariance[4])) + \
+                ("USER_DEFINED_CI_I = %s\n" % (self._keplerian_covariance[5])) + \
+                ("USER_DEFINED_CO_A = %s\n" % (self._keplerian_covariance[6])) + \
+                ("USER_DEFINED_CO_E = %s\n" % (self._keplerian_covariance[7])) + \
+                ("USER_DEFINED_CO_I = %s\n" % (self._keplerian_covariance[8])) + \
+                ("USER_DEFINED_CO_O = %s\n" % (self._keplerian_covariance[9])) + \
+                ("USER_DEFINED_CW_A = %s\n" % (self._keplerian_covariance[10])) + \
+                ("USER_DEFINED_CW_E = %s\n" % (self._keplerian_covariance[11])) + \
+                ("USER_DEFINED_CW_I = %s\n" % (self._keplerian_covariance[12])) + \
+                ("USER_DEFINED_CW_O = %s\n" % (self._keplerian_covariance[13])) + \
+                ("USER_DEFINED_CW_W = %s\n" % (self._keplerian_covariance[14])) + \
+                anomaly_angle_cov
 
-        return base_opm + keplerian_elements + spacecraft_params + covariance + maneuver + keplerian_covariance
+        return base_opm + keplerian_elements + spacecraft_params + covariance + maneuver + \
+            keplerian_covariance
 
     def __check_params(self, allowed, actual):
         extra_items = []
