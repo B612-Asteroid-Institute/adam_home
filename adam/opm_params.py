@@ -131,7 +131,7 @@ class OpmParams(object):
             perturbation (int): sigma perturbation on state vector
             hypercube (str): hypercube propagation type (e.g. 'FACES' or 'CORNERS')
 
-            initial_maneuver (list): An array with 3 elements representing intial dx, dy, dz
+            initial_maneuver (list): An array with 3 elements representing initial dx, dy, dz
                 in velocity-orbit-normal coordinates (dx is in direction of velocity,
                 dy is orbit-normal, and dz is in direction of x cross y).
                 Assumed to take place at state vector epoch.
@@ -159,19 +159,12 @@ class OpmParams(object):
             raise KeyError(
                 "Either state_vector or keplerian_elements must be provided.")
 
-        supported_keplerian_elements = {'semi_major_axis_km', 'eccentricity', 'inclination_deg',
-                                        'ra_of_asc_node_deg', 'arg_of_pericenter_deg',
-                                        'true_anomaly_deg', 'mean_anomaly_deg', 'gm'}
-        if 'keplerian_elements' in params.keys():
-            keplerian_params = params['keplerian_elements'].keys()
-            extra_keplerian_params = self.__check_params(supported_keplerian_elements,
-                                                         keplerian_params)
-            if len(extra_keplerian_params) > 0:
-                raise KeyError("Unexpected keplerian elements provided. Values for exactly "
-                               "the following must be given: %s" % supported_keplerian_elements)
+        keplerian_params = params.get('keplerian_elements', [])
+        if keplerian_params:
+            self._check_keplerian_params(keplerian_params)
 
         self._state_vector = params.get('state_vector')
-        self._keplerian_elements = params.get('keplerian_elements')
+        self._keplerian_elements = keplerian_params
 
         self._originator = params.get('originator') or 'ADAM_User'
         self._object_name = params.get('object_name') or 'dummy'
@@ -336,7 +329,8 @@ class OpmParams(object):
                                         self._keplerian_covariance[19])) + \
                                     ("USER_DEFINED_CT_T = %s\n" % (self._keplerian_covariance[20]))
 
-            covariance = ("USER_DEFINED_CA_A = %s\n" % (self._keplerian_covariance[0])) + \
+            covariance = \
+                ("USER_DEFINED_CA_A = %s\n" % (self._keplerian_covariance[0])) + \
                 ("USER_DEFINED_CE_A = %s\n" % (self._keplerian_covariance[1])) + \
                 ("USER_DEFINED_CE_E = %s\n" % (self._keplerian_covariance[2])) + \
                 ("USER_DEFINED_CI_A = %s\n" % (self._keplerian_covariance[3])) + \
@@ -362,3 +356,34 @@ class OpmParams(object):
             if item not in allowed:
                 extra_items.append(item)
         return extra_items
+
+    def _check_keplerian_params(self, actual):
+        actual_set = frozenset(actual)
+
+        # These params must be a subset of actual
+        always_required_params = frozenset(['semi_major_axis_km', 'eccentricity', 'inclination_deg',
+                                            'ra_of_asc_node_deg', 'arg_of_pericenter_deg', 'gm'])
+
+        if not always_required_params <= actual_set:
+            raise KeyError(
+                f'Keplerian params must include all parameters of {always_required_params}. '
+                f'Provided params were {actual_set}')
+
+        remaining_actual_set = actual_set - always_required_params
+
+        # Either true anomaly or mean anomaly are provided, but not both
+        oneof_required_params = frozenset(['true_anomaly_deg', 'mean_anomaly_deg'])
+        satisfies_oneof_required_param = (
+                (('true_anomaly_deg' in remaining_actual_set)
+                 or ('mean_anomaly_deg' in remaining_actual_set))
+                and not (oneof_required_params <= remaining_actual_set))
+
+        if not satisfies_oneof_required_param:
+            raise KeyError(
+                f'Keplerian params must include either one of {oneof_required_params}. '
+                f'Provided params were {actual_set}')
+
+        extra_params = remaining_actual_set - oneof_required_params
+
+        if extra_params:
+            raise KeyError(f'Unrecognized Keplerian params were provided: {extra_params}')
