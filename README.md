@@ -111,7 +111,7 @@ A typical development loop will consist of:
 
 ### Initial setup
 
-You probably don't have to do this.
+You probably don't have to do the initial setup.
 
 ```python
 # In the same conda environment where you've installed ADAM:
@@ -137,7 +137,7 @@ sphinx-apidoc -o doc_source adam
 make html
 ```
 
-When you update code and/or docs via the Python docstrings, you can re-generate documentation.
+### Re-generate documentation
 
 ```python
 cd adam_home
