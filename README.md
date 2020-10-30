@@ -106,3 +106,43 @@ A typical development loop will consist of:
   * Making some changes to the package in `adam/`
   * Testing with `pytest adam --cov=adam --ignore=adam/tests/integration_tests`
   * Commit, push, PR.
+
+## Updating documentation
+
+### Initial setup
+
+You probably don't have to do this.
+
+```python
+# In the same conda environment where you've installed ADAM:
+cd adam_home
+conda install sphinx sphinx_rtd_theme
+
+# Bootstrap sphinx
+sphinx-quickstart
+
+#  Edit Makefile and change name of the source directory to doc_source.
+
+#  Edit conf.py
+ 
+# Auto-generate the API docs
+sphinx-apidoc -o doc_source adam
+
+# Edit index.rst to include the modules document.
+
+# Remove doc_source/adam.tests*.rst and any references to the adam.tests package.
+# This step will go away when tests get moved out of the adam package.
+
+# Build the html documentation
+make html
+```
+
+When you update code and/or docs via the Python docstrings, you can re-generate documentation.
+
+```python
+cd adam_home
+sphinx-apidoc -o doc_source adam
+make html
+```
+
+Eventually this should be part of CI/CD.
