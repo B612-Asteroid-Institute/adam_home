@@ -72,13 +72,14 @@ Before invoking code from the ADAM SDK, you'll want to include the following cod
 
 ```python
 # Use the default configuration, which is the prod server
-config = ConfigManager().get_config()
+config_manager = ConfigManager()
+config = config_manager.get_config()
 
-# If you need to use a different server e.g. dev:
-# config = ConfigManager().get_config('dev')
+# Change default configuration
+config_manager.set_default_env('dev')
 
 # Configure the REST API server endpoint and user token
-auth_rest = AuthenticatingRestProxy(RestRequests(config['url']), config['token'])
+auth_rest = AuthenticatingRestProxy(RestRequests())
 ```
 
 See the [single_run_demo](demos/single_run_demo.ipynb) notebook for an example.
@@ -92,7 +93,7 @@ https://b612-asteroid-institute.github.io/adam_home/index.html
 The ADAM SDK is a pure-python package that follows the [standard
 setuptools directory](https://python-packaging.readthedocs.io/en/latest/minimal.html) layout and installation mechanisms.
 The source code is in the [adam/](adam/) subdirectory, the tests are in
-[adam/tests/](adam/tests/). A number of demo notebooks are provided in [demos/](demos/). Conda
+[tests/](tests/). A number of demo notebooks are provided in [demos/](demos/). Conda
 package recipe files are in [recipe/](recipe/). [`setup.py`](setup.py) in the root of the
 repository handles the install, as well as the creation of the [`setupctl`
 script via an
@@ -104,7 +105,7 @@ A typical development loop will consist of:
   * Running `python setup.py develop`, to add the source code onto your
     `$PYTHONPATH`. This is needed only once.
   * Making some changes to the package in `adam/`
-  * Testing with `pytest adam --cov=adam --ignore=adam/tests/integration_tests`
+  * Testing with `pytest ./tests --cov=adam --ignore=tests/integration_tests`
   * Commit, push, PR.
 
 ## Updating documentation
