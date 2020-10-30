@@ -11,12 +11,12 @@ def service(request):
     env = marker.args[0] if marker else None
 
     config = ConfigManager().get_config(env)
-    adam_service = Service.from_config(config)
-    assert adam_service.setup()
+    service = Service.from_config(config)
+    assert service.setup()
 
-    yield adam_service
+    yield service
 
-    adam_service.teardown()
+    service.teardown()
 
 
 @pytest.fixture(scope="class")
