@@ -12,8 +12,8 @@ class Project(object):
 
     def __repr__(self):
         return (
-            f"Project(uuid=${self._uuid}, parent=${self._parent}, "
-            f"name=${self._name}, description=${self._description})")
+            f"Project(uuid={self._uuid}, parent={self._parent}, "
+            f"name={self._name}, description={self._description})")
 
     def get_uuid(self):
         return self._uuid
