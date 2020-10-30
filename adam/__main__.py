@@ -1,11 +1,9 @@
-import json
 import sys
 import urllib
 
 import yaml
 
 import adam
-import adam.errors as adam_errors
 
 DEFAULT_PROD_URL = 'https://pro-equinox-162418.appspot.com/_ah/api/adam/v1'
 
