@@ -56,8 +56,8 @@ class AccessTokenRefresher(object):
             refresh_response_body = response.json()
 
             # Update the access token in the ADAM config, then write out the file.
-            config_key = f'envs.{default_env}.access_token'
-            cm[config_key] = yaml.safe_load(refresh_response_body.get('idToken'))
+            config['access_token'] = yaml.safe_load(refresh_response_body.get('idToken'))
+            cm.set_config(default_env, config)
             cm.to_file()
 
             # The original function should reload the ADAM configuration to pick up the new
@@ -142,15 +142,18 @@ class AuthenticatingRestProxy(RestProxy):
 
     @AccessTokenRefresher.refresh_access_token
     def post(self, path, data_dict, **kwargs):
-        return self._rest_proxy.post(path, data_dict, use_credentials=True)
+        kwargs['use_credentials'] = True
+        return self._rest_proxy.post(path, data_dict, **kwargs)
 
     @AccessTokenRefresher.refresh_access_token
     def get(self, path, **kwargs):
-        return self._rest_proxy.get(path, use_credentials=True)
+        kwargs['use_credentials'] = True
+        return self._rest_proxy.get(path, **kwargs)
 
     @AccessTokenRefresher.refresh_access_token
     def delete(self, path, **kwargs):
-        return self._rest_proxy.delete(path, use_credentials=True)
+        kwargs['use_credentials'] = True
+        return self._rest_proxy.delete(path, **kwargs)
 
 
 class LoggingRestProxy(RestProxy):
@@ -320,15 +323,15 @@ class RestRequests(RestProxy):
 
         self._maybe_reload_config(**kwargs)
         additional_args = self._add_requests_args(**kwargs)
-        req = requests.get(self.base_url() + path, **additional_args)
-        req_json = {}
+        response = requests.get(self.base_url() + path, **additional_args)
+        response_json = {}
         try:
-            req_json = req.json()
+            response_json = response.json()
         except ValueError:
             # TODO: make the rest server return json responses, always
             print("Received non-JSON response from API: " +
-                  str(req.status_code) + ", " + str(req.content))
-        return req.status_code, req_json
+                  str(response.status_code) + ", " + str(response.content))
+        return response.status_code, response_json
 
     def delete(self, path, **kwargs):
         """Send DELETE request to the server
@@ -345,8 +348,8 @@ class RestRequests(RestProxy):
 
         self._maybe_reload_config(**kwargs)
         additional_args = self._add_requests_args(**kwargs)
-        req = requests.delete(self.base_url() + path, **additional_args)
-        return req.status_code, None
+        response = requests.delete(self.base_url() + path, **additional_args)
+        return response.status_code, None
 
 
 class _RestProxyForTest(RestProxy):

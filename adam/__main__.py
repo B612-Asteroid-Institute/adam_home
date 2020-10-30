@@ -53,7 +53,6 @@ def login(args):
     cm = adam.ConfigManager()
 
     def _do_login(name, url, no_browser):
-        auth = adam.Auth(adam.AuthenticatingRestProxy(adam.RestRequests()))
 
         # OAuth web flow page
         o = urllib.parse.urlparse(url)
@@ -72,34 +71,14 @@ def login(args):
 
         # user's credentials
         from getpass import getpass
-        creds = getpass("Credentials: ")
-        access_token = None
-        refresh_token = None
+        refresh_token = getpass("Token: ")
 
-        try:
-            parsed_creds = json.loads(creds)
-            if parsed_creds:
-                access_token = parsed_creds.get('accessToken')
-                refresh_token = parsed_creds.get('refreshToken')
-            else:
-                raise adam_errors.CredentialsMissingError(
-                    "ADAM credentials were parsed and found to be empty. "
-                    "Check that you've copy-pasted them correctly.")
-            if not access_token or not refresh_token:
-                raise adam_errors.CredentialsMissingError(
-                    "Missing accessToken or refreshToken from ADAM credentials. "
-                    "Check that you've copy-pasted them correctly.")
-        except json.JSONDecodeError as e:
-            raise adam_errors.CredentialsParseError(
-                e,
-                "Failed to parse ADAM credentials. The expected format is a JSON object with "
-                "'accessToken' and 'refreshToken' fields")
-
-        if access_token and refresh_token and auth.authenticate():
-            cm.set_config(name,
-                          dict(url=url, access_token=access_token, refresh_token=refresh_token,
-                               user=auth.get_user()))
+        if refresh_token:
+            cm.set_config(name, dict(url=url, refresh_token=refresh_token))
             cm.to_file()
+
+        auth = adam.Auth(adam.AuthenticatingRestProxy(adam.RestRequests()))
+        if auth.authenticate():
             print('Welcome, ' + auth.get_user())
         else:
             print('Could not authenticate user.')
