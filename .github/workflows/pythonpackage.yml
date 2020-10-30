@@ -37,5 +37,5 @@ jobs:
         cd demos
         ../adam/tests/make-config.sh
         ADAM_CONFIG="$PWD/../adam/tests/test-config.yaml" pytest ../adam \
-          --ignore=../adam/tests/integration_tests \
-          --cov=adam
+          --cov=adam \
+          --ignore=../adam/tests/integration_tests
