@@ -216,4 +216,4 @@ class BatchRunManager(object):
         self._submit()
         self._wait_for_completion()
         self._get_results()
-        print("Run status: complete")
+        print(f"Run status: {self.state.name}")
