@@ -35,14 +35,21 @@ class AccessTokenRefresher(object):
         the current configuration profile. The configuration profile corresponds to the environments
         saved by adamctl.
         """
-
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
-            # Attempt to execute the method. If it succeeds, move on.
+            # Attempt to execute the initial request.
             response_code, response_body = func(*args, **kwargs)
+            # Responses that don't result in 401 (unauthorized) should pass through.
             if response_code != 401:
                 return response_code, response_body
 
+            # 401 responses that aren't due to an expired token should pass through. This means
+            # there's an issue with the user's account and they should reach out to B612 team for
+            # help.
+            if response_body.get('error') != 'expired-token':
+                return response_code, response_body
+
+            # Otherwise, received a 401 due to an expired token, so request a token refresh.
             cm = ConfigManager()
             default_env = cm.get_default_env()
             config = cm.get_config(environment=default_env)
@@ -53,10 +60,12 @@ class AccessTokenRefresher(object):
                 'refreshToken': config.get('refresh_token')
             }
             response = requests.post(refresh_token_url, json=request_body)
+            response.raise_for_status()
             refresh_response_body = response.json()
 
-            # Update the access token in the ADAM config, then write out the file.
+            # Update the access and refresh token in the ADAM config, then write out the file.
             config['access_token'] = yaml.safe_load(refresh_response_body.get('idToken'))
+            config['refresh_token'] = yaml.safe_load(refresh_response_body.get('refreshToken'))
             cm.set_config(default_env, config)
             cm.to_file()
 
