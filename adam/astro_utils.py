@@ -1,6 +1,5 @@
 import numpy as np
 
-
 JPL_OBLIQUITY = np.deg2rad(84381.448 / 3600.0)
 
 

@@ -243,8 +243,8 @@ class AdamProcessingService:
             job_id (str): The job id.
 
         Returns:
-            result (ApsResults): a result object that can be used to query for data
-            about the submitted job
+            result (ApsResults): a result object that can be used to query for data about the
+            submitted job
         """
         results_processor = ApsRestServiceResultsProcessor(self._rest, project)
 
