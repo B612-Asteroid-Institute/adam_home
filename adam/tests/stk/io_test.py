@@ -1,4 +1,4 @@
-from datetime import datetime
+#from datetime import datetime
 
 import numpy
 from stk.io import ephemeris_file_data_to_dataframe
@@ -24,11 +24,12 @@ EphemerisTimePosVel
 END Ephemeris
 '''
 
+
 class StkIoTest(unittest.TestCase):
 
     def test_ephemeris_file_data_to_dataframe(self):
         ephemeris = ephemeris_file_data_to_dataframe(STK_EPHEM_TEXT.splitlines())
-        self.assertEqual((4,7), ephemeris.shape)
+        self.assertEqual((4, 7), ephemeris.shape)
         self.assertEquals(numpy.datetime64('2008-12-30T01:14:17.62'), ephemeris.values[0][0])
         self.assertAlmostEqual(9.361973576452e+7, ephemeris.values[0][1], 5)
         self.assertAlmostEqual(-198421940.32336992, ephemeris.values[0][2], 5)

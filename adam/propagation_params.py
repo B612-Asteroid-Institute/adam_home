@@ -68,7 +68,7 @@ class PropagationParams(object):
                             'executor', 'propagationType', 'monteCarloDraws',
                             'keplerianSigma', 'cartesianSigma', 'stopOnImpact',
                             'stopOnCloseApproach', 'stopOnImpactDistanceMeters',
-                            'closeApproachRadiusFromTargetMeters', 
+                            'closeApproachRadiusFromTargetMeters',
                             'singularMatrixThreshold'}
         extra_params = params.keys() - supported_params
         if len(extra_params) > 0:
