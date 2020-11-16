@@ -1,5 +1,3 @@
-#from datetime import datetime
-
 import numpy
 from stk.io import ephemeris_file_data_to_dataframe
 import unittest
