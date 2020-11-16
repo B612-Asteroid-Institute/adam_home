@@ -1,5 +1,4 @@
 import unittest
-
 import numpy
 
 from adam.stk.io import ephemeris_file_data_to_dataframe

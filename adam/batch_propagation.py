@@ -86,6 +86,7 @@ class BatchPropagations(AdamObjects):
                 'executor': propagation_params.get_executor(),
                 'monteCarloDraws': propagation_params.get_monte_carlo_draws(),
                 'propagationType': propagation_params.get_propagation_type(),
+                'singularMatrixThreshold': propagation_params.get_singular_matrix_threshold(),
             },
             'project': project_uuid,
         }
