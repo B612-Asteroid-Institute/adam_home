@@ -35,6 +35,7 @@ class AccessTokenRefresher(object):
         the current configuration profile. The configuration profile corresponds to the environments
         saved by adamctl.
         """
+
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
             # Attempt to execute the initial request.
@@ -43,18 +44,20 @@ class AccessTokenRefresher(object):
             if response_code != 401:
                 return response_code, response_body
 
-            # 401 responses that aren't due to an expired token should pass through. This means
-            # there's an issue with the user's account and they should reach out to B612 team for
-            # help.
-            if response_body.get('error') != 'expired-token':
-                return response_code, response_body
-
-            # Otherwise, received a 401 due to an expired token, so request a token refresh.
             cm = ConfigManager()
             default_env = cm.get_default_env()
             config = cm.get_config(environment=default_env)
 
-            # If access token expired, refresh the access token.
+            # A 401 response not caused by an expired token, and the access token is not None (i.e.
+            # at some point, the caller received an access token and saved it in their config)
+            # should just return the response. This means there's an issue with the user's account
+            # and they should reach out to B612 team for help.
+            if not AccessTokenRefresher.is_expired_access_token(response_body) and config.get(
+                    'access_token') is not None:
+                return response_code, response_body
+
+            # Otherwise, received a 401 due to an expired token or if we have an empty access token,
+            # so request a token refresh.
             refresh_token_url = f"{config.get('url')}/users/{config.get('user_id', '-')}/idToken"
             request_body = {
                 'refreshToken': config.get('refresh_token')
@@ -77,6 +80,26 @@ class AccessTokenRefresher(object):
             return func(*args, **kwargs)
 
         return wrapper
+
+    @staticmethod
+    def is_expired_access_token(response_body):
+        """Determine whether the response indicates an expired token.
+
+        The error format is https://github.com/cloudendpoints/endpoints-java/blob/aa4914e66592767bbb0590cb80da75acf2c55db2/endpoints-framework/src/main/java/com/google/api/server/spi/response/RestResponseResultWriter.java#L48-L60 # noqa: E501
+
+        Args:
+            response_body (dict): The response body json as a dict.
+        """
+        if 'error' not in response_body:
+            return False
+
+        error_data = response_body.get('error')
+        errors = error_data.get('errors')
+
+        if not errors:
+            return False
+
+        return errors[0].get('reason') == 'expired-token'
 
 
 class RestProxy(object):
