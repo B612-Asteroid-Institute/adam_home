@@ -137,7 +137,7 @@ class AdamObjects(object):
         return child_json_list
 
     def delete(self, uuid):
-        code = self._rest.delete(
+        code, _ = self._rest.delete(
             '/adam_object/single/' + self._type + '/' + uuid)
 
         if code != 204:

@@ -1,8 +1,12 @@
-from adam.rest_proxy import _RestProxyForTest
+import unittest
+from unittest import mock
+
 from adam.rest_proxy import AuthenticatingRestProxy
 from adam.rest_proxy import RetryingRestProxy
-import unittest
+from adam.rest_proxy import _RestProxyForTest
 
+
+# TODO: fix this so that we are testing with fake access tokens
 
 class RetryingRestProxyTest(unittest.TestCase):
     """Unit tests for retrying rest proxy.
@@ -30,7 +34,7 @@ class RetryingRestProxyTest(unittest.TestCase):
         self.assertDictEqual({'a': 1}, response)
 
         rest.expect_delete("/test?a=1&b=2", 204)
-        code = retrying_rest.delete("/test?a=1&b=2")
+        code, _ = retrying_rest.delete("/test?a=1&b=2")
         self.assertEqual(204, code)
 
     def test_retry_on_retryable_error(self):
@@ -58,7 +62,7 @@ class RetryingRestProxyTest(unittest.TestCase):
 
         rest.expect_delete("/test?a=1&b=2", 503)
         rest.expect_delete("/test?a=1&b=2", 204)
-        code = retrying_rest.delete("/test?a=1&b=2")
+        code, _ = retrying_rest.delete("/test?a=1&b=2")
         self.assertEqual(204, code)
 
     def test_no_retry_on_nonretryable_error(self):
@@ -83,7 +87,7 @@ class RetryingRestProxyTest(unittest.TestCase):
         self.assertDictEqual({'a': 1}, response)
 
         rest.expect_delete("/test?a=1&b=2", 500)
-        code = retrying_rest.delete("/test?a=1&b=2")
+        code, _ = retrying_rest.delete("/test?a=1&b=2")
         self.assertEqual(500, code)
 
     def test_eventually_stops_retrying(self):
@@ -116,7 +120,7 @@ class RetryingRestProxyTest(unittest.TestCase):
         rest.expect_delete("/test?a=1&b=2", 403)
         rest.expect_delete("/test?a=1&b=2", 502)
         rest.expect_delete("/test?a=1&b=2", 503)
-        code = retrying_rest.delete("/test?a=1&b=2")
+        code, _ = retrying_rest.delete("/test?a=1&b=2")
         self.assertEqual(503, code)
 
 
@@ -125,10 +129,25 @@ class AuthenticatingRestProxyTest(unittest.TestCase):
 
     """
 
+    @mock.patch('adam.rest_proxy.RestRequests')
+    def test_authc_use_credentials(self, mocked_rest):
+        mocked_rest.post = mock.MagicMock(return_value=(200, {}))
+        mocked_rest.get = mock.MagicMock(return_value=(200, {}))
+        mocked_rest.delete = mock.MagicMock(return_value=(200, {}))
+        auth_rest = AuthenticatingRestProxy(mocked_rest)
+
+        auth_rest.post("/create_something", {})
+        mocked_rest.post.assert_called_with('/create_something', {}, use_credentials=True)
+
+        auth_rest.get("/get_something")
+        mocked_rest.get.assert_called_with('/get_something', use_credentials=True)
+
+        auth_rest.delete("/delete_something")
+        mocked_rest.delete.assert_called_with('/delete_something', use_credentials=True)
+
     def test_post(self):
         rest = _RestProxyForTest()
-        token = 'my_token'
-        auth_rest = AuthenticatingRestProxy(rest, token)
+        auth_rest = AuthenticatingRestProxy(rest)
 
         expected_data = {}
 
@@ -136,59 +155,38 @@ class AuthenticatingRestProxyTest(unittest.TestCase):
             self.assertEqual(expected_data, data_dict)
             return True
 
-        # Token should be added to empty data in post.
-        expected_data = {'token': token}
+        expected_data = {}
         rest.expect_post("/test", check_input, 200, {})
         auth_rest.post("/test", {})
 
-        # Token should be added to non-empty data in post, preserving rest of data.
-        expected_data = {'a': 1, 'token': token, 'b': 2}
+        expected_data = {'a': 1, 'b': 2}
         rest.expect_post("/test", check_input, 200, {})
         auth_rest.post("/test", {'b': 2, 'a': 1})
 
     def test_get(self):
         rest = _RestProxyForTest()
-        token = 'my_token'
-        auth_rest = AuthenticatingRestProxy(rest, token)
+        auth_rest = AuthenticatingRestProxy(rest)
 
-        rest.expect_get("/test?token=my_token", 200, {})
+        rest.expect_get("/test", 200, {})
         auth_rest.get("/test")
 
-        rest.expect_get("/test?a=1&b=2&token=my_token", 200, {})
+        rest.expect_get("/test?a=1&b=2", 200, {})
         auth_rest.get("/test?a=1&b=2")
 
-        rest.expect_get("/test?a=1&b=2&token=my_token", 4123, {'c': 3})
+        rest.expect_get("/test?a=1&b=2", 4123, {'c': 3})
         code, response = auth_rest.get("/test?a=1&b=2")
         self.assertEqual(code, 4123)
         self.assertEqual(response, {'c': 3})
 
-    def test_get_unsafe_url_characters(self):
-        rest = _RestProxyForTest()
-        # All the unsafe and reserved characters
-        #pylint: disable=W1401 # NOQA
-        token = '; / ? : @ = &   < > # % { } | \\ ^ ~ [ ]'
-        auth_rest = AuthenticatingRestProxy(rest, token)
-
-        # handle urlencode modules with and without the bugfix for
-        # https://bugs.python.org/issue16285 (Python >= 3.7).
-        # see also: https://stackoverflow.com/questions/51334226/python-why-is-now-included-in-the-set-of-reserved-characters-in-urllib-pars # noqa: E501
-        import urllib
-        tilde = urllib.parse.quote('~')
-
-        rest.expect_get("/test?a=1&b=2&token=%3B+%2F+%3F+%3A+%40+%3D+%26+++%3C+%3E"
-                        "+%23+%25+%7B+%7D+%7C+%5C+%5E+{}+%5B+%5D".format(tilde), 200, {})
-        auth_rest.get("/test?a=1&b=2")
-
     def test_delete(self):
         # DELETE behaves exactly like GET, so only the basics are tested.
         rest = _RestProxyForTest()
-        token = 'my_token'
-        auth_rest = AuthenticatingRestProxy(rest, token)
+        auth_rest = AuthenticatingRestProxy(rest)
 
-        rest.expect_delete("/test?token=my_token", 200)
+        rest.expect_delete("/test", 200)
         auth_rest.delete("/test")
 
-        rest.expect_delete("/test?a=1&b=2&token=my_token", 200)
+        rest.expect_delete("/test?a=1&b=2", 200)
         auth_rest.delete("/test?a=1&b=2")
 
 

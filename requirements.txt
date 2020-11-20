@@ -1,11 +1,12 @@
 # pip development environment
-requests
-pandas
-pytest
-pytest-cov
+astroquery
 coveralls
 flake8
 jupyter
+matplotlib
+pandas
+pytest
+pytest-cov
 pyxdg
 pyyaml
-matplotlib
+requests

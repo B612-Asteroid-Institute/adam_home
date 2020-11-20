@@ -1,7 +1,10 @@
-import yaml
+"""ADAM configuration manager"""
+
 import os
 import os.path
+
 import xdg.BaseDirectory as xdgb
+import yaml
 
 # filename of the config file (w/o the full path)
 ADAM_CONFIG_FN = "config"
@@ -199,7 +202,7 @@ class ConfigManager(object):
 
         Parameters
         ----------
-        environment : str
+        name : str
             environment name (e.g., ``prod`` or ``dev``)
         cfg : dict
             environment data
@@ -207,6 +210,14 @@ class ConfigManager(object):
         if 'envs' not in self._config:
             self._config['envs'] = {}
         self._config['envs'][name] = cfg
+
+    def get_default_env(self):
+        return self._config.get('default_env', '<none defined>')
+
+    def set_default_env(self, env_name):
+        if env_name in self._config['envs'].keys():
+            self._config['default_env'] = env_name
+            self.to_file()
 
     def to_file(self, file_name=None):
         """Save configuration to ``file_name`` or the default location

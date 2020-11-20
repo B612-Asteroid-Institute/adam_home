@@ -2,6 +2,7 @@
     group.py
 """
 
+
 # from tabulate import tabulate
 
 
@@ -60,7 +61,7 @@ class Groups(object):
         return Group(response['uuid'], name, description)
 
     def delete_group(self, uuid):
-        code = self._rest.delete('/group/' + uuid)
+        code, _ = self._rest.delete('/group/' + uuid)
 
         if code != 204:
             raise RuntimeError("Server status code: %s" % (code))
@@ -73,8 +74,8 @@ class Groups(object):
             raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
 
     def remove_user_from_group(self, user, group):
-        code = self._rest.delete('/group/' + group + '/member?member_id=' +
-                                 user + '&member_type=USER')
+        code, _ = self._rest.delete('/group/' + group + '/member?member_id=' +
+                                    user + '&member_type=USER')
 
         if code != 204:
             raise RuntimeError("Server status code: %s" % (code))
@@ -87,8 +88,8 @@ class Groups(object):
             raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
 
     def remove_group_from_group(self, group1, group2):
-        code = self._rest.delete('/group/' + group2 + '/member?member_id=' +
-                                 group1 + '&member_type=GROUP')
+        code, _ = self._rest.delete('/group/' + group2 + '/member?member_id=' +
+                                    group1 + '&member_type=GROUP')
 
         if code != 204:
             raise RuntimeError("Server status code: %s" % (code))

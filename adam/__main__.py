@@ -1,7 +1,9 @@
 import sys
-import adam
 import urllib
+
 import yaml
+
+import adam
 
 DEFAULT_PROD_URL = 'https://pro-equinox-162418.appspot.com/_ah/api/adam/v1'
 
@@ -44,11 +46,11 @@ def config(args):
 
 
 def login(args):
+    """Retrieve ADAM credentials."""
+
     cm = adam.ConfigManager()
 
     def _do_login(name, url, no_browser):
-        rest = adam.RestRequests(url)
-        auth = adam.Auth(rest)
 
         # OAuth web flow page
         o = urllib.parse.urlparse(url)
@@ -65,13 +67,16 @@ def login(args):
             import webbrowser
             webbrowser.open(token_url)
 
-        # user's token
+        # user's credentials
         from getpass import getpass
-        token = getpass("Token: ")
+        refresh_token = getpass("Token: ")
 
-        if token and auth.authenticate(token):
-            cm.set_config(name, dict(url=url, token=token))
+        if refresh_token:
+            cm.set_config(name, dict(url=url, refresh_token=refresh_token))
             cm.to_file()
+
+        auth = adam.Auth(adam.AuthenticatingRestProxy(adam.RestRequests()))
+        if auth.authenticate():
             print('Welcome, ' + auth.get_user())
         else:
             print('Could not authenticate user.')
@@ -80,7 +85,7 @@ def login(args):
         # log into a user-specified service
         _do_login(args.name, args.url, args.no_browser)
     else:
-        # log into the defaut 'prod' environment
+        # log into the default 'prod' environment
         _do_login('prod', DEFAULT_PROD_URL, args.no_browser)
 
 

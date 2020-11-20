@@ -1,8 +1,9 @@
-import subprocess
-import tempfile
-import nbformat
 import os
 import os.path
+import subprocess
+import tempfile
+
+import nbformat
 import pytest
 
 

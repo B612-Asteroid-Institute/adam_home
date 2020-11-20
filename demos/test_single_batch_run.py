@@ -13,7 +13,7 @@ import os
 # ConfigManager loads the config set up via adamctl.
 # See the README at https://github.com/B612-Asteroid-Institute/adam_home/blob/master/README.md
 config = ConfigManager().get_config()
-auth_rest = AuthenticatingRestProxy(RestRequests(config['url']), config['token'])
+auth_rest = AuthenticatingRestProxy(RestRequests())
 
 # Example inputs
 

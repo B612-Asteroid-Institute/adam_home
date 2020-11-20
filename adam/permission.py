@@ -75,7 +75,7 @@ class Permissions(object):
             raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
 
     def revoke_user_permission(self, user_email, permission):
-        code = self._rest.delete(
+        code, _ = self._rest.delete(
             "/user_permission/%s?right=%s&target_type=%s&target_id=%s" % (
                 user_email,
                 permission.get_right(),
@@ -86,7 +86,7 @@ class Permissions(object):
             raise RuntimeError("Server status code: %s" % (code))
 
     def revoke_group_permission(self, group_uuid, permission):
-        code = self._rest.delete(
+        code, _ = self._rest.delete(
             "/group_permission/%s?right=%s&target_type=%s&target_id=%s" % (
                 group_uuid,
                 permission.get_right(),

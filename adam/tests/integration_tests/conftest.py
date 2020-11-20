@@ -1,6 +1,7 @@
+import pytest
+
 from adam import ConfigManager
 from adam import Service
-import pytest
 
 
 @pytest.fixture(scope="class")
