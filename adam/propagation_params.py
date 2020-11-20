@@ -54,6 +54,8 @@ class PropagationParams(object):
                 center for an impact.
             closeApproachRadiusFromTargetMeters (long): The distance from the target's
                 center, within which a close approach should be recorded.
+            singularMatrixThreshold (float):
+                tolerance for non positive definite covariance matrix
 
         Raises:
             KeyError if the given object does not include 'start_time' and 'end_time',
@@ -66,7 +68,8 @@ class PropagationParams(object):
                             'executor', 'propagationType', 'monteCarloDraws',
                             'keplerianSigma', 'cartesianSigma', 'stopOnImpact',
                             'stopOnCloseApproach', 'stopOnImpactDistanceMeters',
-                            'closeApproachRadiusFromTargetMeters'}
+                            'closeApproachRadiusFromTargetMeters',
+                            'singularMatrixThreshold'}
         extra_params = params.keys() - supported_params
         if len(extra_params) > 0:
             raise KeyError("Unexpected parameters provided: %s" %
@@ -91,6 +94,7 @@ class PropagationParams(object):
         self._stop_on_close_approach = params.get('stopOnCloseApproach')
         self._stop_on_impact_distance_meters = params.get('stopOnImpactDistanceMeters')
         self._stop_on_close_approach_after_epoch = params.get('stopOnCloseApproachAfterEpoch')
+        self._singular_matrix_threshold = params.get('singularMatrixThreshold')
         if self._stop_on_close_approach_after_epoch is None:
             self._stop_on_close_approach_after_epoch = self._end_time
         self._close_approach_radius_from_target_meters = \
@@ -149,3 +153,6 @@ class PropagationParams(object):
 
     def get_close_approach_radius_from_target_meters(self):
         return self._close_approach_radius_from_target_meters
+
+    def get_singular_matrix_threshold(self):
+        return self._singular_matrix_threshold
