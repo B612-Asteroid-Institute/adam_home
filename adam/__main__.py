@@ -54,12 +54,12 @@ def login(args):
 
         # OAuth web flow page
         o = urllib.parse.urlparse(url)
-        token_url = "%s://%s/%s" % (o.scheme, o.netloc, 'token.html')
+        token_url = f"{o.scheme}://{o.netloc}/token.html"
 
-        print("Setting up a service named '{}' with an endpoint at '{}'.".format(name, url))
-        print("Please go to {} in your web browser, log in using a GMail or GSuite account, "
-              "and paste below the token which will be shown to you at the end.".format(token_url)
-              )
+        print(f"Setting up a configuration named '{name}' for the server: '{url}'.")
+        print(f"Please go to {token_url} in your web browser, log in using a GMail or "
+              f"GSuite account, and paste your token in this terminal "
+              f"(won't be printed to the screen).")
         if not no_browser:
             print("We'll try to automatically open a web browser for you (press ENTER to continue)")
             sys.stdin.readline()
@@ -72,12 +72,21 @@ def login(args):
         refresh_token = getpass("Token: ")
 
         if refresh_token:
-            cm.set_config(name, dict(url=url, refresh_token=refresh_token))
+            curr_cfg = cm.get_config(name)
+            if not curr_cfg:
+                curr_cfg = dict(url=url)
+            curr_cfg['refresh_token'] = refresh_token
+            cm.set_config(name, curr_cfg)
+            print(f'Setting default configuration to {name}')
+            cm.set_default_env(name)
             cm.to_file()
+            print(f'"{name}" configuration updated with new token')
 
         auth = adam.Auth(adam.AuthenticatingRestProxy(adam.RestRequests()))
+        print('Authenticating with ADAM server...')
         if auth.authenticate():
-            print('Welcome, ' + auth.get_user())
+            print(f'{auth.get_user()} authenticated successfully '
+                  f'for the "{name}" ADAM configuration')
         else:
             print('Could not authenticate user.')
 

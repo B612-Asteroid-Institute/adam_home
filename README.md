@@ -14,10 +14,10 @@ Use the `adamctl` tool to configure your ADAM token and workspace before you run
 There are 2 required configuration IDs you'll need:
 
   * Your login token, which you can get using the commands below (Google account required for login)
-  * A workspace ID (ask Carise or John for this). The workspace is like a folder for the jobs you submit to ADAM.
+  * A workspace (aka "project"). The workspace is like a folder for the jobs you submit to ADAM.
 
 ```bash
-# grab the latest release of adam sdk
+# get latest release of ADAM sdk
 conda install -c asteroid-institute adam
 
 # log in with Google account, defaults to prod server
@@ -35,11 +35,12 @@ adamctl config
 
 ## Other configurations
 
-Sometimes you might need to use an ADAM development server (e.g. for experimental APIs or developing ADAM client/server). Create a separate ADAM configuration for that workspace.
+Sometimes you might need to use an ADAM development server (e.g. for experimental APIs or developing ADAM client/server). 
+Create a separate ADAM configuration for that workspace.
 
 ```
-# Set up an environment e.g. `experimental_dev`.
-# The URL points to the ADAM server you specify, plus the path to the API (`/_ah/api/adam/v1`).
+# Set up a configuration e.g. "experimental_dev"
+# The URL points to the ADAM server you specify, plus the path to the API.
 adamctl login experimental_dev https://example-adam-server.com/_ah/api/adam/v1
 
 # Set your workspace ID. Whoever owns the development server should be
@@ -49,7 +50,7 @@ adamctl config envs.experimental_dev.workspace "YOUR_WORKSPACE_ID"
 
 ## Installing ADAM SDK from source
 
-Installing `adamctl` from source, instead of Anaconda. Do this if you're developing the Python SDK.
+Installing `adamctl` from source, instead of Anaconda. Do this if you're developing the ADAM SDK.
 
 ```bash
 # grab the source code
@@ -64,7 +65,7 @@ conda activate adam-dev
 python setup.py develop
 ```
 
-## ADAM demos
+## Demos
 
 Once you have the package installed, you should be able to run the demonstration
 notebooks found in the [demos/](demos/) directory. The [single_run_demo](demos/single_run_demo.ipynb)
@@ -73,14 +74,20 @@ is a good place to start.
 Before invoking code from the ADAM SDK, you'll want to include the following code at the top of your notebook (after the imports):
 
 ```python
-# Use the default configuration, which is the prod server
-config = ConfigManager().get_config()
+# The default configuration is prod
+cm = ConfigManager()
 
 # If you need to use a different server e.g. dev:
-# config = ConfigManager().get_config('dev')
+# cm.set_default_env('dev')
+# You can also set your default environment using the adamctl command-line tool, e.g.
+# adamctl config default_env dev
 
 # Configure the REST API server endpoint and user token
-auth_rest = AuthenticatingRestProxy(RestRequests(config['url']), config['token'])
+auth_rest = AuthenticatingRestProxy(RestRequests())
+
+# If you need to use properties in the config, e.g. your workspace ID:
+config = cm.get_config()
+print(config[workspace])
 ```
 
 See the [single_run_demo](demos/single_run_demo.ipynb) notebook for an example.
