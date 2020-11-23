@@ -41,6 +41,7 @@ Create a separate ADAM configuration for that workspace.
 ```
 # Set up a configuration e.g. "experimental_dev"
 # The URL points to the ADAM server you specify, plus the path to the API.
+# This will also set the default_env property of your configuration to "experimental_dev".
 adamctl login experimental_dev https://example-adam-server.com/_ah/api/adam/v1
 
 # Set your workspace ID. Whoever owns the development server should be
@@ -77,7 +78,7 @@ Before invoking code from the ADAM SDK, you'll want to include the following cod
 # The default configuration is prod
 cm = ConfigManager()
 
-# If you need to use a different server e.g. dev:
+# If you need to use a different server than the default e.g. dev:
 # cm.set_default_env('dev')
 # You can also set your default environment using the adamctl command-line tool, e.g.
 # adamctl config default_env dev
