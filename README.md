@@ -35,14 +35,16 @@ adamctl config
 
 ## Other configurations
 
-Sometimes you might need to use the ADAM `dev` server (e.g. for experimental APIs). Create a separate ADAM configuration for that workspace.
+Sometimes you might need to use an ADAM development server (e.g. for experimental APIs or developing ADAM client/server). Create a separate ADAM configuration for that workspace.
 
 ```
-# log into the 'dev' environment
-adamctl login dev https://adam-dev-193118.appspot.com/_ah/api/adam/v1
+# Set up an environment e.g. `experimental_dev`.
+# The URL points to the ADAM server you specify, plus the path to the API (`/_ah/api/adam/v1`).
+adamctl login experimental_dev https://example-adam-server.com/_ah/api/adam/v1
 
-# set your workspace ID
-adamctl config envs.dev.workspace "YOUR_WORKSPACE_ID"
+# Set your workspace ID. Whoever owns the development server should be
+# able to create a workspace ID for you.
+adamctl config envs.experimental_dev.workspace "YOUR_WORKSPACE_ID"
 ```
 
 ## Installing ADAM SDK from source
@@ -88,7 +90,7 @@ See the [single_run_demo](demos/single_run_demo.ipynb) notebook for an example.
 
 https://b612-asteroid-institute.github.io/adam_home/index.html
 
-## Developing ADAM
+## Developing ADAM SDK
 
 The ADAM SDK is a pure-python package that follows the [standard
 setuptools directory](https://python-packaging.readthedocs.io/en/latest/minimal.html) layout and installation mechanisms.

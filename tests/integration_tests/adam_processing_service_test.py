@@ -52,7 +52,8 @@ class TestAdamProcessingService:
             'step_size': 86400,
             'stopOnCloseApproach': False,
             'stopOnImpactDistanceMeters': 500000,
-            'closeApproachRadiusFromTargetMeters': 7000000000
+            'closeApproachRadiusFromTargetMeters': 7000000000,
+            'singularMatrixThreashold': 1e-15
         })
 
         opm_params = OpmParams({

@@ -38,8 +38,9 @@ class AccessTokenRefresher(object):
 
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
-            # Attempt to execute the method. If it succeeds, move on.
+            # Attempt to execute the initial request.
             response_code, response_body = func(*args, **kwargs)
+            # Responses that don't result in 401 (unauthorized) should pass through.
             if response_code != 401:
                 return response_code, response_body
 
@@ -47,16 +48,27 @@ class AccessTokenRefresher(object):
             default_env = cm.get_default_env()
             config = cm.get_config(environment=default_env)
 
-            # If access token expired, refresh the access token.
+            # A 401 response not caused by an expired token, and the access token is not None (i.e.
+            # at some point, the caller received an access token and saved it in their config)
+            # should just return the response. This means there's an issue with the user's account
+            # and they should reach out to B612 team for help.
+            if not AccessTokenRefresher.is_expired_access_token(response_body) and config.get(
+                    'access_token') is not None:
+                return response_code, response_body
+
+            # Otherwise, received a 401 due to an expired token or if we have an empty access token,
+            # so request a token refresh.
             refresh_token_url = f"{config.get('url')}/users/{config.get('user_id', '-')}/idToken"
             request_body = {
                 'refreshToken': config.get('refresh_token')
             }
             response = requests.post(refresh_token_url, json=request_body)
+            response.raise_for_status()
             refresh_response_body = response.json()
 
-            # Update the access token in the ADAM config, then write out the file.
+            # Update the access and refresh token in the ADAM config, then write out the file.
             config['access_token'] = yaml.safe_load(refresh_response_body.get('idToken'))
+            config['refresh_token'] = yaml.safe_load(refresh_response_body.get('refreshToken'))
             cm.set_config(default_env, config)
             cm.to_file()
 
@@ -68,6 +80,26 @@ class AccessTokenRefresher(object):
             return func(*args, **kwargs)
 
         return wrapper
+
+    @staticmethod
+    def is_expired_access_token(response_body):
+        """Determine whether the response indicates an expired token.
+
+        The error format is https://github.com/cloudendpoints/endpoints-java/blob/aa4914e66592767bbb0590cb80da75acf2c55db2/endpoints-framework/src/main/java/com/google/api/server/spi/response/RestResponseResultWriter.java#L48-L60 # noqa: E501
+
+        Args:
+            response_body (dict): The response body json as a dict.
+        """
+        if 'error' not in response_body:
+            return False
+
+        error_data = response_body.get('error')
+        errors = error_data.get('errors')
+
+        if not errors:
+            return False
+
+        return errors[0].get('reason') == 'expired-token'
 
 
 class RestProxy(object):
