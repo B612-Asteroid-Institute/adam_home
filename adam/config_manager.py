@@ -212,7 +212,7 @@ class ConfigManager(object):
         self._config['envs'][name] = cfg
 
     def get_default_env(self):
-        return self._config.get('default_env', '<none defined>')
+        return self._config.get('default_env', None)
 
     def set_default_env(self, env_name):
         if env_name in self._config['envs'].keys():
