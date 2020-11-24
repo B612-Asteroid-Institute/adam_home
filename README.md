@@ -102,7 +102,7 @@ https://b612-asteroid-institute.github.io/adam_home/index.html
 The ADAM SDK is a pure-python package that follows the [standard
 setuptools directory](https://python-packaging.readthedocs.io/en/latest/minimal.html) layout and installation mechanisms.
 The source code is in the [adam/](adam/) subdirectory, the tests are in
-[adam/tests/](adam/tests/). A number of demo notebooks are provided in [demos/](demos/). Conda
+[tests/](tests/). A number of demo notebooks are provided in [demos/](demos/). Conda
 package recipe files are in [recipe/](recipe/). [`setup.py`](setup.py) in the root of the
 repository handles the install, as well as the creation of the [`setupctl`
 script via an
@@ -114,7 +114,7 @@ A typical development loop will consist of:
   * Running `python setup.py develop`, to add the source code onto your
     `$PYTHONPATH`. This is needed only once.
   * Making some changes to the package in `adam/`
-  * Testing with `pytest adam --cov=adam --ignore=adam/tests/integration_tests`
+  * Testing with `pytest ./tests --cov=adam --ignore=tests/integration_tests`
   * Commit, push, PR.
 
 ## Updating documentation
