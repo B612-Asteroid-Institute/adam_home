@@ -5,13 +5,14 @@
 import numpy as np
 import pandas as pd
 
+
 class AstrogatorOutput:
-    """Fetches output from an STK/Astrogator MCS
+    """Fetches output from an STK/Astrogator MCS.
     
     This class is used to create a list of desired outputs from an 
-    STK Astroagtor Mission Control Sequence (MCS).
-    This is specifically designed to support mutiple runs, such as
-    in a parametric study. 
+    STK Astrogator Mission Control Sequence (MCS).
+    This is specifically designed to support multiple runs, such as
+    in a parametric study.
     
     This class is also used to retrieve the list of outputs.
     When fetching the data (using update(), the values are 
@@ -41,27 +42,27 @@ class AstrogatorOutput:
           rownames, then the update, and then get the dataout. 
           Need to decide what to do if these are done out of
           order, or iterated between.
-    
+
     """
-    
+
     def __init__(self):
         """Initialize attributes
         
         """
         # events is an array of the desired outputs
-        self.events = [] 
-        
+        self.events = []
+
         # results contain the data after update is called
         # NOTE: The rows internally are the runs, and the columns
         #       are the data values
-        self.results = None 
-        
+        self.results = None
+
         # rowNames are the labels for each row
         self._rowNames = None
-        
+
         # _df is the pandas dataframe (semi-private)
         self._df = None
-     
+
     def add(self, eventName, quantity, unit):
         """Add a new desired output 
         
@@ -87,8 +88,8 @@ class AstrogatorOutput:
             * Decide what to do if add is called after update()
 
         """
-        self.events.append( [eventName, quantity, unit] )
-    
+        self.events.append([eventName, quantity, unit])
+
     def update(self, gatorDefn, index):
         """Fetch & store the desired data from STK/Astrogator
         
@@ -108,27 +109,31 @@ class AstrogatorOutput:
               the new run
             
         """
-        tempArray = np.zeros([1,len(self.events)])
-        for i,eventRow in enumerate(self.events):
+        tempArray = np.zeros([1, len(self.events)])
+        for i, eventRow in enumerate(self.events):
             seg = gatorDefn.GetSegmentByName(eventRow[0])
             if seg.GetResultValue(eventRow[1]).Class.value == 'DATE':
-                #The following generates an error becasue the np.array is of type float.
-                if eventRow[2] in ['EpDay','EpMin','EpSec','EpYr','JDate','JED','ModJDate','EarthEpTU','GPSZ','JDateOff','SunEpTU']:
-                    tempArray[0,i] = float(seg.GetResultValue(eventRow[1]).Format(eventRow[2]).value)
+                # The following generates an error becasue the np.array is of type float.
+                if eventRow[2] in ['EpDay', 'EpMin', 'EpSec', 'EpYr', 'JDate', 'JED', 'ModJDate',
+                                   'EarthEpTU', 'GPSZ', 'JDateOff', 'SunEpTU']:
+                    tempArray[0, i] = float(
+                        seg.GetResultValue(eventRow[1]).Format(eventRow[2]).value)
                 else:
-                    print ('Format "{}" not supported (must be representable as a float). Substituting with "JDate".'.format(eventRow[2]))
-                    tempArray[0,i] = float(seg.GetResultValue(eventRow[1]).Format('JDate').value)
+                    print(
+                        'Format "{}" not supported (must be representable as a float). Substituting with "JDate".'.format(
+                            eventRow[2]))
+                    tempArray[0, i] = float(seg.GetResultValue(eventRow[1]).Format('JDate').value)
             else:
-                 tempArray[0,i] = seg.GetResultValue(eventRow[1]).Getin(eventRow[2]).value
-        #print(tempArray.T)
-        print('1st Item: {:25}  Shape: {}'.format(tempArray[0,0],tempArray.T.shape))
+                tempArray[0, i] = seg.GetResultValue(eventRow[1]).Getin(eventRow[2]).value
+        # print(tempArray.T)
+        print('1st Item: {:25}  Shape: {}'.format(tempArray[0, 0], tempArray.T.shape))
         if self.results is None:
             self.results = tempArray.T
         else:
             self.results = np.concatenate(
-                          (self.results,tempArray.T),axis=1)
-            
-    def saveCSV(self,path):
+                (self.results, tempArray.T), axis=1)
+
+    def saveCSV(self, path):
         """Save the output values to a csv file
         
         This uses the pandas dataframe funcationality to save the data.
@@ -152,9 +157,9 @@ class AstrogatorOutput:
             
         """
         self.df.transpose().to_csv(path)
-        
+
     @classmethod
-    def loadCSV(cls,path):
+    def loadCSV(cls, path):
         """ Load the data from a csv file
         
         This method loads data into the object from a csv file.
@@ -173,19 +178,20 @@ class AstrogatorOutput:
         
         """
         c = cls()
-        c._df = pd.read_csv(path,index_col=0)
+        c._df = pd.read_csv(path, index_col=0)
         c.results = c._df.as_matrix()
         c._rowNames = c._df.index.values.tolist()
-                
+
         # Split the event name into its three components, which were 
         # used to add the event in the first place. The three
         # components that make up the event name are:
         #  1) MCS Segment Name
         #  2) Desired CalcObject quantity
         #  3) Units 
-        c.events = list(c.df.index.map(lambda x: x.replace(')','')).map(lambda x: x.replace('(','')).str.split(" ").values)
+        c.events = list(c.df.index.map(lambda x: x.replace(')', '')).map(
+            lambda x: x.replace('(', '')).str.split(" ").values)
         return c
-            
+
     @property
     def rowNames(self):
         """Return the names of the row as a list
@@ -211,7 +217,7 @@ class AstrogatorOutput:
                 # Create the row names on the fly
                 self._rowNames.append('{} {} ({})'.format(row[0], row[1], row[2]))
         return self._rowNames
-        
+
     @property
     def df(self):
         """Return a pandas dataframe of the data
@@ -228,5 +234,5 @@ class AstrogatorOutput:
             Panda data frame
         """
         if self._df is None:
-            self._df = pd.DataFrame(self.results.transpose(),columns=self.rowNames)
+            self._df = pd.DataFrame(self.results.transpose(), columns=self.rowNames)
         return self._df
