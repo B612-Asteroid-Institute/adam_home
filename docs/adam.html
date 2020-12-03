@@ -1128,6 +1128,13 @@ or to <code class="docutils literal notranslate"><span class="pre">file_name</sp
 <p>Error when ADAM credentials (JSON) could not be parsed</p>
 </dd></dl>
 
+<dl class="py exception">
+<dt id="adam.errors.InvalidCredentialsError">
+<em class="property">exception </em><code class="sig-prename descclassname">adam.errors.</code><code class="sig-name descname">InvalidCredentialsError</code><a class="headerlink" href="#adam.errors.InvalidCredentialsError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Error when the ADAM server is unable to validate the user’s credentials</p>
+</dd></dl>
+
 </div>
 <div class="section" id="module-adam.group">
 <span id="adam-group-module"></span><h2>adam.group module<a class="headerlink" href="#module-adam.group" title="Permalink to this headline">¶</a></h2>
@@ -1525,6 +1532,11 @@ or to <code class="docutils literal notranslate"><span class="pre">file_name</sp
 <dd></dd></dl>
 
 <dl class="py method">
+<dt id="adam.propagation_params.PropagationParams.get_singular_matrix_threshold">
+<code class="sig-name descname">get_singular_matrix_threshold</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.propagation_params.PropagationParams.get_singular_matrix_threshold" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt id="adam.propagation_params.PropagationParams.get_start_time">
 <code class="sig-name descname">get_start_time</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.propagation_params.PropagationParams.get_start_time" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -1656,6 +1668,18 @@ asteroids).</p>
 <em class="property">class </em><code class="sig-prename descclassname">adam.rest_proxy.</code><code class="sig-name descname">AccessTokenRefresher</code><a class="headerlink" href="#adam.rest_proxy.AccessTokenRefresher" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Performs token refresh if the user’s access token has expired.</p>
+<dl class="py method">
+<dt id="adam.rest_proxy.AccessTokenRefresher.is_expired_access_token">
+<em class="property">static </em><code class="sig-name descname">is_expired_access_token</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">response_body</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.rest_proxy.AccessTokenRefresher.is_expired_access_token" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine whether the response indicates an expired token.</p>
+<p>The error format is <a class="reference external" href="https://github.com/cloudendpoints/endpoints-java/blob/aa4914e66592767bbb0590cb80da75acf2c55db2/endpoints-framework/src/main/java/com/google/api/server/spi/response/RestResponseResultWriter.java#L48-L60">https://github.com/cloudendpoints/endpoints-java/blob/aa4914e66592767bbb0590cb80da75acf2c55db2/endpoints-framework/src/main/java/com/google/api/server/spi/response/RestResponseResultWriter.java#L48-L60</a> # noqa: E501</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>response_body</strong> (<em>dict</em>) – The response body json as a dict.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt id="adam.rest_proxy.AccessTokenRefresher.refresh_access_token">
 <em class="property">static </em><code class="sig-name descname">refresh_access_token</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">func</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.rest_proxy.AccessTokenRefresher.refresh_access_token" title="Permalink to this definition">¶</a></dt>
