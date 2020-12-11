@@ -47,7 +47,7 @@ class ApsResults:
             str: the job status.
         """
 
-        sleep_time_sec = 1.0
+        sleep_time_sec = 10.0
         t0 = time.perf_counter()
         status = self.check_status()
         last_status = ''
