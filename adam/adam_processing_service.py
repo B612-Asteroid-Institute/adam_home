@@ -300,7 +300,7 @@ class AdamProcessingService:
             'closeApproachRadiusFromTargetMeters':
                 propagation_params.get_close_approach_radius_from_target_meters(),
             'singularMatrixThreshold':
-                propagation_params.get_singular_matrix_threshold(),
+                propagation_params.get_singular_matrix_threshold()
         }
 
         if propagation_params.get_cartesian_sigma() is not None:
