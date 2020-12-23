@@ -301,7 +301,6 @@ class AdamProcessingService:
                 propagation_params.get_close_approach_radius_from_target_meters(),
             'singularMatrixThreshold':
                 propagation_params.get_singular_matrix_threshold(),
-            'runType' : propagation_params.get_run_type(),
         }
 
         if propagation_params.get_cartesian_sigma() is not None:
