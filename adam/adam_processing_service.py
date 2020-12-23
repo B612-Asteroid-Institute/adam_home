@@ -95,6 +95,10 @@ class BatchPropagationResults(ApsResults):
         ApsResults.__init__(self, results_processor, job_uuid)
         self._detailedOutputs = None
         self._summary = None
+        self.job_uuid = job_uuid
+
+    def get_job_uuid(self):
+        return self.job_uuid
 
     def get_summary(self, force_update=False):
         """Get the propagation results summary.
@@ -296,7 +300,8 @@ class AdamProcessingService:
             'closeApproachRadiusFromTargetMeters':
                 propagation_params.get_close_approach_radius_from_target_meters(),
             'singularMatrixThreshold':
-                propagation_params.get_singular_matrix_threshold()
+                propagation_params.get_singular_matrix_threshold(),
+            'runType' : propagation_params.get_run_type(),
         }
 
         if propagation_params.get_cartesian_sigma() is not None:
