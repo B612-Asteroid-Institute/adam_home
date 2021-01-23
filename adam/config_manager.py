@@ -84,7 +84,12 @@ def _store_raw_config(data, config_file=None):
     fd = os.open(config_file_tmp, os.O_CREAT | os.O_WRONLY, mode=0o600)
     with open(fd, "w") as fp:
         yaml.dump(data, fp, indent=2)
-    os.rename(config_file_tmp, config_file)
+
+    try:
+        os.rename(config_file_tmp, config_file)
+    except WindowsError:
+        os.remove(config_file)
+        os.rename(config_file_tmp, config_file)
 
     return config_file
 

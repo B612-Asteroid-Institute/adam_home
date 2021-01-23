@@ -108,6 +108,7 @@ class OpmParams(object):
                     arg_of_pericenter_deg (float): Argument of pericenter (deg)
                     true_anomaly_deg (float): True anomaly (deg)
                     gm (float): Gravitational constant (km^3/s^2)
+            keplerian_covariance (list): lower triangular covariance matrix (21 elements)
 
             originator (str): responsible entity for run (default: 'ADAM_User')
             object_name (str): name of object (default: 'dummy')
