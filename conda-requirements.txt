@@ -1,7 +1,6 @@
 # conda development environment
 astroquery
 conda-build
-coveralls
 flake8
 jupyter
 matplotlib

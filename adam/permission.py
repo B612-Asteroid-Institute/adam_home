@@ -51,6 +51,11 @@ class Permissions(object):
     """
 
     def __init__(self, rest):
+        """Initialize Permissions module.
+
+        Args:
+            rest (RestProxy): a RestProxy that makes calls to the ADAM API.
+        """
         self._rest = rest
 
     def __repr__(self):

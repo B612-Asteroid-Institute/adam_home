@@ -24,11 +24,10 @@ class PropagationParams(object):
 
     def __init__(self, params):
         """
-
         Args:
             params (dict): Propagation parameters
 
-        Parameters consist of:
+        Parameters consist of::
 
             --- start_time and end_time are required! ---
             start_time (str): start time of the run
