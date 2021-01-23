@@ -100,7 +100,7 @@ class PropagationParams(object):
             params.get('closeApproachRadiusFromTargetMeters')
 
     def __repr__(self):
-        return "Batch params [%s, %s, %s, %s, %s, %s, %s]" % (
+        return "PropagationParams [%s, %s, %s, %s, %s, %s, %s]" % (
             self._start_time, self._end_time, self._step_size,
             self._propagator_uuid, self._project_uuid, self._description,
             self._executor)

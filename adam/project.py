@@ -2,6 +2,8 @@
     project.py
 """
 
+from typing import List
+
 
 class Project(object):
     """Project class.
@@ -66,7 +68,7 @@ class Projects(object):
 
         return response['items']
 
-    def get_sub_projects(self, parent) -> [Project]:
+    def get_sub_projects(self, parent) -> List[Project]:
         """Get the projects under specified parent project.
 
         For now, this just filters the returned values by parent project. We may eventually
@@ -81,7 +83,7 @@ class Projects(object):
         """
         return [p for p in self.get_projects() if p.get_parent() == parent]
 
-    def get_projects(self):
+    def get_projects(self) -> List[Project]:
         """Gets projects that the current user has access to read.
 
         Returns:

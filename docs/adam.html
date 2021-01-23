@@ -1699,7 +1699,7 @@ initial_maneuver (list): An array with 3 elements representing initial dx, dy, d
 
 <dl class="py method">
 <dt id="adam.project.Projects.get_projects">
-<code class="sig-name descname">get_projects</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.project.Projects.get_projects" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_projects</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span><a class="reference internal" href="#adam.project.Project" title="adam.project.Project">adam.project.Project</a><span class="p">]</span><a class="headerlink" href="#adam.project.Projects.get_projects" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets projects that the current user has access to read.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -1716,8 +1716,23 @@ initial_maneuver (list): An array with 3 elements representing initial dx, dy, d
 
 <dl class="py method">
 <dt id="adam.project.Projects.get_sub_projects">
-<code class="sig-name descname">get_sub_projects</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.project.Projects.get_sub_projects" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="sig-name descname">get_sub_projects</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span></em><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span><a class="reference internal" href="#adam.project.Project" title="adam.project.Project">adam.project.Project</a><span class="p">]</span><a class="headerlink" href="#adam.project.Projects.get_sub_projects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the projects under specified parent project.</p>
+<p>For now, this just filters the returned values by parent project. We may eventually
+choose to implement this server-side, in which case we will call into whatever API
+that exposes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>parent</strong> (<em>str</em>) – the project ID for which to get its sub-projects.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list of Projects.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt id="adam.project.Projects.new_project">
@@ -1980,17 +1995,17 @@ Value for asteroidsString should be concatenated list of asteroid names.</p>
 
 <dl class="py method">
 <dt id="adam.propagator_config.PropagatorConfigs.get_config">
-<code class="sig-name descname">get_config</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">uuid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.propagator_config.PropagatorConfigs.get_config" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_config</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">uuid</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#adam.propagator_config.PropagatorConfig" title="adam.propagator_config.PropagatorConfig">adam.propagator_config.PropagatorConfig</a><a class="headerlink" href="#adam.propagator_config.PropagatorConfigs.get_config" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt id="adam.propagator_config.PropagatorConfigs.get_configs">
-<code class="sig-name descname">get_configs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.propagator_config.PropagatorConfigs.get_configs" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_configs</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span><a class="reference internal" href="#adam.propagator_config.PropagatorConfig" title="adam.propagator_config.PropagatorConfig">adam.propagator_config.PropagatorConfig</a><span class="p">]</span><a class="headerlink" href="#adam.propagator_config.PropagatorConfigs.get_configs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt id="adam.propagator_config.PropagatorConfigs.new_config">
-<code class="sig-name descname">new_config</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">config_json</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.propagator_config.PropagatorConfigs.new_config" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">new_config</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">config_json</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#adam.propagator_config.PropagatorConfig" title="adam.propagator_config.PropagatorConfig">adam.propagator_config.PropagatorConfig</a><a class="headerlink" href="#adam.propagator_config.PropagatorConfigs.new_config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method to create a config directly from a JSON object rather
 than specifying every parameter. Useful if you’d like to slighly modify
 an existing config (e.g. ignore Jupiter’s gravity), or if you are fine
@@ -2134,7 +2149,9 @@ resource to a real or proxy server</p>
 <dl class="py method">
 <dt id="adam.rest_proxy.BearerAuthc.__init__">
 <code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">token</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.rest_proxy.BearerAuthc.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+<dd><p>Initialize.
+:param token: the bearer token
+:type token: str</p>
 </dd></dl>
 
 </dd></dl>
@@ -2349,7 +2366,7 @@ resource to a real or proxy server</p>
 
 <dl class="py method">
 <dt id="adam.rest_proxy.RestRequests.post">
-<code class="sig-name descname">post</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em>, <em class="sig-param"><span class="n">data_dict</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.rest_proxy.RestRequests.post" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">post</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em>, <em class="sig-param"><span class="n">data_dict</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>int<span class="p">, </span>str<span class="p">]</span><a class="headerlink" href="#adam.rest_proxy.RestRequests.post" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send POST request to the server</p>
 <p>This function is used to POST a resource to the server</p>
 <dl class="field-list simple">
