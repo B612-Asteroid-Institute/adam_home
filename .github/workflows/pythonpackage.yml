@@ -32,7 +32,6 @@ jobs:
       env:
         CI_PROD_TOKEN: ${{ secrets.CI_PROD_TOKEN }}
         CI_DEV_TOKEN: ${{ secrets.CI_DEV_TOKEN }}
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       run: |
         pip install pytest
         cd demos
@@ -40,4 +39,7 @@ jobs:
         ADAM_CONFIG="$PWD/../tests/test-config.yaml" pytest ../tests \
           --cov=adam \
           --ignore=../tests/integration_tests
-        bash <(curl -s https://codecov.io/bash)
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v1
+      with:
+        fail_ci_if_error: true
