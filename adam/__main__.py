@@ -72,8 +72,12 @@ def login(args):
         refresh_token = getpass("Token: ")
 
         if refresh_token:
-            curr_cfg = cm.get_config(name)
-            if not curr_cfg:
+            curr_cfg = None
+            try:
+                curr_cfg = cm.get_config(name)
+            except KeyError:
+                print(f'Environment {name} does not exist, creating it')
+            if curr_cfg is None:
                 curr_cfg = dict(url=url)
             curr_cfg['refresh_token'] = refresh_token
             cm.set_config(name, curr_cfg)
