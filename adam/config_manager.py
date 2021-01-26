@@ -26,6 +26,8 @@ def _load_raw_config(config_file=None):
 
     Returns
     -------
+    str
+        The filename of the config
     dict
         De-serialized configuration in the form of nested dictionaries.
 
@@ -44,7 +46,7 @@ def _load_raw_config(config_file=None):
                 config_file = def_config_file
 
         if config_file is None:
-            return "", {}
+            return "", {'envs': {}}
 
     # Load the config file (if we have it)
     with open(config_file) as fp:
