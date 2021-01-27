@@ -5,9 +5,10 @@ on: [push]
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
+        os: [ubuntu-18.04, ubuntu-latest, macos-10.15, windows-2019]
         python-version: [3.6, 3.7, 3.8]
 
     steps:
@@ -32,13 +33,12 @@ jobs:
       env:
         CI_PROD_TOKEN: ${{ secrets.CI_PROD_TOKEN }}
         CI_DEV_TOKEN: ${{ secrets.CI_DEV_TOKEN }}
+      shell: bash
       run: |
         pip install pytest
         cd demos
         ../tests/make-config.sh
-        ADAM_CONFIG="$PWD/../tests/test-config.yaml" pytest ../tests \
-          --cov=adam \
-          --ignore=../tests/integration_tests
+        ADAM_CONFIG="$(pwd)/../tests/test-config.yaml" pytest ../tests --cov=adam --ignore=../tests/integration_tests
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
       with:
