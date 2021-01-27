@@ -1,12 +1,16 @@
-from adam import Service
-from adam import ConfigManager
-from adam import Permission
-from adam import PropagationParams
-from adam import OpmParams
-
 import unittest
 
+import pytest
 
+from adam import ConfigManager
+from adam import OpmParams
+from adam import Permission
+from adam import PropagationParams
+from adam import Service
+
+
+@pytest.mark.skip(reason="not supporting anonymous access as a primary use case for now, will need"
+                         " to be redone later so it fits in with the bearer authentication scheme")
 class AnonymousTest(unittest.TestCase):
     """Tests anonymous access to API.
 
