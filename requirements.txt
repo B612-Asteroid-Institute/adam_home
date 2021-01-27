@@ -1,6 +1,5 @@
 # pip development environment
 astroquery
-coveralls
 flake8
 jupyter
 matplotlib
