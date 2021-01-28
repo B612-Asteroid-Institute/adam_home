@@ -24,11 +24,10 @@ class PropagationParams(object):
 
     def __init__(self, params):
         """
-
         Args:
             params (dict): Propagation parameters
 
-        Parameters consist of:
+        Parameters consist of::
 
             --- start_time and end_time are required! ---
             start_time (str): start time of the run
@@ -101,7 +100,7 @@ class PropagationParams(object):
             params.get('closeApproachRadiusFromTargetMeters')
 
     def __repr__(self):
-        return "Batch params [%s, %s, %s, %s, %s, %s, %s]" % (
+        return "PropagationParams [%s, %s, %s, %s, %s, %s, %s]" % (
             self._start_time, self._end_time, self._step_size,
             self._propagator_uuid, self._project_uuid, self._description,
             self._executor)

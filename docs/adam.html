@@ -199,6 +199,12 @@
 <em class="property">class </em><code class="sig-prename descclassname">adam.adam_objects.</code><code class="sig-name descname">AdamObject</code><a class="headerlink" href="#adam.adam_objects.AdamObject" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
+<dt id="adam.adam_objects.AdamObject.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_objects.AdamObject.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="adam.adam_objects.AdamObject.get_children">
 <code class="sig-name descname">get_children</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_objects.AdamObject.get_children" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -235,6 +241,12 @@
 <em class="property">class </em><code class="sig-prename descclassname">adam.adam_objects.</code><code class="sig-name descname">AdamObjectRunnableState</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">response</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_objects.AdamObjectRunnableState" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
+<dt id="adam.adam_objects.AdamObjectRunnableState.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">response</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_objects.AdamObjectRunnableState.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="adam.adam_objects.AdamObjectRunnableState.get_calc_state">
 <code class="sig-name descname">get_calc_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_objects.AdamObjectRunnableState.get_calc_state" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -256,6 +268,12 @@
 <em class="property">class </em><code class="sig-prename descclassname">adam.adam_objects.</code><code class="sig-name descname">AdamObjects</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rest</span></em>, <em class="sig-param"><span class="n">obj_type</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_objects.AdamObjects" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Module for managing AdamObjects.</p>
+<dl class="py method">
+<dt id="adam.adam_objects.AdamObjects.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rest</span></em>, <em class="sig-param"><span class="n">obj_type</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_objects.AdamObjects.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt id="adam.adam_objects.AdamObjects.delete">
 <code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">uuid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_objects.AdamObjects.delete" title="Permalink to this definition">¶</a></dt>
@@ -281,6 +299,12 @@
 <em class="property">class </em><code class="sig-prename descclassname">adam.adam_processing_service.</code><code class="sig-name descname">AdamProcessingService</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rest</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_processing_service.AdamProcessingService" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>The ADAM service handling operations related to jobs.</p>
+<dl class="py method">
+<dt id="adam.adam_processing_service.AdamProcessingService.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rest</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_processing_service.AdamProcessingService.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt id="adam.adam_processing_service.AdamProcessingService.execute_batch_propagation">
 <code class="sig-name descname">execute_batch_propagation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">project</span></em>, <em class="sig-param"><span class="n">propagation_params</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#adam.propagation_params.PropagationParams" title="adam.propagation_params.PropagationParams">adam.propagation_params.PropagationParams</a></span></em>, <em class="sig-param"><span class="n">opm_params</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#adam.opm_params.OpmParams" title="adam.opm_params.OpmParams">adam.opm_params.OpmParams</a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#adam.adam_processing_service.BatchPropagationResults" title="adam.adam_processing_service.BatchPropagationResults">adam.adam_processing_service.BatchPropagationResults</a><a class="headerlink" href="#adam.adam_processing_service.AdamProcessingService.execute_batch_propagation" title="Permalink to this definition">¶</a></dt>
@@ -348,6 +372,12 @@ submitted job</p>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>AdamProcessingService REST service to check job status and results</p>
 <dl class="py method">
+<dt id="adam.adam_processing_service.ApsRestServiceResultsProcessor.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rest</span></em>, <em class="sig-param"><span class="n">project</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_processing_service.ApsRestServiceResultsProcessor.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="adam.adam_processing_service.ApsRestServiceResultsProcessor.check_status">
 <code class="sig-name descname">check_status</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">job_uuid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_processing_service.ApsRestServiceResultsProcessor.check_status" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check the status of a job.</p>
@@ -397,6 +427,12 @@ submitted job</p>
 <em class="property">class </em><code class="sig-prename descclassname">adam.adam_processing_service.</code><code class="sig-name descname">ApsResults</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">results_processor</span></em>, <em class="sig-param"><span class="n">job_uuid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_processing_service.ApsResults" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>API for retrieving job details</p>
+<dl class="py method">
+<dt id="adam.adam_processing_service.ApsResults.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">results_processor</span></em>, <em class="sig-param"><span class="n">job_uuid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_processing_service.ApsResults.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt id="adam.adam_processing_service.ApsResults.check_status">
 <code class="sig-name descname">check_status</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_processing_service.ApsResults.check_status" title="Permalink to this definition">¶</a></dt>
@@ -471,6 +507,12 @@ Defaults to False.</p></li>
 <code class="sig-name descname">MISS</code><em class="property"> = 'MISS'</em><a class="headerlink" href="#adam.adam_processing_service.BatchPropagationResults.PositionOrbitType.MISS" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+</dd></dl>
+
+<dl class="py method">
+<dt id="adam.adam_processing_service.BatchPropagationResults.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">results_processor</span></em>, <em class="sig-param"><span class="n">job_uuid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_processing_service.BatchPropagationResults.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -601,6 +643,13 @@ otherwise False (default).</p>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Module for generating, validating, and using authentication tokens</p>
 <dl class="py method">
+<dt id="adam.auth.Auth.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rest</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.auth.Auth.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Expects a RestProxy that it will use to communicate with the server for
+authentication.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="adam.auth.Auth.authenticate">
 <code class="sig-name descname">authenticate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.auth.Auth.authenticate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks whether the user’s access token is valid. If so, updates this object to
@@ -645,6 +694,12 @@ from this object.</p>
 <dt id="adam.batch.Batch">
 <em class="property">class </em><code class="sig-prename descclassname">adam.batch.</code><code class="sig-name descname">Batch</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">propagation_params</span></em>, <em class="sig-param"><span class="n">opm_params</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch.Batch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="adam.batch.Batch.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">propagation_params</span></em>, <em class="sig-param"><span class="n">opm_params</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch.Batch.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt id="adam.batch.Batch.get_calc_state">
 <code class="sig-name descname">get_calc_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch.Batch.get_calc_state" title="Permalink to this definition">¶</a></dt>
@@ -701,6 +756,21 @@ from this object.</p>
 <em class="property">class </em><code class="sig-name descname">Part</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">part</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch.PropagationResults.Part" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
+<dt id="adam.batch.PropagationResults.Part.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">part</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch.PropagationResults.Part.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Requires a json response as returned from the server representing a batch
+part state (e.g. from /batch/batch_uuid/part_index)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>KeyError if the given object does not include 'part_index' and</strong> – </p></li>
+<li><p><strong>'calc_state'</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="adam.batch.PropagationResults.Part.get_calc_state">
 <code class="sig-name descname">get_calc_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch.PropagationResults.Part.get_calc_state" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -720,6 +790,13 @@ from this object.</p>
 <code class="sig-name descname">get_part_index</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch.PropagationResults.Part.get_part_index" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+</dd></dl>
+
+<dl class="py method">
+<dt id="adam.batch.PropagationResults.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parts</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch.PropagationResults.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Should be called with a list of json responses from the server representing
+the parts_count parts of a batch propagation result.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -779,6 +856,18 @@ This will not interpolate.</p>
 <em class="property">class </em><code class="sig-prename descclassname">adam.batch.</code><code class="sig-name descname">StateSummary</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">json</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch.StateSummary" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
+<dt id="adam.batch.StateSummary.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">json</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch.StateSummary.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Requires a json response as returned from the server representing a batch
+state summary (e.g. from /batch/uuid or in bulk from batch/project_id)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>KeyError if the given object does not include 'uuid' and 'calc_state'</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="adam.batch.StateSummary.get_calc_state">
 <code class="sig-name descname">get_calc_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch.StateSummary.get_calc_state" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -829,6 +918,12 @@ This will not interpolate.</p>
 <em class="property">class </em><code class="sig-prename descclassname">adam.batch_propagation.</code><code class="sig-name descname">BatchPropagation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">propagation_params</span></em>, <em class="sig-param"><span class="n">opm_params</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch_propagation.BatchPropagation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#adam.adam_objects.AdamObject" title="adam.adam_objects.AdamObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">adam.adam_objects.AdamObject</span></code></a></p>
 <dl class="py method">
+<dt id="adam.batch_propagation.BatchPropagation.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">propagation_params</span></em>, <em class="sig-param"><span class="n">opm_params</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch_propagation.BatchPropagation.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="adam.batch_propagation.BatchPropagation.get_final_state_vectors">
 <code class="sig-name descname">get_final_state_vectors</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch_propagation.BatchPropagation.get_final_state_vectors" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -861,6 +956,12 @@ This will not interpolate.</p>
 <dd><p>Bases: <a class="reference internal" href="#adam.adam_objects.AdamObjects" title="adam.adam_objects.AdamObjects"><code class="xref py py-class docutils literal notranslate"><span class="pre">adam.adam_objects.AdamObjects</span></code></a></p>
 <p>Batch propagations using the runnables framework</p>
 <dl class="py method">
+<dt id="adam.batch_propagation.BatchPropagations.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rest</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch_propagation.BatchPropagations.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="adam.batch_propagation.BatchPropagations.get">
 <code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">uuid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch_propagation.BatchPropagations.get" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -886,6 +987,12 @@ This will not interpolate.</p>
 <dt id="adam.batch_propagation.SinglePropagation">
 <em class="property">class </em><code class="sig-prename descclassname">adam.batch_propagation.</code><code class="sig-name descname">SinglePropagation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">propagation_params</span></em>, <em class="sig-param"><span class="n">opm_params</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch_propagation.SinglePropagation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#adam.adam_objects.AdamObject" title="adam.adam_objects.AdamObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">adam.adam_objects.AdamObject</span></code></a></p>
+<dl class="py method">
+<dt id="adam.batch_propagation.SinglePropagation.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">propagation_params</span></em>, <em class="sig-param"><span class="n">opm_params</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch_propagation.SinglePropagation.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt id="adam.batch_propagation.SinglePropagation.get_ephemeris">
 <code class="sig-name descname">get_ephemeris</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch_propagation.SinglePropagation.get_ephemeris" title="Permalink to this definition">¶</a></dt>
@@ -931,6 +1038,26 @@ Responsible for submitting them, tracking and exposing their status during
 propagation, and retrieving their results.</p>
 <p>WARNING: this module is not thread-safe. The only supported simultaneous operation
 is calling get_latest_statuses() while a call to run() is ongoing.</p>
+<dl class="py method">
+<dt id="adam.batch_run_manager.BatchRunManager.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">batches_module</span></em>, <em class="sig-param"><span class="n">batch_runs</span></em>, <em class="sig-param"><span class="n">do_timing</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">multi_threaded</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch_run_manager.BatchRunManager.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets up object that can manage the running and lifetime of the given batches.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>batches_module</strong> (<a class="reference internal" href="#adam.batches.Batches" title="adam.batches.Batches"><em>Batches</em></a>) – Object to use to communicate with server.</p></li>
+<li><p><strong>batch_runs</strong> (<em>list&lt;Batch2&gt;</em>) – Batches to be run/managed.</p></li>
+<li><p><strong>do_timing</strong> (<em>boolean</em>) – If true, timing information will be printed for various
+parts of batch lifetime (submission, running, results retrieval).</p></li>
+<li><p><strong>multi_threaded</strong> (<em>boolean</em>) – If true, operations that would benefit from
+multithreading such as submission or results retrieval will be
+multithreaded. Should generally be left true, but can be set to false if
+a guaranteed particular ordering is necessary (e.g. for tests).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt id="adam.batch_run_manager.BatchRunManager.get_batch_runs">
 <code class="sig-name descname">get_batch_runs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch_run_manager.BatchRunManager.get_batch_runs" title="Permalink to this definition">¶</a></dt>
@@ -983,6 +1110,12 @@ or run() is ongoing.</p>
 <dt id="adam.batches.Batches">
 <em class="property">class </em><code class="sig-prename descclassname">adam.batches.</code><code class="sig-name descname">Batches</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rest</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.batches.Batches" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="adam.batches.Batches.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rest</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.batches.Batches.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt id="adam.batches.Batches.delete_batch">
 <code class="sig-name descname">delete_batch</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">uuid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.batches.Batches.delete_batch" title="Permalink to this definition">¶</a></dt>
@@ -1042,6 +1175,26 @@ of the key’s children, i.e.:</p>
 </pre></div>
 </div>
 <p>returns <code class="docutils literal notranslate"><span class="pre">dict(url=...,</span> <span class="pre">workspace=...,</span> <span class="pre">token=....)</span></code>.</p>
+<dl class="py method">
+<dt id="adam.config_manager.ConfigManager.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file_name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">raw_config</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.config_manager.ConfigManager.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the ADAM configuration</p>
+<p>Loads ADAM configuration from <code class="docutils literal notranslate"><span class="pre">file_name</span></code>, or default config file
+if <code class="docutils literal notranslate"><span class="pre">file_name==None</span></code>.  If <code class="docutils literal notranslate"><span class="pre">raw_config</span></code> is given, uses its
+contents to load the configuration (<code class="docutils literal notranslate"><span class="pre">file_name</span></code> is ignored in that
+case).  The typical use is to instantiate this class w.
+<code class="docutils literal notranslate"><span class="pre">file_name</span></code> and <code class="docutils literal notranslate"><span class="pre">raw_config</span></code> set to None (i.e., read from the
+default config file).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_name</strong> (<em>str</em>) – Path to config file to load, or None to search default locations.</p></li>
+<li><p><strong>raw_config</strong> (<em>dict</em>) – dict() of values to interpret as configuration data.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt id="adam.config_manager.ConfigManager.get_config">
 <code class="sig-name descname">get_config</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">environment</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.config_manager.ConfigManager.get_config" title="Permalink to this definition">¶</a></dt>
@@ -1144,6 +1297,12 @@ or to <code class="docutils literal notranslate"><span class="pre">file_name</sp
 <em class="property">class </em><code class="sig-prename descclassname">adam.group.</code><code class="sig-name descname">Group</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">uuid</span></em>, <em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">description</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.group.Group" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
+<dt id="adam.group.Group.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">uuid</span></em>, <em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">description</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.group.Group.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="adam.group.Group.get_description">
 <code class="sig-name descname">get_description</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.group.Group.get_description" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -1165,6 +1324,12 @@ or to <code class="docutils literal notranslate"><span class="pre">file_name</sp
 <em class="property">class </em><code class="sig-prename descclassname">adam.group.</code><code class="sig-name descname">GroupMember</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span></em>, <em class="sig-param"><span class="n">type</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.group.GroupMember" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
+<dt id="adam.group.GroupMember.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span></em>, <em class="sig-param"><span class="n">type</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.group.GroupMember.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="adam.group.GroupMember.get_id">
 <code class="sig-name descname">get_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.group.GroupMember.get_id" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -1181,6 +1346,12 @@ or to <code class="docutils literal notranslate"><span class="pre">file_name</sp
 <em class="property">class </em><code class="sig-prename descclassname">adam.group.</code><code class="sig-name descname">Groups</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rest</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.group.Groups" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Module for managing groups.</p>
+<dl class="py method">
+<dt id="adam.group.Groups.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rest</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.group.Groups.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt id="adam.group.Groups.add_group_to_group">
 <code class="sig-name descname">add_group_to_group</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">group1</span></em>, <em class="sig-param"><span class="n">group2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.group.Groups.add_group_to_group" title="Permalink to this definition">¶</a></dt>
@@ -1242,6 +1413,73 @@ or to <code class="docutils literal notranslate"><span class="pre">file_name</sp
 <em class="property">class </em><code class="sig-prename descclassname">adam.opm_params.</code><code class="sig-name descname">OpmParams</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">params</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.opm_params.OpmParams" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
+<dt id="adam.opm_params.OpmParams.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">params</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.opm_params.OpmParams.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>params</strong> (<em>dict</em>) – contains the OPM properties</p>
+</dd>
+</dl>
+<p>Params properties are:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>--- epoch is required! ---
+epoch (str): the epoch associated with the state vector (IS0-8601 format)
+
+--- either state_vector or keplerian_elements is required! ---
+--- note that if keplerian_elements are provided, state_vector will be ignored
+--- by server side even if also provided. ---
+state_vector (list): an array with 6 elements [rx, ry, rz, vx, vy, vz]
+    representing the cartesian coordinates (the position and velocity vector)
+    of the object.
+keplerian_elements (dictionary): contains 7 elements representing the
+    keplerian coordinates of the object. The elements are:
+        semi_major_axis_km (float): Semimajor axis (km)
+        eccentricity (float): Eccentricity of orbit
+        inclination_deg (float): Inclination of orbit (deg)
+        ra_of_asc_node_deg (float): Right ascension of ascending node (deg)
+        arg_of_pericenter_deg (float): Argument of pericenter (deg)
+        true_anomaly_deg (float): True anomaly (deg)
+        gm (float): Gravitational constant (km^3/s^2)
+keplerian_covariance (list): lower triangular covariance matrix (21 elements)
+
+originator (str): responsible entity for run (default: &#39;ADAM_User&#39;)
+object_name (str): name of object (default: &#39;dummy&#39;)
+object_id (str): identification of object (default: &#39;001&#39;)
+
+center_name (str): center for propagation. &#39;SUN&#39; or &#39;EARTH&#39;. (default: &#39;SUN&#39;)
+ref_frame (str): reference frame for propagation. &#39;ICRF&#39; (International Celestial
+                 Reference Frame) or &#39;EMEME2000&#39; (Earth Mean Ecliptic Mean
+                 Equinox of J2000). (default: &#39;ICRF&#39;)
+
+mass (float): object mass in kilograms (default: 1000 kg)
+solar_rad_area (float): object solar radiation area in squared meters
+    (default: 20 m^2)
+solar_rad_coeff (float): object solar radiation coefficient (default: 1)
+drag_area (float): object drag area in squared meters (default: 20 m^2)
+drag_coeff (float): object drag coefficient (default: 2.2)
+
+--- None or all of covariance, perturbation, and hypercube must be given ---
+--- No defaults if not given ---
+covariance (list): an array with 21 elements corresponding to a 6x6 lower triangle
+perturbation (int): sigma perturbation on state vector
+hypercube (str): hypercube propagation type (e.g. &#39;FACES&#39; or &#39;CORNERS&#39;)
+
+initial_maneuver (list): An array with 3 elements representing initial dx, dy, dz
+    in velocity-orbit-normal coordinates (dx is in direction of velocity,
+    dy is orbit-normal, and dz is in direction of x cross y).
+    Assumed to take place at state vector epoch.
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>KeyError if the given object does not include 'epoch' and 'state_vector'</strong><strong>,</strong> – </p></li>
+<li><p><strong>or if unsupported parameters are provided</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="adam.opm_params.OpmParams.fromJsonResponse">
 <em class="property">classmethod </em><code class="sig-name descname">fromJsonResponse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">response_opm</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.opm_params.OpmParams.fromJsonResponse" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -1282,6 +1520,21 @@ or to <code class="docutils literal notranslate"><span class="pre">file_name</sp
 <em class="property">class </em><code class="sig-prename descclassname">adam.permission.</code><code class="sig-name descname">Permission</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">right</span></em>, <em class="sig-param"><span class="n">target_type</span></em>, <em class="sig-param"><span class="n">target_uuid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.permission.Permission" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
+<dt id="adam.permission.Permission.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">right</span></em>, <em class="sig-param"><span class="n">target_type</span></em>, <em class="sig-param"><span class="n">target_uuid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.permission.Permission.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates representation of permission.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>right</strong> – must be one of “READ”, “WRITE”, “ADMIN”, “GRANT_READ”, “GRANT_WRITE”</p></li>
+<li><p><strong>target_type</strong> – must be one of “PROJECT”, “GROUP”</p></li>
+<li><p><strong>target_uuid</strong> – uuid of object to be granted permission to</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="adam.permission.Permission.get_right">
 <code class="sig-name descname">get_right</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.permission.Permission.get_right" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -1303,6 +1556,17 @@ or to <code class="docutils literal notranslate"><span class="pre">file_name</sp
 <em class="property">class </em><code class="sig-prename descclassname">adam.permission.</code><code class="sig-name descname">Permissions</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rest</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.permission.Permissions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Module for managing permissions.</p>
+<dl class="py method">
+<dt id="adam.permission.Permissions.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rest</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.permission.Permissions.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize Permissions module.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>rest</strong> (<a class="reference internal" href="#adam.rest_proxy.RestProxy" title="adam.rest_proxy.RestProxy"><em>RestProxy</em></a>) – a RestProxy that makes calls to the ADAM API.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt id="adam.permission.Permissions.get_group_permissions">
 <code class="sig-name descname">get_group_permissions</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">group_uuid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.permission.Permissions.get_group_permissions" title="Permalink to this definition">¶</a></dt>
@@ -1343,6 +1607,24 @@ or to <code class="docutils literal notranslate"><span class="pre">file_name</sp
 <dt id="adam.project.Project">
 <em class="property">class </em><code class="sig-prename descclassname">adam.project.</code><code class="sig-name descname">Project</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">uuid</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">description</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.project.Project" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Project class.</p>
+<p>An ADAM Project is like a folder for work executed in the ADAM platform.</p>
+<dl class="py method">
+<dt id="adam.project.Project.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">uuid</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">description</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.project.Project.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the Project data class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>uuid</strong> (<em>str</em>) – the project ID.</p></li>
+<li><p><strong>parent</strong> (<em>str</em>) – the project parent ID. Defaults to <cite>None</cite>.</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – the name of the project.</p></li>
+<li><p><strong>description</strong> (<em>str</em>) – the project description.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt id="adam.project.Project.get_description">
 <code class="sig-name descname">get_description</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.project.Project.get_description" title="Permalink to this definition">¶</a></dt>
@@ -1370,10 +1652,16 @@ or to <code class="docutils literal notranslate"><span class="pre">file_name</sp
 <em class="property">class </em><code class="sig-prename descclassname">adam.project.</code><code class="sig-name descname">Projects</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rest</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.project.Projects" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Module for managing projects.</p>
-<dl class="py attribute">
-<dt id="adam.project.Projects.REST_ENDPOINT_PREFIX">
-<code class="sig-name descname">REST_ENDPOINT_PREFIX</code><em class="property"> = '/projects'</em><a class="headerlink" href="#adam.project.Projects.REST_ENDPOINT_PREFIX" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dl class="py method">
+<dt id="adam.project.Projects.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rest</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.project.Projects.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the Projects API client.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>rest</strong> (<a class="reference internal" href="#adam.rest_proxy.RestProxy" title="adam.rest_proxy.RestProxy"><em>RestProxy</em></a>) – a RestProxy that makes calls to the ADAM API.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt id="adam.project.Projects.delete_project">
@@ -1411,7 +1699,7 @@ or to <code class="docutils literal notranslate"><span class="pre">file_name</sp
 
 <dl class="py method">
 <dt id="adam.project.Projects.get_projects">
-<code class="sig-name descname">get_projects</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.project.Projects.get_projects" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_projects</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span><a class="reference internal" href="#adam.project.Project" title="adam.project.Project">adam.project.Project</a><span class="p">]</span><a class="headerlink" href="#adam.project.Projects.get_projects" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets projects that the current user has access to read.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -1428,8 +1716,23 @@ or to <code class="docutils literal notranslate"><span class="pre">file_name</sp
 
 <dl class="py method">
 <dt id="adam.project.Projects.get_sub_projects">
-<code class="sig-name descname">get_sub_projects</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.project.Projects.get_sub_projects" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="sig-name descname">get_sub_projects</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span></em><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span><a class="reference internal" href="#adam.project.Project" title="adam.project.Project">adam.project.Project</a><span class="p">]</span><a class="headerlink" href="#adam.project.Projects.get_sub_projects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the projects under specified parent project.</p>
+<p>For now, this just filters the returned values by parent project. We may eventually
+choose to implement this server-side, in which case we will call into whatever API
+that exposes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>parent</strong> (<em>str</em>) – the project ID for which to get its sub-projects.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list of Projects.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt id="adam.project.Projects.new_project">
@@ -1475,6 +1778,53 @@ or to <code class="docutils literal notranslate"><span class="pre">file_name</sp
 <dt id="adam.propagation_params.PropagationParams.DEFAULT_EXECUTOR">
 <code class="sig-name descname">DEFAULT_EXECUTOR</code><em class="property"> = 'STK'</em><a class="headerlink" href="#adam.propagation_params.PropagationParams.DEFAULT_EXECUTOR" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt id="adam.propagation_params.PropagationParams.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">params</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.propagation_params.PropagationParams.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>params</strong> (<em>dict</em>) – Propagation parameters</p>
+</dd>
+</dl>
+<p>Parameters consist of:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>--- start_time and end_time are required! ---
+start_time (str): start time of the run
+end_time (str): end time of the run
+
+step_size (int): step size in seconds. Defaults to 86400, or one day.
+propagator_uuid (str): propagator settings to use (default is the Sun,
+    all planets, and the Moon as point masses [no asteroids])
+description (str): human-readable description of the run
+executor (str): particular type of software to use, defaults to STK
+propagationType (str): one of {&#39;HYPERCUBE_FACES&#39;, &#39;HYPERCUBE_CORNERS&#39;,
+    &#39;MONTE_CARLO&#39;, &#39;USER_SPECIFIED&#39;}
+monteCarloDraws (int): number of draws for a Monte Carlo propagation.
+keplerianSigma (dict): Keplerian elements uncertainty (semi_major_axis_km,
+    eccentricity, inclination_deg, ra_of_asc_node_deg,
+    arg_of_pericenter_deg, true_anomaly_deg, gm)
+cartesianSigma (dict): Cartesian elements uncertainty
+    (x, y, z, x_dot, y_dot, z_dot)
+stopOnImpact (boolean): True if the propagation should stop upon impact.
+stopOnCloseApproach (boolean): True if the propagation should stop on
+    the first close approach.
+stopOnImpactDistanceMeters (long): The stopping distance from the target&#39;s
+    center for an impact.
+closeApproachRadiusFromTargetMeters (long): The distance from the target&#39;s
+    center, within which a close approach should be recorded.
+singularMatrixThreshold (float):
+    tolerance for non positive definite covariance matrix
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>KeyError if the given object does not include 'start_time' and 'end_time'</strong><strong>,</strong> – </p></li>
+<li><p><strong>or if unsupported parameters are provided</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt id="adam.propagation_params.PropagationParams.fromJsonResponse">
@@ -1577,6 +1927,15 @@ or to <code class="docutils literal notranslate"><span class="pre">file_name</sp
 <em class="property">class </em><code class="sig-prename descclassname">adam.propagator_config.</code><code class="sig-name descname">PropagatorConfig</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">config_json</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.propagator_config.PropagatorConfig" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
+<dt id="adam.propagator_config.PropagatorConfig.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">config_json</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.propagator_config.PropagatorConfig.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes a propagator config from the given JSON, pulling out a few important fields.</p>
+<p>Values for sun, planets, and moon must be “POINT_MASS”, “OMIT”, or “SPHERICAL_HARMONICS.
+Value for asteroids should be list of asteroid names.
+Value for asteroidsString should be concatenated list of asteroid names.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="adam.propagator_config.PropagatorConfig.get_config_json">
 <code class="sig-name descname">get_config_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.propagator_config.PropagatorConfig.get_config_json" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -1624,23 +1983,29 @@ or to <code class="docutils literal notranslate"><span class="pre">file_name</sp
 <dd></dd></dl>
 
 <dl class="py method">
+<dt id="adam.propagator_config.PropagatorConfigs.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rest</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.propagator_config.PropagatorConfigs.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="adam.propagator_config.PropagatorConfigs.delete_config">
 <code class="sig-name descname">delete_config</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">uuid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.propagator_config.PropagatorConfigs.delete_config" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt id="adam.propagator_config.PropagatorConfigs.get_config">
-<code class="sig-name descname">get_config</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">uuid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.propagator_config.PropagatorConfigs.get_config" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_config</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">uuid</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#adam.propagator_config.PropagatorConfig" title="adam.propagator_config.PropagatorConfig">adam.propagator_config.PropagatorConfig</a><a class="headerlink" href="#adam.propagator_config.PropagatorConfigs.get_config" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt id="adam.propagator_config.PropagatorConfigs.get_configs">
-<code class="sig-name descname">get_configs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.propagator_config.PropagatorConfigs.get_configs" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_configs</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span><a class="reference internal" href="#adam.propagator_config.PropagatorConfig" title="adam.propagator_config.PropagatorConfig">adam.propagator_config.PropagatorConfig</a><span class="p">]</span><a class="headerlink" href="#adam.propagator_config.PropagatorConfigs.get_configs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt id="adam.propagator_config.PropagatorConfigs.new_config">
-<code class="sig-name descname">new_config</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">config_json</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.propagator_config.PropagatorConfigs.new_config" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">new_config</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">config_json</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#adam.propagator_config.PropagatorConfig" title="adam.propagator_config.PropagatorConfig">adam.propagator_config.PropagatorConfig</a><a class="headerlink" href="#adam.propagator_config.PropagatorConfigs.new_config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method to create a config directly from a JSON object rather
 than specifying every parameter. Useful if you’d like to slighly modify
 an existing config (e.g. ignore Jupiter’s gravity), or if you are fine
@@ -1701,6 +2066,12 @@ saved by adamctl.</p>
 <dd><p>Bases: <a class="reference internal" href="#adam.rest_proxy.RestProxy" title="adam.rest_proxy.RestProxy"><code class="xref py py-class docutils literal notranslate"><span class="pre">adam.rest_proxy.RestProxy</span></code></a></p>
 <p>Rest proxy implementation that wraps another rest proxy and adds the authentication
 token to every method call.</p>
+<dl class="py method">
+<dt id="adam.rest_proxy.AuthenticatingRestProxy.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rest_proxy</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.rest_proxy.AuthenticatingRestProxy.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt id="adam.rest_proxy.AuthenticatingRestProxy.delete">
 <code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.rest_proxy.AuthenticatingRestProxy.delete" title="Permalink to this definition">¶</a></dt>
@@ -1775,6 +2146,14 @@ resource to a real or proxy server</p>
 <em class="property">class </em><code class="sig-prename descclassname">adam.rest_proxy.</code><code class="sig-name descname">BearerAuthc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">token</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.rest_proxy.BearerAuthc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">requests.auth.AuthBase</span></code></p>
 <p>Attaches bearer token to request.</p>
+<dl class="py method">
+<dt id="adam.rest_proxy.BearerAuthc.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">token</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.rest_proxy.BearerAuthc.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize.
+:param token: the bearer token
+:type token: str</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -1783,6 +2162,12 @@ resource to a real or proxy server</p>
 <dd><p>Bases: <a class="reference internal" href="#adam.rest_proxy.RestProxy" title="adam.rest_proxy.RestProxy"><code class="xref py py-class docutils literal notranslate"><span class="pre">adam.rest_proxy.RestProxy</span></code></a></p>
 <p>Rest proxy implementation that wraps another rest proxy and adds logging of
 interesting information such as timing and request size to each call.</p>
+<dl class="py method">
+<dt id="adam.rest_proxy.LoggingRestProxy.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rest_proxy</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.rest_proxy.LoggingRestProxy.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt id="adam.rest_proxy.LoggingRestProxy.delete">
 <code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.rest_proxy.LoggingRestProxy.delete" title="Permalink to this definition">¶</a></dt>
@@ -1933,6 +2318,12 @@ resource to a real or proxy server</p>
 <p>Implementation using requests package</p>
 <p>This class is used to send requests to the server.</p>
 <dl class="py method">
+<dt id="adam.rest_proxy.RestRequests.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.rest_proxy.RestRequests.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize client with some ADAM configuration.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="adam.rest_proxy.RestRequests.base_url">
 <code class="sig-name descname">base_url</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.rest_proxy.RestRequests.base_url" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -1975,7 +2366,7 @@ resource to a real or proxy server</p>
 
 <dl class="py method">
 <dt id="adam.rest_proxy.RestRequests.post">
-<code class="sig-name descname">post</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em>, <em class="sig-param"><span class="n">data_dict</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.rest_proxy.RestRequests.post" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">post</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em>, <em class="sig-param"><span class="n">data_dict</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>int<span class="p">, </span>str<span class="p">]</span><a class="headerlink" href="#adam.rest_proxy.RestRequests.post" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send POST request to the server</p>
 <p>This function is used to POST a resource to the server</p>
 <dl class="field-list simple">
@@ -2000,6 +2391,12 @@ resource to a real or proxy server</p>
 <dd><p>Bases: <a class="reference internal" href="#adam.rest_proxy.RestProxy" title="adam.rest_proxy.RestProxy"><code class="xref py py-class docutils literal notranslate"><span class="pre">adam.rest_proxy.RestProxy</span></code></a></p>
 <p>Rest proxy implementation that wraps another rest proxy and retries calls for some
 errors known to be retryable.</p>
+<dl class="py method">
+<dt id="adam.rest_proxy.RetryingRestProxy.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rest_proxy</span></em>, <em class="sig-param"><span class="n">num_tries</span><span class="o">=</span><span class="default_value">5</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.rest_proxy.RetryingRestProxy.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt id="adam.rest_proxy.RetryingRestProxy.delete">
 <code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.rest_proxy.RetryingRestProxy.delete" title="Permalink to this definition">¶</a></dt>
@@ -2083,6 +2480,28 @@ propagation, and retrieving their results.</p>
 <p>WARNING: this module is not thread-safe. The only supported simultaneous operation
 is calling get_latest_statuses() while a call to run() is ongoing.</p>
 <dl class="py method">
+<dt id="adam.runnable_manager.RunnableManager.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">runnables_module</span></em>, <em class="sig-param"><span class="n">runnables</span></em>, <em class="sig-param"><span class="n">project_uuid</span></em>, <em class="sig-param"><span class="n">do_timing</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">multi_threaded</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.runnable_manager.RunnableManager.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets up object that can manage the running and lifetime of the given batches.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>runnables_module</strong> – Object to use to communicate with server. Should be subclass of
+AdamObjects and should implement create, get, and update_with_results.</p></li>
+<li><p><strong>runnables</strong> (<em>list&lt;object&gt;</em>) – Runnable objects to be run/managed. Should implement get_uuid.</p></li>
+<li><p><strong>project_uuid</strong> (<em>string</em>) – The uuid of the project in which these runnables should be run.</p></li>
+<li><p><strong>do_timing</strong> (<em>boolean</em>) – If true, timing information will be printed for various
+parts of batch lifetime (submission, running, results retrieval).</p></li>
+<li><p><strong>multi_threaded</strong> (<em>boolean</em>) – If true, operations that would benefit from
+multithreading such as submission or results retrieval will be
+multithreaded. Should generally be left true, but can be set to false if
+a guaranteed particular ordering is necessary (e.g. for tests).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="adam.runnable_manager.RunnableManager.get_latest_statuses">
 <code class="sig-name descname">get_latest_statuses</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.runnable_manager.RunnableManager.get_latest_statuses" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieves the latest state of all runnables managed by this object.
@@ -2137,6 +2556,20 @@ any other call is ongoing.</p>
 <p>Module wrapping the REST API and associated client libraries. The goal of this
 module is to make it very easy and readable to do basic operations against a prod or
 dev setup.</p>
+<dl class="py method">
+<dt id="adam.service.Service.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">url</span></em>, <em class="sig-param"><span class="n">project</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.service.Service.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the Service module.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>url</strong> (<em>str</em>) – The URL of the ADAM server to send requests to.</p></li>
+<li><p><strong>project</strong> (<em>str</em>) – The ADAM project id, under which to create other working projects.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt id="adam.service.Service.from_config">
 <em class="property">classmethod </em><code class="sig-name descname">from_config</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">config</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.service.Service.from_config" title="Permalink to this definition">¶</a></dt>
@@ -2203,6 +2636,12 @@ dev setup.</p>
 <em class="property">class </em><code class="sig-prename descclassname">adam.stm_propagation_module.</code><code class="sig-name descname">StmPropagationModule</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">batches_module</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.stm_propagation_module.StmPropagationModule" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
+<dt id="adam.stm_propagation_module.StmPropagationModule.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">batches_module</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.stm_propagation_module.StmPropagationModule.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="adam.stm_propagation_module.StmPropagationModule.run_stm_propagation">
 <code class="sig-name descname">run_stm_propagation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">propagation_params</span></em>, <em class="sig-param"><span class="n">opm_params</span></em>, <em class="sig-param"><span class="n">only_dV</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.stm_propagation_module.StmPropagationModule.run_stm_propagation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates a state transition matrix for the propagation described by the
@@ -2245,6 +2684,12 @@ initial state (or velocity)</p>
 <em class="property">class </em><code class="sig-prename descclassname">adam.targeted_propagation.</code><code class="sig-name descname">TargetedPropagation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">propagation_params</span></em>, <em class="sig-param"><span class="n">opm_params</span></em>, <em class="sig-param"><span class="n">targeting_params</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.targeted_propagation.TargetedPropagation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#adam.adam_objects.AdamObject" title="adam.adam_objects.AdamObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">adam.adam_objects.AdamObject</span></code></a></p>
 <dl class="py method">
+<dt id="adam.targeted_propagation.TargetedPropagation.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">propagation_params</span></em>, <em class="sig-param"><span class="n">opm_params</span></em>, <em class="sig-param"><span class="n">targeting_params</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.targeted_propagation.TargetedPropagation.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="adam.targeted_propagation.TargetedPropagation.get_ephemeris">
 <code class="sig-name descname">get_ephemeris</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.targeted_propagation.TargetedPropagation.get_ephemeris" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -2286,6 +2731,12 @@ initial state (or velocity)</p>
 <em class="property">class </em><code class="sig-prename descclassname">adam.targeted_propagation.</code><code class="sig-name descname">TargetedPropagations</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rest</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.targeted_propagation.TargetedPropagations" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#adam.adam_objects.AdamObjects" title="adam.adam_objects.AdamObjects"><code class="xref py py-class docutils literal notranslate"><span class="pre">adam.adam_objects.AdamObjects</span></code></a></p>
 <dl class="py method">
+<dt id="adam.targeted_propagation.TargetedPropagations.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rest</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.targeted_propagation.TargetedPropagations.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="adam.targeted_propagation.TargetedPropagations.get">
 <code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">uuid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.targeted_propagation.TargetedPropagations.get" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -2311,6 +2762,30 @@ initial state (or velocity)</p>
 <dt id="adam.targeted_propagation.TargetingParams">
 <em class="property">class </em><code class="sig-prename descclassname">adam.targeted_propagation.</code><code class="sig-name descname">TargetingParams</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">params</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.targeted_propagation.TargetingParams" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="adam.targeted_propagation.TargetingParams.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">params</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.targeted_propagation.TargetingParams.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Param options are:</dt><dd><dl class="simple">
+<dt>target_distance_from_earth (float):</dt><dd><p>Target distance from the center of the earth, in km. Required!</p>
+</dd>
+<dt>initial_target_distance_from_earth (float):</dt><dd><p>Initial target distance from the center of the earth, in km. If not
+provided, defaults to a multiple of target_distance_from_earth.</p>
+</dd>
+<dt>tolerance (float):</dt><dd><p>Tolerance on the target distance, in km. Must be &gt; 0. Defaults to 1 km.</p>
+</dd>
+<dt>run_nominal_only (boolean):</dt><dd><p>Whether to run only the nominal sequence of the targeter. Defaults to false.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>KeyError if unsupported parameters are provided</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt id="adam.targeted_propagation.TargetingParams.fromJsonResponse">
 <em class="property">classmethod </em><code class="sig-name descname">fromJsonResponse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">response_targeting_params</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.targeted_propagation.TargetingParams.fromJsonResponse" title="Permalink to this definition">¶</a></dt>
@@ -2347,6 +2822,12 @@ initial state (or velocity)</p>
 <em class="property">class </em><code class="sig-prename descclassname">adam.timer.</code><code class="sig-name descname">Timer</code><a class="headerlink" href="#adam.timer.Timer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
+<dt id="adam.timer.Timer.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.timer.Timer.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="adam.timer.Timer.start">
 <code class="sig-name descname">start</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">description</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.timer.Timer.start" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -2376,7 +2857,7 @@ initial state (or velocity)</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2020, B612 Asteroid Institute
+        &copy; Copyright 2021, B612 Asteroid Institute
 
     </p>
   </div>

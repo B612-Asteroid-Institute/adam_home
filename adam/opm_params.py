@@ -88,7 +88,10 @@ class OpmParams(object):
 
     def __init__(self, params):
         """
-        Param options are:
+        Args:
+            params (dict): contains the OPM properties
+
+        Params properties are::
 
             --- epoch is required! ---
             epoch (str): the epoch associated with the state vector (IS0-8601 format)
@@ -108,6 +111,7 @@ class OpmParams(object):
                     arg_of_pericenter_deg (float): Argument of pericenter (deg)
                     true_anomaly_deg (float): True anomaly (deg)
                     gm (float): Gravitational constant (km^3/s^2)
+            keplerian_covariance (list): lower triangular covariance matrix (21 elements)
 
             originator (str): responsible entity for run (default: 'ADAM_User')
             object_name (str): name of object (default: 'dummy')
@@ -139,7 +143,6 @@ class OpmParams(object):
         Raises:
             KeyError if the given object does not include 'epoch' and 'state_vector',
             or if unsupported parameters are provided
-
         """
         # Make this a bit easier to get right by checking for parameters by unexpected
         # names.

@@ -40,7 +40,7 @@ class ProjectsTest(unittest.TestCase):
             return True
 
         expected_data = {'parent': None, 'name': None, 'description': None}
-        rest.expect_post(Projects.REST_ENDPOINT_PREFIX, check_input, 200, {'uuid': 'aaa'})
+        rest.expect_post(Projects._REST_ENDPOINT_PREFIX, check_input, 200, {'uuid': 'aaa'})
         project = projects.new_project(None, None, None)
         self.assertEqual("aaa", project.get_uuid())
         self.assertEqual(None, project.get_parent())
@@ -48,14 +48,14 @@ class ProjectsTest(unittest.TestCase):
         self.assertEqual(None, project.get_description())
 
         expected_data = {'parent': 'ppp', 'name': 'nnn', 'description': 'ddd'}
-        rest.expect_post(Projects.REST_ENDPOINT_PREFIX, check_input, 200, {'uuid': 'ccc'})
+        rest.expect_post(Projects._REST_ENDPOINT_PREFIX, check_input, 200, {'uuid': 'ccc'})
         project = projects.new_project('ppp', 'nnn', 'ddd')
         self.assertEqual("ccc", project.get_uuid())
         self.assertEqual('ppp', project.get_parent())
         self.assertEqual('nnn', project.get_name())
         self.assertEqual('ddd', project.get_description())
 
-        rest.expect_post(Projects.REST_ENDPOINT_PREFIX, check_input, 404, {})
+        rest.expect_post(Projects._REST_ENDPOINT_PREFIX, check_input, 404, {})
         with self.assertRaises(RuntimeError):
             project = projects.new_project('ppp', 'nnn', 'ddd')
 
@@ -63,28 +63,28 @@ class ProjectsTest(unittest.TestCase):
         rest = _RestProxyForTest()
         projects = Projects(rest)
 
-        rest.expect_get(f"{Projects.REST_ENDPOINT_PREFIX}/aaa", 200, {'uuid': 'aaa'})
+        rest.expect_get(f"{Projects._REST_ENDPOINT_PREFIX}/aaa", 200, {'uuid': 'aaa'})
         project = projects.get_project('aaa')
         self.assertEqual("aaa", project.get_uuid())
         self.assertEqual(None, project.get_parent())
         self.assertEqual(None, project.get_name())
         self.assertEqual(None, project.get_description())
 
-        rest.expect_get(f"{Projects.REST_ENDPOINT_PREFIX}/ccc", 200, {'uuid': 'ccc',
-                                                                      'parent': 'ppp',
-                                                                      'name': 'nnn',
-                                                                      'description': 'ddd'})
+        rest.expect_get(f"{Projects._REST_ENDPOINT_PREFIX}/ccc", 200, {'uuid': 'ccc',
+                                                                       'parent': 'ppp',
+                                                                       'name': 'nnn',
+                                                                       'description': 'ddd'})
         project = projects.get_project('ccc')
         self.assertEqual("ccc", project.get_uuid())
         self.assertEqual('ppp', project.get_parent())
         self.assertEqual('nnn', project.get_name())
         self.assertEqual('ddd', project.get_description())
 
-        rest.expect_get(f"{Projects.REST_ENDPOINT_PREFIX}/aaa", 404, {})
+        rest.expect_get(f"{Projects._REST_ENDPOINT_PREFIX}/aaa", 404, {})
         project = projects.get_project('aaa')
         self.assertEqual(project, None)
 
-        rest.expect_get(f"{Projects.REST_ENDPOINT_PREFIX}/aaa", 403, {})
+        rest.expect_get(f"{Projects._REST_ENDPOINT_PREFIX}/aaa", 403, {})
         with self.assertRaises(RuntimeError):
             project = projects.get_project('aaa')
 
@@ -92,7 +92,7 @@ class ProjectsTest(unittest.TestCase):
         rest = _RestProxyForTest()
         projects_module = Projects(rest)
 
-        rest.expect_get(Projects.REST_ENDPOINT_PREFIX, 200,
+        rest.expect_get(Projects._REST_ENDPOINT_PREFIX, 200,
                         {'items': [{'uuid': 'aaa'}, {'uuid': 'bbb'}]})
         projects = projects_module.get_projects()
         self.assertEqual(2, len(projects))
@@ -109,18 +109,18 @@ class ProjectsTest(unittest.TestCase):
             {'uuid': 'ccc'},
             {'uuid': 'ddd', 'parent': 'p2'}]}
 
-        rest.expect_get(Projects.REST_ENDPOINT_PREFIX, 200, projects_response)
+        rest.expect_get(Projects._REST_ENDPOINT_PREFIX, 200, projects_response)
         projects = projects_module.get_sub_projects('p1')
         self.assertEqual(1, len(projects))
         self.assertEqual('aaa', projects[0].get_uuid())
 
-        rest.expect_get(Projects.REST_ENDPOINT_PREFIX, 200, projects_response)
+        rest.expect_get(Projects._REST_ENDPOINT_PREFIX, 200, projects_response)
         projects = projects_module.get_sub_projects('p2')
         self.assertEqual(2, len(projects))
         self.assertEqual('bbb', projects[0].get_uuid())
         self.assertEqual('ddd', projects[1].get_uuid())
 
-        rest.expect_get(Projects.REST_ENDPOINT_PREFIX, 200, projects_response)
+        rest.expect_get(Projects._REST_ENDPOINT_PREFIX, 200, projects_response)
         projects = projects_module.get_sub_projects(None)
         self.assertEqual(1, len(projects))
         self.assertEqual('ccc', projects[0].get_uuid())
@@ -129,15 +129,15 @@ class ProjectsTest(unittest.TestCase):
         rest = _RestProxyForTest()
         projects = Projects(rest)
 
-        rest.expect_delete(f"{Projects.REST_ENDPOINT_PREFIX}/aaa", 204)
+        rest.expect_delete(f"{Projects._REST_ENDPOINT_PREFIX}/aaa", 204)
         projects.delete_project('aaa')
 
         # 200 isn't a valid return value for delete calls right now
-        rest.expect_delete(f"{Projects.REST_ENDPOINT_PREFIX}/aaa", 200)
+        rest.expect_delete(f"{Projects._REST_ENDPOINT_PREFIX}/aaa", 200)
         with self.assertRaises(RuntimeError):
             projects.delete_project('aaa')
 
-        rest.expect_delete(f"{Projects.REST_ENDPOINT_PREFIX}/aaa", 404)
+        rest.expect_delete(f"{Projects._REST_ENDPOINT_PREFIX}/aaa", 404)
         with self.assertRaises(RuntimeError):
             projects.delete_project('aaa')
 

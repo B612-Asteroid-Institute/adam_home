@@ -158,7 +158,7 @@
 </div>
 <div class="section" id="module-adam.stk.astrogatoroutput">
 <span id="adam-stk-astrogatoroutput-module"></span><h2>adam.stk.astrogatoroutput module<a class="headerlink" href="#module-adam.stk.astrogatoroutput" title="Permalink to this headline">¶</a></h2>
-<p>stkoutput.py</p>
+<p>astrogatoroutput.py</p>
 <dl class="py class">
 <dt id="adam.stk.astrogatoroutput.AstrogatorOutput">
 <em class="property">class </em><code class="sig-prename descclassname">adam.stk.astrogatoroutput.</code><code class="sig-name descname">AstrogatorOutput</code><a class="headerlink" href="#adam.stk.astrogatoroutput.AstrogatorOutput" title="Permalink to this definition">¶</a></dt>
@@ -174,13 +174,50 @@ returned in rows. The calling code also specifies an index number
 which represents the column index. The output is a table, with the
 desired outputs in each row. Each column contains the values for
 each different run. Conceptually, it returns a table of the form:</p>
-<blockquote>
-<div><p>run_1   run_2  run_3 run_4 …</p>
-</div></blockquote>
-<p>output_1   ###     ###    ###   ###  …
-output_2   ###     ###    ###   ###  …
-output_3   ###     ###    ###   ###  …
-…</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 22%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"></th>
+<th class="head"><p>run_1</p></th>
+<th class="head"><p>run_2</p></th>
+<th class="head"><p>run_3</p></th>
+<th class="head"><p>run_4</p></th>
+<th class="head"><p>…</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>output_1</p></td>
+<td><p>###</p></td>
+<td><p>###</p></td>
+<td><p>###</p></td>
+<td><p>###</p></td>
+<td><p>…</p></td>
+</tr>
+<tr class="row-odd"><td><p>output_2</p></td>
+<td><p>###</p></td>
+<td><p>###</p></td>
+<td><p>###</p></td>
+<td><p>###</p></td>
+<td><p>…</p></td>
+</tr>
+<tr class="row-even"><td><p>output_3</p></td>
+<td><p>###</p></td>
+<td><p>###</p></td>
+<td><p>###</p></td>
+<td><p>###</p></td>
+<td><p>…</p></td>
+</tr>
+<tr class="row-odd"><td colspan="6"><p>…</p></td>
+</tr>
+</tbody>
+</table>
 <p>NOTE: Internally the class stores the runs as rows, and the
 desired output values as columns. But the supported workflow
 needs the runs as columns, the output is transposed whenever
@@ -188,6 +225,12 @@ requested.</p>
 <p>This class can save the resulting values to a csv file, and
 load from it using pandas.</p>
 <p>This class can create a pandas dataframe.</p>
+<dl class="py method">
+<dt id="adam.stk.astrogatoroutput.AstrogatorOutput.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.stk.astrogatoroutput.AstrogatorOutput.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize attributes.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt id="adam.stk.astrogatoroutput.AstrogatorOutput.add">
 <code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">eventName</span></em>, <em class="sig-param"><span class="n">quantity</span></em>, <em class="sig-param"><span class="n">unit</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.stk.astrogatoroutput.AstrogatorOutput.add" title="Permalink to this definition">¶</a></dt>
@@ -508,7 +551,7 @@ TODO: Need azimuth and elevation for both start and end of exposure.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2020, B612 Asteroid Institute
+        &copy; Copyright 2021, B612 Asteroid Institute
 
     </p>
   </div>

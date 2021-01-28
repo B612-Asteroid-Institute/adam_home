@@ -12,5 +12,5 @@ class CredentialsMissingError(Exception):
 
 
 class InvalidCredentialsError(Exception):
-    "Error when the ADAM server is unable to validate the user's credentials"
+    """Error when the ADAM server is unable to validate the user's credentials"""
     pass

@@ -1,5 +1,5 @@
 """
-    stkoutput.py
+    astrogatoroutput.py
 """
 
 import numpy as np
@@ -9,46 +9,51 @@ import pandas as pd
 class AstrogatorOutput:
     """Fetches output from an STK/Astrogator MCS.
     
-    This class is used to create a list of desired outputs from an 
+    This class is used to create a list of desired outputs from an
     STK Astrogator Mission Control Sequence (MCS).
     This is specifically designed to support multiple runs, such as
     in a parametric study.
-    
+
     This class is also used to retrieve the list of outputs.
-    When fetching the data (using update(), the values are 
+    When fetching the data (using update(), the values are
     returned in rows. The calling code also specifies an index number
     which represents the column index. The output is a table, with the
-    desired outputs in each row. Each column contains the values for 
+    desired outputs in each row. Each column contains the values for
     each different run. Conceptually, it returns a table of the form:
-    
-              run_1   run_2  run_3 run_4 ...
-    output_1   ###     ###    ###   ###  ...
-    output_2   ###     ###    ###   ###  ...
-    output_3   ###     ###    ###   ###  ...
-    ...
-    
+
+    +----------+-------+-------+-------+-------+-------+
+    |          | run_1 | run_2 | run_3 | run_4 | ...   |
+    +==========+=======+=======+=======+=======+=======+
+    | output_1 | ###   | ###   | ###   | ###   | ...   |
+    +----------+-------+-------+-------+-------+-------+
+    | output_2 | ###   | ###   | ###   | ###   | ...   |
+    +----------+-------+-------+-------+-------+-------+
+    | output_3 | ###   | ###   | ###   | ###   | ...   |
+    +----------+-------+-------+-------+-------+-------+
+    |   ...                                            |
+    +----------+-------+-------+-------+-------+-------+
+
+
     NOTE: Internally the class stores the runs as rows, and the
     desired output values as columns. But the supported workflow
     needs the runs as columns, the output is transposed whenever
     requested.
-    
-    This class can save the resulting values to a csv file, and 
+
+    This class can save the resulting values to a csv file, and
     load from it using pandas.
-    
+
     This class can create a pandas dataframe.
-    
+
     TODO:
         * The current design is to add all the events, getting the
-          rownames, then the update, and then get the dataout. 
+          rownames, then the update, and then get the dataout.
           Need to decide what to do if these are done out of
           order, or iterated between.
 
     """
 
     def __init__(self):
-        """Initialize attributes
-        
-        """
+        """Initialize attributes."""
         # events is an array of the desired outputs
         self.events = []
 
