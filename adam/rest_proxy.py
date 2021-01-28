@@ -12,6 +12,7 @@
 import datetime
 import functools
 import json
+from typing import Tuple
 
 import requests
 import yaml
@@ -315,7 +316,7 @@ class RestRequests(RestProxy):
         force_reload = 'force_reload_config' in kwargs and kwargs['force_reload_config'] is True
         self._load_config(force_load=force_reload)
 
-    def post(self, path, data_dict, **kwargs):
+    def post(self, path, data_dict, **kwargs) -> Tuple[int, str]:
         """Send POST request to the server
 
         This function is used to POST a resource to the server
@@ -559,6 +560,10 @@ class BearerAuthc(requests.auth.AuthBase):
     """Attaches bearer token to request."""
 
     def __init__(self, token):
+        """Initialize.
+        Args:
+            token (str): the bearer token
+        """
         self._token = token
 
     def __call__(self, r):

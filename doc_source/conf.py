@@ -19,7 +19,7 @@ sys.path.insert(0, os.path.abspath('../'))
 # -- Project information -----------------------------------------------------
 
 project = 'ADAM Python SDK'
-copyright = '2020, B612 Asteroid Institute'
+copyright = '2021, B612 Asteroid Institute'
 author = 'B612 Asteroid Institute'
 
 
@@ -42,6 +42,10 @@ templates_path = ['_templates']
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = []
+
+autodoc_default_options = {
+    'special-members': '__init__',
+}
 
 
 # -- Options for HTML output -------------------------------------------------

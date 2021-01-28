@@ -2,6 +2,8 @@
     propagator_config.py
 """
 
+from typing import List
+
 
 class PropagatorConfig(object):
     def __init__(self, config_json):
@@ -23,7 +25,7 @@ class PropagatorConfig(object):
         self._config_json = config_json
 
     def __repr__(self):
-        return "Config %s" % (self._config_json)
+        return f"PropagatorConfig(${self._config_json})"
 
     def get_uuid(self):
         return self._uuid
@@ -54,7 +56,7 @@ class PropagatorConfigs(object):
     def __repr__(self):
         return "PropagatorConfigs module"
 
-    def get_configs(self):
+    def get_configs(self) -> List[PropagatorConfig]:
         code, response = self._rest.get(self.REST_ENDPOINT_PREFIX)
 
         if code != 200:
@@ -67,7 +69,7 @@ class PropagatorConfigs(object):
     # https://adam-dev-193118.appspot.com/_ah/api/adam/v1/config/propagator?token=<your token>
     # or http://pro-equinox-162418.appspot.com/_ah/api/adam/v1/config/propagator?token=<your token>
 
-    def get_config(self, uuid):
+    def get_config(self, uuid) -> PropagatorConfig:
         if uuid is None:
             raise KeyError("UUID is required.")
 
@@ -81,7 +83,7 @@ class PropagatorConfigs(object):
 
         return PropagatorConfig(response)
 
-    def new_config(self, config_json):
+    def new_config(self, config_json) -> PropagatorConfig:
         """Method to create a config directly from a JSON object rather
            than specifying every parameter. Useful if you'd like to slighly modify
            an existing config (e.g. ignore Jupiter's gravity), or if you are fine
