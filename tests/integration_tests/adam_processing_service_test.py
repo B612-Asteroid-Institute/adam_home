@@ -43,7 +43,7 @@ class TestAdamProcessingService:
             'start_time': '2017-10-04T00:00:00Z',  # propagation start time in ISO format
             'end_time': '2017-10-11T00:00:00Z',  # propagation end time in ISO format
 
-            'project_uuid': service.workspace,
+            'project_uuid': service.project,
             'keplerianSigma': keplerian_sigma,
             'monteCarloDraws': draws,
             'propagationType': 'MONTE_CARLO',
@@ -53,7 +53,7 @@ class TestAdamProcessingService:
             'stopOnCloseApproach': False,
             'stopOnImpactDistanceMeters': 500000,
             'closeApproachRadiusFromTargetMeters': 7000000000,
-            'singularMatrixThreashold': 1e-15
+            'singularMatrixThreshold': 1e-15
         })
 
         opm_params = OpmParams({
@@ -62,7 +62,7 @@ class TestAdamProcessingService:
         })
 
         response = service.processing_service.execute_batch_propagation(
-            service.workspace, propagation_params, opm_params)
+            service.project, propagation_params, opm_params)
         assert response.job_id() is not None
 
 

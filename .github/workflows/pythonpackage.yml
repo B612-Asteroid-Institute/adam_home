@@ -33,6 +33,7 @@ jobs:
       env:
         CI_PROD_TOKEN: ${{ secrets.CI_PROD_TOKEN }}
         CI_DEV_TOKEN: ${{ secrets.CI_DEV_TOKEN }}
+        CI_TEST_USER: ${{ secrets.ADAM_TEST_USER }}
       shell: bash
       run: |
         pip install pytest

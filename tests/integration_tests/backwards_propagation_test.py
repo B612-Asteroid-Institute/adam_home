@@ -72,14 +72,14 @@ class TestBackwardsPropagation:
         difference = np.subtract(state_vec, backwards_end_state)
         print("Difference is %s" % difference)
 
-        # from test:
-        # Difference is [8.20617378e-03  9.39679146e-03  3.57937068e-03
-        #                -1.62931713e-09 9.38538136e-10  4.41515269e-10]
-        # Seems like when the test was written (and presumably was working), the tolerances
-        # were small (the commented-out lines below). This was back in April 2018, so probably
-        # ADAM was also using STK 2017r(something) and not 2018r3, which is the version ADAM
-        # is currently using. Could the same propagation be calculated with slight differences?
-        # npt.assert_allclose(difference[0:3], [0, 0, 0], rtol=0, atol=1e-3)
-        # npt.assert_allclose(difference[3:6], [0, 0, 0], rtol=0, atol=1e-10)
-        npt.assert_allclose(difference[0:3], [0, 0, 0], rtol=0, atol=1e-2)
-        npt.assert_allclose(difference[3:6], [0, 0, 0], rtol=0, atol=1e-8)
+        # This test appears to be flaky. Usually it fails on the first of the following 2 asserts,
+        # but sometimes, very rarely, it will pass on the first assert and fail on the second.
+        # Example differences (subtracting backwards end state from initial state vector):
+        # [ 4.60617244e-03  5.23680449e-03  1.98936462e-03
+        #  -9.19317955e-10  5.18536325e-10  2.51514365e-10] <-- fails on 1st assert
+        # [ 2.29061693e-02  2.58967876e-02  9.86936688e-03
+        #  -4.50932092e-09  2.57853827e-09  1.22151356e-09] <-- fails on 1st assert
+        # [ 6.06164336e-04  7.16790557e-04  2.69368291e-04
+        #  -1.19317889e-10  7.85398413e-11  3.15143467e-11] <-- fails on 2nd assert
+        npt.assert_allclose(difference[0:3], [0, 0, 0], rtol=0, atol=1e-3)
+        npt.assert_allclose(difference[3:6], [0, 0, 0], rtol=0, atol=1e-10)

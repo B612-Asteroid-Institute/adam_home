@@ -1,3 +1,5 @@
+import os
+
 import pytest
 
 from adam import ConfigManager
@@ -45,4 +47,4 @@ def added_groups(service):
 
 @pytest.fixture
 def me(service):
-    return "b612.adam.test@gmail.com"
+    return os.environ['ADAM_TEST_USER']
