@@ -1,7 +1,8 @@
 #  ADAM Python SDK and Jupyter notebooks
 
 [![Python package](https://github.com/B612-Asteroid-Institute/adam_home/workflows/Python%20package/badge.svg)](https://github.com/B612-Asteroid-Institute/adam_home/actions?query=workflow%3A%22Python+package%22)
-[![Coverage Status](https://codecov.io/gh/B612-Asteroid-Institute/adam_home)](https://codecov.io/gh/B612-Asteroid-Institute/adam_home)
+[![Coverage Status](https://codecov.io/gh/B612-Asteroid-Institute/adam_home/branch/master/graph/badge.svg?token=3oTxQRvdID)](https://codecov.io/gh/B612-Asteroid-Institute/adam_home)
+
 
 This repo contains the Python SDK (software development kit) and Jupyter notebooks for interacting with ADAM (Asteroid Decision, Analysis, and Mapping) API programmatically.
 
