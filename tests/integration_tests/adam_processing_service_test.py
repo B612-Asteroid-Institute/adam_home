@@ -51,7 +51,7 @@ class TestAdamProcessingService:
             'stopOnImpact': True,
             'step_size': 86400,
             'stopOnCloseApproach': False,
-            'stopOnImpactDistanceMeters': 500000,
+            'stopOnImpactAltitudeMeters': 500000,
             'closeApproachRadiusFromTargetMeters': 7000000000,
             'singularMatrixThreshold': 1e-15
         })
