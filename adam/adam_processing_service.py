@@ -289,8 +289,8 @@ class AdamProcessingService:
             'stopOnImpact': propagation_params.get_stop_on_impact(),
             'cartesianSigma': propagation_params.get_cartesian_sigma(),
             'stopOnCloseApproach': propagation_params.get_stop_on_close_approach(),
-            'stopOnImpactDistanceMeters':
-                propagation_params.get_stop_on_impact_distance_meters(),
+            'stopOnImpactAltitudeMeters':
+                propagation_params.get_stop_on_impact_altitude_meters(),
             'stopOnCloseApproachAfterEpoch':
                 propagation_params.get_stop_on_close_approach_after_epoch(),
             'closeApproachRadiusFromTargetMeters':

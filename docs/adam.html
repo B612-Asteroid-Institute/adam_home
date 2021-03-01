@@ -1808,9 +1808,9 @@ cartesianSigma (dict): Cartesian elements uncertainty
 stopOnImpact (boolean): True if the propagation should stop upon impact.
 stopOnCloseApproach (boolean): True if the propagation should stop on
     the first close approach.
-stopOnImpactDistanceMeters (long): The stopping distance from the target&#39;s
-    center for an impact.
-closeApproachRadiusFromTargetMeters (long): The distance from the target&#39;s
+stopOnImpactAltitudeMeters (int): The stopping altitude from the target, i.e. distance
+    from the target&#39;s surface for an impact.
+closeApproachRadiusFromTargetMeters (int): The distance of the object from the target&#39;s
     center, within which a close approach should be recorded.
 singularMatrixThreshold (float):
     tolerance for non positive definite covariance matrix
@@ -1912,8 +1912,8 @@ singularMatrixThreshold (float):
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="adam.propagation_params.PropagationParams.get_stop_on_impact_distance_meters">
-<code class="sig-name descname">get_stop_on_impact_distance_meters</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.propagation_params.PropagationParams.get_stop_on_impact_distance_meters" title="Permalink to this definition">¶</a></dt>
+<dt id="adam.propagation_params.PropagationParams.get_stop_on_impact_altitude_meters">
+<code class="sig-name descname">get_stop_on_impact_altitude_meters</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.propagation_params.PropagationParams.get_stop_on_impact_altitude_meters" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>

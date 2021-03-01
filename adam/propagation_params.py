@@ -49,9 +49,9 @@ class PropagationParams(object):
             stopOnImpact (boolean): True if the propagation should stop upon impact.
             stopOnCloseApproach (boolean): True if the propagation should stop on
                 the first close approach.
-            stopOnImpactDistanceMeters (long): The stopping distance from the target's
-                center for an impact.
-            closeApproachRadiusFromTargetMeters (long): The distance from the target's
+            stopOnImpactAltitudeMeters (int): The stopping altitude from the target, i.e. distance
+                from the target's surface for an impact.
+            closeApproachRadiusFromTargetMeters (int): The distance of the object from the target's
                 center, within which a close approach should be recorded.
             singularMatrixThreshold (float):
                 tolerance for non positive definite covariance matrix
@@ -66,7 +66,7 @@ class PropagationParams(object):
                             'propagator_uuid', 'project_uuid', 'description',
                             'executor', 'propagationType', 'monteCarloDraws',
                             'keplerianSigma', 'cartesianSigma', 'stopOnImpact',
-                            'stopOnCloseApproach', 'stopOnImpactDistanceMeters',
+                            'stopOnCloseApproach', 'stopOnImpactAltitudeMeters',
                             'closeApproachRadiusFromTargetMeters',
                             'singularMatrixThreshold'}
         extra_params = params.keys() - supported_params
@@ -91,7 +91,7 @@ class PropagationParams(object):
         self._cartesian_sigma = params.get('cartesianSigma')
         self._stop_on_impact = params.get('stopOnImpact')
         self._stop_on_close_approach = params.get('stopOnCloseApproach')
-        self._stop_on_impact_distance_meters = params.get('stopOnImpactDistanceMeters')
+        self._stop_on_impact_altitude_meters = params.get('stopOnImpactAltitudeMeters')
         self._stop_on_close_approach_after_epoch = params.get('stopOnCloseApproachAfterEpoch')
         self._singular_matrix_threshold = params.get('singularMatrixThreshold')
         if self._stop_on_close_approach_after_epoch is None:
@@ -144,8 +144,8 @@ class PropagationParams(object):
     def get_stop_on_close_approach(self):
         return self._stop_on_close_approach
 
-    def get_stop_on_impact_distance_meters(self):
-        return self._stop_on_impact_distance_meters
+    def get_stop_on_impact_altitude_meters(self):
+        return self._stop_on_impact_altitude_meters
 
     def get_stop_on_close_approach_after_epoch(self):
         return self._stop_on_close_approach_after_epoch
