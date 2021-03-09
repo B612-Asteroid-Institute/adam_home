@@ -153,7 +153,8 @@ class BatchPropagationResults(ApsResults):
         if final_positions is None:
             return []
         positions = final_positions['finalPosition']
-        return_data = list(map(lambda p: [np.datetime64(dateparser.parse(p['epoch'])), p['x'], p['y'], p['z']], positions))
+        return_data = list(map(lambda p: [np.datetime64(dateparser.parse(p['epoch'])), p['x'], p['y'], p['z']],
+                               positions))
         return return_data
 
     def get_result_ephemeris_count(self, force_update=False):
