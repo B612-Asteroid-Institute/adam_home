@@ -1,8 +1,9 @@
 import json
-import numpy as np
 import time
 import urllib
 from enum import Enum
+
+import numpy as np
 from dateutil import parser as dateparser
 
 from adam import PropagationParams, OpmParams, stk
@@ -154,7 +155,8 @@ class BatchPropagationResults(ApsResults):
             return []
         positions = final_positions['finalPosition']
         return_data = list(
-            map(lambda p: [np.datetime64(dateparser.parse(p['epoch'])), p['x'], p['y'], p['z']], positions))
+            map(lambda p: [np.datetime64(dateparser.parse(p['epoch'])), p['x'], p['y'], p['z']],
+                positions))
         return return_data
 
     def get_result_ephemeris_count(self, force_update=False):
