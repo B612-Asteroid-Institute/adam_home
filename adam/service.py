@@ -2,67 +2,95 @@
     service.py
 """
 
-from adam.auth import Auth
+import datetime
+
 from adam import Batches
+from adam import ConfigManager
+from adam.adam_processing_service import AdamProcessingService
+from adam.auth import Auth
 from adam.group import Groups
 from adam.permission import Permissions
 from adam.project import Projects
-from adam.timer import Timer
+from adam.rest_proxy import AuthenticatingRestProxy
 from adam.rest_proxy import RestRequests
 from adam.rest_proxy import RetryingRestProxy
-from adam.rest_proxy import AuthenticatingRestProxy
-
-import datetime
+from adam.timer import Timer
 
 
-class Service():
+class Service(object):
     """Module wrapping the REST API and associated client libraries. The goal of this
     module is to make it very easy and readable to do basic operations against a prod or
     dev setup.
 
     """
 
-    def __init__(self, config):
-        self.config = config
+    @classmethod
+    def from_config(cls, config=None):
+        if config is None:
+            cm = ConfigManager()
+            config = cm.get_config(environment=cm.get_default_env())
+        return cls(url=config['url'], project=config['workspace'])
+
+    def __init__(self, url, project):
+        """Initialize the Service module.
+
+        Args:
+            url (str): The URL of the ADAM server to send requests to.
+            project (str): The ADAM project id, under which to create other working projects.
+        """
+        self.url = url
+        self.project = project
         self.working_projects = []
 
-    def new_working_project(self):
+    def new_working_project(self, project_name=None):
+        """Creates a new project under the root project (workspace) in the ADAM configuration.
+
+        Args:
+            project_name (str): The name for the new project (optional).
+
+        Returns:
+            Project: the newly created project, or None, if there is no configured root project.
+        """
         timer = Timer()
-        timer.start("Generate working project")
-        if self.config.get_workspace() != '':
+        timer.start(f"Create a new working project under project {self.project}")
+        if self.project:
             project = self.projects.new_project(
-                self.config.get_workspace(), None,
-                "Test project created at " + str(datetime.datetime.now()))
+                self.project, project_name,
+                "Test project created at " + str(datetime.datetime.now())
+            )
             self.working_projects.append(project)
             print("Set up project with uuid " + project.get_uuid())
             timer.stop()
             return project
         else:
-            print("Workspace must be configured in order to use working projects " +
-                  "(which live in the workspace).")
+            print("A root project must be configured in order to use other working projects " +
+                  "(which live under the root project).")
             timer.stop()
             return None
 
     def setup(self):
+        """Sets up the API client and modules for issuing requests to the ADAM API."""
         timer = Timer()
         timer.start("Setup")
 
-        rest = RetryingRestProxy(RestRequests(self.config.get_url()))
-        auth = Auth(rest)
-        if not auth.authenticate(self.config.get_token()):
+        retrying_rest = RetryingRestProxy(RestRequests())
+        self.rest = AuthenticatingRestProxy(retrying_rest)
+        auth = Auth(self.rest)
+        if not auth.authenticate():
             print("Could not authenticate.")
             return False
 
-        self.rest = AuthenticatingRestProxy(rest, self.config.get_token())
         self.projects = Projects(self.rest)
         self.batches = Batches(self.rest)
         self.groups = Groups(self.rest)
         self.permissions = Permissions(self.rest)
+        self.processing_service = AdamProcessingService(self.rest)
 
         timer.stop()
         return True
 
     def teardown(self):
+        """Delete all working projects that were created in this Jupyter session."""
         timer = Timer()
         timer.start("Teardown")
         for project in self.working_projects:

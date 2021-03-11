@@ -1,0 +1,12 @@
+# conda development environment
+astroquery
+conda-build
+flake8
+jupyter
+matplotlib
+pandas
+pytest
+pytest-cov
+pyxdg
+pyyaml
+requests

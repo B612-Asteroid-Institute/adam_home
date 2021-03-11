@@ -2,7 +2,8 @@
     group.py
 """
 
-from tabulate import tabulate
+
+# from tabulate import tabulate
 
 
 class Group(object):
@@ -60,7 +61,7 @@ class Groups(object):
         return Group(response['uuid'], name, description)
 
     def delete_group(self, uuid):
-        code = self._rest.delete('/group/' + uuid)
+        code, _ = self._rest.delete('/group/' + uuid)
 
         if code != 204:
             raise RuntimeError("Server status code: %s" % (code))
@@ -73,8 +74,8 @@ class Groups(object):
             raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
 
     def remove_user_from_group(self, user, group):
-        code = self._rest.delete('/group/' + group + '/member?member_id=' +
-                                 user + '&member_type=USER')
+        code, _ = self._rest.delete('/group/' + group + '/member?member_id=' +
+                                    user + '&member_type=USER')
 
         if code != 204:
             raise RuntimeError("Server status code: %s" % (code))
@@ -87,8 +88,8 @@ class Groups(object):
             raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
 
     def remove_group_from_group(self, group1, group2):
-        code = self._rest.delete('/group/' + group2 + '/member?member_id=' +
-                                 group1 + '&member_type=GROUP')
+        code, _ = self._rest.delete('/group/' + group2 + '/member?member_id=' +
+                                    group1 + '&member_type=GROUP')
 
         if code != 204:
             raise RuntimeError("Server status code: %s" % (code))
@@ -105,9 +106,9 @@ class Groups(object):
         return [GroupMember(m['member_id'], m['member_type'])
                 for m in self._get_group_members(group)]
 
-    def print_group_members(self, group):
-        members = self._get_group_members(group)
-        print(tabulate(members, headers="keys", tablefmt="fancy_grid"))
+    # def print_group_members(self, group):
+    #    members = self._get_group_members(group)
+    #    print(tabulate(members, headers="keys", tablefmt="fancy_grid"))
 
     def _get_memberships(self, group=None):
         url = '/group_membership?recursive=true&expand=true'
@@ -124,9 +125,9 @@ class Groups(object):
         return [Group(g['uuid'], g.get('name'), g.get('description'))
                 for g in self._get_memberships(group)]
 
-    def print_group_memberships(self, group):
-        groups = self._get_memberships(group)
-        print(tabulate(groups, headers="keys", tablefmt="fancy_grid"))
+    # def print_group_memberships(self, group):
+    #    groups = self._get_memberships(group)
+    #    print(tabulate(groups, headers="keys", tablefmt="fancy_grid"))
 
     def get_my_memberships(self):
         return self.get_group_memberships(None)

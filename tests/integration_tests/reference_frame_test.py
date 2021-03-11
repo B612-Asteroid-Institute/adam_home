@@ -1,0 +1,100 @@
+from adam import Batch
+from adam import PropagationParams
+from adam import OpmParams
+from adam import BatchRunManager
+
+import numpy as np
+import numpy.testing as npt
+
+
+class TestReferenceFrame:
+    """Integration test of using different reference frames.
+
+    """
+
+    # This test and the following test are exactly the same propagation, but are done
+    # in two different reference frames.
+    def test_icrf(self, service, working_project):
+        start_time_str = "2000-01-01T11:58:55.816Z"
+        end_time_str = "2009-07-21T21:55:08.813Z"
+
+        sun_icrf_state_vec = [-306536341.5010222, -110979556.84640282, -48129706.42252728,
+                              15.75985527640906, -10.587567329195842, -4.589673432886975]
+
+        propagation_params = PropagationParams({
+            'start_time': start_time_str,
+            'end_time': end_time_str,
+            'step_size': 86400,
+            'project_uuid': working_project.get_uuid(),
+            'description': 'Created by test at ' + start_time_str
+        })
+        opm_params = OpmParams({
+            'epoch': start_time_str,
+            'state_vector': sun_icrf_state_vec,
+
+            'center_name': 'SUN',
+            'ref_frame': 'ICRF',
+        })
+        batch = Batch(propagation_params, opm_params)
+        runner = BatchRunManager(service.get_batches_module(), [batch])
+        runner.run()
+        end_state = batch.get_results().get_end_state_vector()
+        expected_end_state = [73978163.61069362, -121822760.05571477, -52811158.83249758,
+                              31.71000343989318, 29.9657246374751, .6754531613947713]
+
+        difference = np.subtract(expected_end_state, end_state)
+        print("Difference is %s" % difference)
+        print("End state: %s" % end_state)
+
+        npt.assert_allclose(difference[0:3], [0, 0, 0], rtol=0, atol=.02)
+        npt.assert_allclose(difference[3:6], [0, 0, 0], rtol=0, atol=.00002)
+
+        ephem = batch.get_results().get_parts()[-1].get_ephemeris()
+        assert "ICRF" in ephem
+
+    def test_sun_ememe(self, service, working_project):
+        start_time_str = "2000-01-01T11:58:55.816Z"
+        end_time_str = "2009-07-21T21:55:08.813Z"
+
+        sun_ememe_state_vec = [-306536346.18024945, -120966638.54521248, -12981.069369263947,
+                               15.759854830195243, -11.539570959741736, 0.0005481049628786039]
+
+        propagation_params = PropagationParams({
+            'start_time': start_time_str,
+            'end_time': end_time_str,
+            'step_size': 86400,
+            'project_uuid': working_project.get_uuid(),
+            'description': 'Created by test at ' + start_time_str
+        })
+        opm_params = OpmParams({
+            'epoch': start_time_str,
+            'state_vector': sun_ememe_state_vec,
+
+            'center_name': 'SUN',
+            'ref_frame': 'EMEME2000',
+        })
+
+        batch = Batch(propagation_params, opm_params)
+        runner = BatchRunManager(service.get_batches_module(), [batch])
+        runner.run()
+        end_state = batch.get_results().get_end_state_vector()
+        # The output state is expected to be in ICRF.
+        expected_end_state = [73978163.61069362, -121822760.05571477, -52811158.83249758,
+                              31.71000343989318, 29.9657246374751, .6754531613947713]
+        # These values are in EMEME. The resulting ephemeris is not expected to match these values.
+        # expected_end_state = [73978158.47632701, -132777272.5255892, 5015.073123970032,
+        #                       31.710003506237434, 27.761693311026138, -11.299967713192564]
+
+        difference = np.subtract(expected_end_state, end_state)
+        print("Difference is %s" % difference)
+        print("End state: %s" % end_state)
+
+        npt.assert_allclose(difference[0:3], [0, 0, 0], rtol=0, atol=.02)
+        npt.assert_allclose(difference[3:6], [0, 0, 0], rtol=0, atol=.00002)
+
+        # The returned ephemeris will be in Sun-centered ICRF, not EMEME. My best guess is that
+        # the ephemeris file doesn't support all reference frames, so if it encounters one that
+        # isn't supported, it'll choose a similar one.
+        ephem = batch.get_results().get_parts()[-1].get_ephemeris()
+        assert "ICRF" in ephem
+        assert "EMEME" not in ephem

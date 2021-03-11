@@ -10,3 +10,11 @@ token.txt
 /*.egg-info
 /*.egg
 /dist/
+secrets
+test-config.yaml
+build/
+venv/
+.DS_Store
+.idea/
+docsource/
+.coverage*

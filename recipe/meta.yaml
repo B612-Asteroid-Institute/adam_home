@@ -1,0 +1,46 @@
+{% set data = load_setup_py_data() %}
+
+package:
+  name: adam
+  version: {{ data.get('version') }}
+
+source:
+  path: ..
+
+requirements:
+  build:
+    - python
+    - requests
+    - pandas
+    - pytest
+    - pytest-cov
+    - coveralls
+    - flake8
+    - nbconvert
+    - pyxdg
+    - pyyaml
+  run:
+    - python
+    - requests
+    - pandas
+    - pyxdg
+    - pyyaml
+
+test:
+  imports:
+    - adam
+  commands:
+    - pwd
+
+build:
+  noarch: python
+  script: python setup.py install --single-version-externally-managed --record=record.txt
+  entry_points:
+    - adamctl = adam.__main__:main
+
+about:
+  home: https://adam.asteroid-institute.org
+  license: BSD
+  summary: 'Asteroid Institute ADAM'
+  description: |
+    This package installs the ADAM Client Libraries

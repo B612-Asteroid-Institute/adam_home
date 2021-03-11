@@ -2,6 +2,8 @@
     propagator_config.py
 """
 
+from typing import List
+
 
 class PropagatorConfig(object):
     def __init__(self, config_json):
@@ -23,7 +25,7 @@ class PropagatorConfig(object):
         self._config_json = config_json
 
     def __repr__(self):
-        return "Config %s" % (self._config_json)
+        return f"PropagatorConfig(${self._config_json})"
 
     def get_uuid(self):
         return self._uuid
@@ -46,6 +48,7 @@ class PropagatorConfigs(object):
     PUBLIC_CONFIG_ALL_PLANETS_AND_MOON = "00000000-0000-0000-0000-000000000001"
     PUBLIC_CONFIG_SUN_ONLY = "00000000-0000-0000-0000-000000000002"
     PUBLIC_CONFIG_ALL_PLANETS_AND_MOON_AND_ASTEROIDS = "00000000-0000-0000-0000-000000000003"
+    REST_ENDPOINT_PREFIX = '/config/propagator'
 
     def __init__(self, rest):
         self._rest = rest
@@ -53,8 +56,8 @@ class PropagatorConfigs(object):
     def __repr__(self):
         return "PropagatorConfigs module"
 
-    def get_configs(self):
-        code, response = self._rest.get('/config')
+    def get_configs(self) -> List[PropagatorConfig]:
+        code, response = self._rest.get(self.REST_ENDPOINT_PREFIX)
 
         if code != 200:
             raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
@@ -63,24 +66,24 @@ class PropagatorConfigs(object):
 
     # There is no print_configs method. This is much more easily done
     # by viewing the raw json by navigating in a browser to
-    # https://adam-dev-193118.appspot.com/_ah/api/adam/v1/config?token=<your token>
-    # or http://pro-equinox-162418.appspot.com/_ah/api/adam/v1/config?token=<your token>
+    # https://adam-dev-193118.appspot.com/_ah/api/adam/v1/config/propagator?token=<your token>
+    # or http://pro-equinox-162418.appspot.com/_ah/api/adam/v1/config/propagator?token=<your token>
 
-    def get_config(self, uuid):
+    def get_config(self, uuid) -> PropagatorConfig:
         if uuid is None:
             raise KeyError("UUID is required.")
 
-        code, response = self._rest.get('/config/' + uuid)
+        code, response = self._rest.get(f'{self.REST_ENDPOINT_PREFIX}/{uuid}')
 
         if code == 404:
-            # Project not found.
+            # Config not found.
             return None
         elif code != 200:
             raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
 
         return PropagatorConfig(response)
 
-    def new_config(self, config_json):
+    def new_config(self, config_json) -> PropagatorConfig:
         """Method to create a config directly from a JSON object rather
            than specifying every parameter. Useful if you'd like to slighly modify
            an existing config (e.g. ignore Jupiter's gravity), or if you are fine
@@ -101,7 +104,7 @@ class PropagatorConfigs(object):
                     raise KeyError("Value for " + p + " must be one of " +
                                    "POINT_MASS, OMIT, or SPHERICAL_HARMONICS.")
 
-        code, response = self._rest.post('/config', config_json)
+        code, response = self._rest.post(self.REST_ENDPOINT_PREFIX, config_json)
 
         if code != 200:
             raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
@@ -109,7 +112,7 @@ class PropagatorConfigs(object):
         return PropagatorConfig(response)
 
     def delete_config(self, uuid):
-        code = self._rest.delete('/config/' + uuid)
+        code, _ = self._rest.delete(f'{self.REST_ENDPOINT_PREFIX}/{uuid}')
 
         if code != 204:
             raise RuntimeError("Server status code: %s" % (code))

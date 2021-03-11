@@ -1,8 +1,11 @@
-numpy
-requests
-tabulate
+# pip development environment
+astroquery
+flake8
+jupyter
+matplotlib
 pandas
 pytest
 pytest-cov
-coveralls
-flake8
+pyxdg
+pyyaml
+requests

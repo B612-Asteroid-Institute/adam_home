@@ -65,6 +65,8 @@ class SinglePropagation(AdamObject):
 
 
 class BatchPropagations(AdamObjects):
+    """Batch propagations using the runnables framework"""
+
     def __init__(self, rest):
         AdamObjects.__init__(self, rest, 'BatchPropagation')
 
@@ -72,7 +74,7 @@ class BatchPropagations(AdamObjects):
         return "BatchPropagations module"
 
     def _build_batch_propagation_creation_data(
-            self, propagation_params, opm_params):
+            self, propagation_params, opm_params, project_uuid):
         data = {
             'description': propagation_params.get_description(),
             'templatePropagationParameters': {
@@ -81,7 +83,12 @@ class BatchPropagations(AdamObjects):
                 'propagator_uuid': propagation_params.get_propagator_uuid(),
                 'step_duration_sec': propagation_params.get_step_size(),
                 'opmFromString': opm_params.generate_opm(),
-            }
+                'executor': propagation_params.get_executor(),
+                'monteCarloDraws': propagation_params.get_monte_carlo_draws(),
+                'propagationType': propagation_params.get_propagation_type(),
+                'singularMatrixThreshold': propagation_params.get_singular_matrix_threshold(),
+            },
+            'project': project_uuid,
         }
 
         return data
