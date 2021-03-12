@@ -12,6 +12,7 @@ from adam.config_manager import ConfigManager
 from adam.group import Groups
 from adam.project import *
 from adam.job import *
+from adam.adam_processing_results_processor import ApsRestServiceResultsProcessor
 from adam.batch_propagation_results import ResultsService, MonteCarloResults
 from adam.opm_params import OpmParams
 from adam.opm_params import OpmParams

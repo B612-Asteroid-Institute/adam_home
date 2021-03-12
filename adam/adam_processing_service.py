@@ -7,7 +7,7 @@ from enum import Enum
 import numpy as np
 from dateutil import parser as dateparser
 
-from adam import PropagationParams, OpmParams, stk, Project, Job, MonteCarloResults
+from adam import PropagationParams, OpmParams, stk, Project, Job, MonteCarloResults, ApsRestServiceResultsProcessor
 
 
 class AdamProcessingService:
@@ -22,11 +22,13 @@ class AdamProcessingService:
     def execute_batch_propagation(self,
                                   project,
                                   propagation_params: PropagationParams,
-                                  opm_params: OpmParams) -> MonteCarloResults:
+                                  opm_params: OpmParams,
+                                  object_id=None,
+                                  user_defined_id=None) -> MonteCarloResults:
         """Create a new job to run a batch propagation.
 
         Args:
-            project (str): The workspace (project) id.
+            project (str | Project): The workspace (project) id or project object
             propagation_params (PropagationParams): Parameters for the propagation.
             opm_params (OpmParams): Parameters specific to the OPM.
 
@@ -34,9 +36,10 @@ class AdamProcessingService:
             MonteCarloResults: a reference to batch propagation object.
         """
 
-        data = self._build_batch_creation_data(propagation_params, opm_params)
+        project_id = project.get_uuid() if type(project) is Project else project
+        data = self._build_batch_creation_data(propagation_params, opm_params, object_id, user_defined_id)
 
-        code, response = self._rest.post(f'/projects/{project}/jobs', data)
+        code, response = self._rest.post(f'/projects/{project_id}/jobs', data)
 
         if code != 200:
             raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
@@ -46,7 +49,7 @@ class AdamProcessingService:
 
         return MonteCarloResults(results_processor, job_uuid)
 
-    def _build_batch_creation_data(self, propagation_params, opm_params):
+    def _build_batch_creation_data(self, propagation_params, opm_params, object_id, user_defined_id):
         propagation_params_json = {
             'start_time': propagation_params.get_start_time(),
             'end_time': propagation_params.get_end_time(),
@@ -79,5 +82,11 @@ class AdamProcessingService:
             'opm_string': opm_params.generate_opm(),
             'description': propagation_params.get_description(),
         }
+
+        if (object_id is not None):
+            data['objectId'] = object_id
+
+        if (user_defined_id is not None):
+            data['userDefinedId'] = user_defined_id
 
         return data
