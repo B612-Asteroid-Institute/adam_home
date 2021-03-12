@@ -132,6 +132,10 @@ class Projects(object):
                        response.get('name'),
                        response.get('description'))
 
+    def get_project_from_config(self, config) -> Project:
+        uuid = config['workspace']
+        return self.get_project(uuid)
+
     def new_project(self, parent, name, description) -> Project:
         """Creates a new project.
 
