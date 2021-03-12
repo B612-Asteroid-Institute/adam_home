@@ -10,6 +10,7 @@ class Project(object):
 
     An ADAM Project is like a folder for work executed in the ADAM platform.
     """
+
     def __init__(self, uuid, parent=None, name=None, description=None):
         """Initialize the Project data class.
 
@@ -83,7 +84,7 @@ class Projects(object):
         """
         return [p for p in self.get_projects() if p.get_parent() == parent]
 
-    def get_projects(self) -> List[Project]:
+    def get_projects(self, uuid=None, name=None, description=None) -> List[Project]:
         """Gets projects that the current user has access to read.
 
         Returns:
@@ -97,7 +98,7 @@ class Projects(object):
             project = Project(p['uuid'], p.get('parent'), p.get('name'), p.get('description'))
             projects.append(project)
 
-        return projects
+        return self.filter_projects(projects, uuid, name, description)
 
     def get_project(self, uuid) -> Project:
         """Gets project details.
@@ -162,3 +163,22 @@ class Projects(object):
 
         if code != 204:
             raise RuntimeError("Server status code: %s" % (code))
+
+    def filter_projects(self, projects, uuid=None, name=None, description=None) -> List[Project]:
+        results = []
+        for project in projects:
+            if (uuid is not None and not project._uuid.__contains__(uuid)):
+                continue
+            if (name is not None):
+                if (project._name is None):
+                    continue
+                if (not project._name.__contains__(name)):
+                    continue
+            if (description is not None):
+                if (project_description is None):
+                    continue
+                if (not project._description.__contains__(description)):
+                    continue
+            results.append(project)
+
+        return results
