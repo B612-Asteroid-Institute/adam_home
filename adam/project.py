@@ -27,8 +27,8 @@ class Project(object):
 
     def __repr__(self):
         return (
-            f"Project(uuid={self._uuid}, parent={self._parent}, "
-            f"name={self._name}, description={self._description})")
+            f"Project(name={self._name}, description={self._description}, "
+            f"uuid={self._uuid}, parent={self._parent})")
 
     def get_uuid(self):
         return self._uuid
@@ -85,7 +85,12 @@ class Projects(object):
         return [p for p in self.get_projects() if p.get_parent() == parent]
 
     def get_projects(self, uuid=None, name=None, description=None) -> List[Project]:
-        """Gets projects that the current user has access to read.
+        """Gets projects that the current user has access to read with filtering by zero or more optional fields
+
+        Args:
+            uuid (str): (Optional) checks whether uuid contains this text
+            name (str): (Optional) checks whether name contains this text
+            description (str): (Optional) checks whether description contains this text
 
         Returns:
             list(Project): a list of Projects.
