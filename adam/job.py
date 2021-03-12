@@ -2,6 +2,7 @@
     job.py
 """
 import urllib
+from dateutil import parser as dateparser
 from adam import Project
 
 
@@ -16,7 +17,7 @@ class Job(object):
         self._uuid = uuid
         self._project_id = project_id
         self._object_id = object_id
-        self._user_defined_id = user_defined_id,
+        self._user_defined_id = user_defined_id
         self._description = description
         self._job_type = job_type
         self._input_json = input_json
@@ -27,12 +28,11 @@ class Job(object):
 
     def __repr__(self):
         return (
-            f"Job(uuid={self._uuid}, project_id={self._project_id}, "
-            f"object_id={self._object_id}, user_defined_id={self._user_defined_id}, "
+            f"Job(object_id={self._object_id}, user_defined_id={self._user_defined_id}, "
             f"description={self._description}, job_type={self._job_type},"
             f"status={self._status}, submission_time={self._submission_time},"
             f"execution_start={self._execution_start}, completion_time={self._completion_time},"
-            f"input_json={self._input_json})")
+            f"input_json={self._input_json},uuid={self._uuid}, project_id={self._project_id}, )")
 
     def get_uuid(self):
         return self._uuid
@@ -81,7 +81,7 @@ class Jobs(object):
         """
         self._rest = rest
 
-    def find_jobs(self, project, status=None, object_id=None, user_defined_id=None, description=None,
+    def get_jobs(self, project, status=None, object_id=None, user_defined_id=None, description=None,
                   earliest_submission_datetime=None, latest_submission_datetime=None):
         """Finds jobs based on one or more of the specified fields
 
