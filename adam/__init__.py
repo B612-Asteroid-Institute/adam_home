@@ -10,11 +10,12 @@ from adam.batch_run_manager import BatchRunManager
 from adam.batches import Batches
 from adam.config_manager import ConfigManager
 from adam.group import Groups
+from adam.job import *
 from adam.opm_params import OpmParams
 from adam.opm_params import OpmParams
 from adam.permission import Permission
 from adam.permission import Permissions
-from adam.project import Projects
+from adam.project import *
 from adam.propagation_params import PropagationParams
 from adam.propagator_config import PropagatorConfigs
 from adam.rest_proxy import AuthenticatingRestProxy
