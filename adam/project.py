@@ -3,6 +3,7 @@
 """
 
 from typing import List
+from adam import AuthenticatingRestProxy, RestRequests
 
 
 class Project(object):
@@ -43,14 +44,14 @@ class Project(object):
         return self._description
 
 
-class Projects(object):
+class ProjectsClient(object):
     """Module for managing projects.
 
     """
 
     _REST_ENDPOINT_PREFIX = '/projects'
 
-    def __init__(self, rest):
+    def __init__(self, rest=AuthenticatingRestProxy(RestRequests())):
         """Initialize the Projects API client.
 
         Args:

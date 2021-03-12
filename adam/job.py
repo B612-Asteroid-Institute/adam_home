@@ -4,7 +4,7 @@
 import urllib
 import datetime
 from dateutil import parser as dateparser
-from adam import Project
+from adam import Project, AuthenticatingRestProxy, RestRequests
 
 
 class Job(object):
@@ -69,12 +69,12 @@ class Job(object):
         return self._status
 
 
-class Jobs(object):
+class JobsClient(object):
     """Module for managing jobs.
 
     """
 
-    def __init__(self, rest):
+    def __init__(self, rest=AuthenticatingRestProxy(RestRequests())):
         """Initialize the Jobs API client.
 
         Args:

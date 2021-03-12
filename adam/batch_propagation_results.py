@@ -11,15 +11,15 @@ from enum import Enum
 import numpy as np
 from dateutil import parser as dateparser
 
-from adam import Project, Job, stk, ApsRestServiceResultsProcessor
+from adam import Project, Job, stk, ApsRestServiceResultsProcessor, AuthenticatingRestProxy, RestRequests
 
 
-class ResultsService(object):
+class ResultsClient(object):
     """Module for managing results interactions.
 
     """
 
-    def __init__(self, rest):
+    def __init__(self, rest=AuthenticatingRestProxy(RestRequests())):
         """Initialize the Results Service API client.
 
         Args:

@@ -8,12 +8,13 @@ import numpy as np
 from dateutil import parser as dateparser
 
 from adam import PropagationParams, OpmParams, stk, Project, Job, MonteCarloResults, ApsRestServiceResultsProcessor
+from adam import AuthenticatingRestProxy, RestRequests
 
 
 class AdamProcessingService:
     """The ADAM service handling operations related to jobs."""
 
-    def __init__(self, rest):
+    def __init__(self, rest=AuthenticatingRestProxy(RestRequests())):
         self._rest = rest
 
     def __repr__(self):
