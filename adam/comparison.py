@@ -9,9 +9,9 @@ class Comparison(IntEnum):
 
     Equals = 0
     GreaterThan = 1
-    GreaterThanEquals = 2
+    GreaterThanOrEquals = 2
     LessThan = 3
-    LessThanEquals = 4
+    LessThanOrEquals = 4
 
     def compare(self, test_value, actual):
         if self == Comparison.Equals:
@@ -20,13 +20,13 @@ class Comparison(IntEnum):
         if self == Comparison.GreaterThan:
             return actual > test_value
 
-        if self == Comparison.GreaterThanEquals:
+        if self == Comparison.GreaterThanOrEquals:
             return actual >= test_value
 
         if self == Comparison.LessThan:
             return actual < test_value
 
-        if self == Comparison.LessThanEquals:
+        if self == Comparison.LessThanOrEquals:
             return actual <= test_value
 
         raise ValueError(f"Unknown comparison type: {self}")
