@@ -14,8 +14,9 @@ class Job(object):
     An ADAM Project is like captures a computational run in our services.
     """
 
-    def __init__(self, uuid, project_id=None, object_id=None, user_defined_id=None, description=None, job_type=None,
-                 input_json=None, submission_time=None, execution_start=None, completion_time=None, status=None):
+    def __init__(self, uuid, project_id=None, object_id=None, user_defined_id=None,
+                 description=None, job_type=None, input_json=None, submission_time=None,
+                 execution_start=None, completion_time=None, status=None):
         self._uuid = uuid
         self._project_id = project_id
         self._object_id = object_id
@@ -72,6 +73,7 @@ class Job(object):
     def get_status(self):
         return self._status
 
+
 class JobsClient(object):
     """Module for managing jobs.
 
@@ -86,7 +88,7 @@ class JobsClient(object):
         self._rest = rest
 
     def get_jobs(self, project, status=None, object_id=None, user_defined_id=None, description=None,
-                  earliest_submission_datetime=None, latest_submission_datetime=None):
+                 earliest_submission_datetime=None, latest_submission_datetime=None):
         """Finds jobs based on one or more of the specified fields
 
         Args:
@@ -95,8 +97,8 @@ class JobsClient(object):
             object_id (str): (Optional) The object ID field looking for (can have wildcards)
             user_defined_id (str): (Optional) The user ID field looking for (can have wildcards)
             description (str): (Optional) The description field looking for (can have wildcards)
-            earliest_submission_datetime (datetime): (Optional) Earlist submission date/time interested in
-            latest_submission_datetime (datetime): (Optional) Earlist submission date/time interested in
+            earliest_submission_datetime (datetime): (Optional) Earliest submission interested in
+            latest_submission_datetime (datetime): (Optional) Earliest submission interested in
 
         Returns:
             list: a list of jobs for the project that match that criteria.
@@ -120,19 +122,23 @@ class JobsClient(object):
         if (earliest_submission_datetime is not None):
             if type(earliest_submission_datetime) is not datetime.datetime:
                 raise TypeError("Earliest submission date time needs to be a datetime object")
-            query_parameters.append(f"earliestSubmissionDateTime={earliest_submission_datetime.isoformat()}")
+            query_parameters.append(
+                f"earliestSubmissionDateTime={earliest_submission_datetime.isoformat()}"
+            )
 
         if (latest_submission_datetime is not None):
             if type(latest_submission_datetime) is not datetime.datetime:
                 raise TypeError("Earliest submission date time needs to be a datetime object")
-            query_parameters.append(f"latestSubmissionDateTime={latest_submission_datetime.isoformat()}")
+            query_parameters.append(
+                f"latestSubmissionDateTime={latest_submission_datetime.isoformat()}"
+            )
 
         query_string = "&".join(query_parameters)
-        request_path = f'/projects/{project_id}/jobs?{query_string}'
         project_id = project.get_uuid() if type(project) is Project else project
+        request_path = f'/projects/{project_id}/jobs?{query_string}'
         code, response = self._rest.get(request_path)
 
-        if (code == 200):
+        if code == 200:
             jobs = list(map(self._jobObjectFromHashMap, response['items']))
             return jobs
         else:
@@ -173,17 +179,17 @@ class JobsClient(object):
     def _jobObjectFromHashMap(self, j):
         try:
             submission_time = dateparser.parse(j['submissionTime'])
-        except:
+        except KeyError:
             submission_time = None
 
         try:
             execution_start = dateparser.parse(j['executionStart'])
-        except:
+        except KeyError:
             execution_start = None
 
         try:
             completion_time = dateparser.parse(j['completionTime'])
-        except:
+        except KeyError:
             completion_time = None
 
         return Job(

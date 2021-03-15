@@ -4,7 +4,8 @@ from enum import IntEnum
 class Comparison(IntEnum):
     """Comparison class.
 
-    A comparison utility library that can be used as a way of configuring comparison functions as method arguments
+    A comparison utility library that can be used as a way of configuring
+    comparison functions as method arguments
     """
 
     Equals = 0

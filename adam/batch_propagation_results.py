@@ -5,13 +5,12 @@
 import json
 import time
 import urllib
-import datetime
 from enum import Enum
 
 import numpy as np
 from dateutil import parser as dateparser
 
-from adam import Project, Job, stk, ApsRestServiceResultsProcessor, AuthenticatingRestProxy, RestRequests
+from adam import stk, ApsRestServiceResultsProcessor, AuthenticatingRestProxy, RestRequests
 
 
 class ResultsClient(object):
@@ -37,7 +36,8 @@ class ResultsClient(object):
             result (ApsResults): a result object that can be used to query for data about the
             submitted job
         """
-        results_processor = ApsRestServiceResultsProcessor(self._rest, job.get_project_id())
+        results_processor = ApsRestServiceResultsProcessor(self._rest,
+                                                           job.get_project_id())
 
         return MonteCarloResults(results_processor, job.get_uuid())
 
@@ -156,7 +156,12 @@ class MonteCarloResults(ApsResults):
         if impacts is None:
             impacts = 0
         probability = impacts / (misses + impacts)
-        return MonteCarloSummary(misses=misses, close_approach=close_approaches, impacts=impacts, pc=probability)
+        return MonteCarloSummary(
+            misses=misses,
+            close_approach=close_approaches,
+            impacts=impacts,
+            pc=probability
+        )
 
     def get_final_positions(self, position_orbit_type: PositionOrbitType, force_update=False):
         """Get the final positions of all propagated objects in the job.
@@ -264,5 +269,3 @@ class MonteCarloSummary(object):
 
     def get_pc(self):
         return self._pc
-
-

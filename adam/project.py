@@ -86,7 +86,8 @@ class ProjectsClient(object):
         return [p for p in self.get_projects() if p.get_parent() == parent]
 
     def get_projects(self, uuid=None, name=None, description=None) -> List[Project]:
-        """Gets projects that the current user has access to read with filtering by zero or more optional fields
+        """Gets projects that the current user has access to read with filtering by
+        zero or more optional fields
 
         Args:
             uuid (str): (Optional) checks whether uuid contains this text

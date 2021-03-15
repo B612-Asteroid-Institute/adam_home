@@ -1,13 +1,5 @@
-import json
-import time
-import urllib
-import datetime
-from enum import Enum
-
-import numpy as np
-from dateutil import parser as dateparser
-
-from adam import PropagationParams, OpmParams, stk, Project, Job, MonteCarloResults, ApsRestServiceResultsProcessor
+from adam import PropagationParams, OpmParams, Project
+from adam import ApsRestServiceResultsProcessor, MonteCarloResults
 from adam import AuthenticatingRestProxy, RestRequests
 
 
@@ -38,7 +30,8 @@ class AdamProcessingService:
         """
 
         project_id = project.get_uuid() if type(project) is Project else project
-        data = self._build_batch_creation_data(propagation_params, opm_params, object_id, user_defined_id)
+        data = self._build_batch_creation_data(propagation_params, opm_params,
+                                               object_id, user_defined_id)
 
         code, response = self._rest.post(f'/projects/{project_id}/jobs', data)
 
@@ -50,7 +43,8 @@ class AdamProcessingService:
 
         return MonteCarloResults(results_processor, job_uuid)
 
-    def _build_batch_creation_data(self, propagation_params, opm_params, object_id, user_defined_id):
+    def _build_batch_creation_data(self, propagation_params, opm_params, object_id,
+                                   user_defined_id):
         propagation_params_json = {
             'start_time': propagation_params.get_start_time(),
             'end_time': propagation_params.get_end_time(),
