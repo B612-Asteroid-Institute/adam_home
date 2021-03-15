@@ -71,9 +71,9 @@ class ProjectsTest(unittest.TestCase):
         self.assertEqual(None, project.get_description())
 
         rest.expect_get(f"{ProjectsClient._REST_ENDPOINT_PREFIX}/ccc", 200, {'uuid': 'ccc',
-                                                                       'parent': 'ppp',
-                                                                       'name': 'nnn',
-                                                                       'description': 'ddd'})
+                                                                             'parent': 'ppp',
+                                                                             'name': 'nnn',
+                                                                             'description': 'ddd'})
         project = projects.get_project('ccc')
         self.assertEqual("ccc", project.get_uuid())
         self.assertEqual('ppp', project.get_parent())
