@@ -1,6 +1,7 @@
 """
     job.py
 """
+import json
 import urllib
 import datetime
 from dateutil import parser as dateparser
@@ -54,6 +55,9 @@ class Job(object):
         return self._job_type
 
     def get_input_json(self):
+        return json.loads(self._input_json)
+
+    def get_input_json_string(self):
         return self._input_json
 
     def get_submission_time(self):
@@ -67,7 +71,6 @@ class Job(object):
 
     def get_status(self):
         return self._status
-
 
 class JobsClient(object):
     """Module for managing jobs.
@@ -134,6 +137,38 @@ class JobsClient(object):
             return jobs
         else:
             raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
+
+    def filter_by_inputs(self, jobs, keys, comparison, comparison_value):
+        """Initialize the Jobs API client.
+
+        filter_by_inputs(jobs, ['monteCarloDraws'], Comparison.GreaterThan, 50000)
+        filter_by_inputs(jobs, ['opm','keplerian','inclination'], Comparison.GreaterThan, 23)
+
+        Args:
+            jobs (List[Job]): the jobs list to filter
+            keys (List[str]): one or more keys of the JSON hierarchy
+            comparison (Comparison): The type of comparison desired
+            comparison_value : the value of the specific key of interest that is being tested for equality
+        """
+        results = []
+
+        if len(keys) < 1:
+            raise ValueError(f"Must provide at least one string key, comparison type, and one value: {keys}")
+
+        for job in jobs:
+            inputs = job.get_input_json()
+            value = inputs[keys[0]]
+            try:
+                for ki in range(1, len(keys)):
+                    key = keys[ki]
+                    value = value[key]
+            except TypeError:
+                # The key they are searching for doesn't exist so by definition this won't pass filter criteria
+                continue
+            if comparison.compare(comparison_value, value):
+                results.append(job)
+
+        return results
 
     def _jobObjectFromHashMap(self, j):
         try:
