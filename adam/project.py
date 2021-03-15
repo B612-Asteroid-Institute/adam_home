@@ -185,7 +185,7 @@ class ProjectsClient(object):
                 if (not project._name.__contains__(name)):
                     continue
             if (description is not None):
-                if (project_description is None):
+                if (project._description is None):
                     continue
                 if (not project._description.__contains__(description)):
                     continue

@@ -8,6 +8,7 @@ from adam.batch_propagation import BatchPropagation
 from adam.batch_propagation import BatchPropagations
 from adam.batch_run_manager import BatchRunManager
 from adam.batches import Batches
+from adam.comparison import Comparison
 from adam.config_manager import ConfigManager
 from adam.group import Groups
 from adam.rest_proxy import AuthenticatingRestProxy
