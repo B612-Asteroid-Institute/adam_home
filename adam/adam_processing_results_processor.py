@@ -1,3 +1,5 @@
+from adam import Project
+
 
 class ApsRestServiceResultsProcessor:
     """AdamProcessingService REST service to check job status and results"""
@@ -18,8 +20,9 @@ class ApsRestServiceResultsProcessor:
         Returns:
             str: the job status.
         """
-
-        code, response = self._rest.get(f'/projects/{self._project}/jobs/{job_uuid}/status')
+        project = self._project
+        project_id = project.get_uuid() if type(project) is Project else project
+        code, response = self._rest.get(f'/projects/{project_id}/jobs/{job_uuid}/status')
         if code != 200:
             raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
 
@@ -42,7 +45,9 @@ class ApsRestServiceResultsProcessor:
                 }
         """
 
-        code, response = self._rest.get(f'/projects/{self._project}/jobs/{job_uuid}/result')
+        project = self._project
+        project_id = project.get_uuid() if type(project) is Project else project
+        code, response = self._rest.get(f'/projects/{project_id}/jobs/{job_uuid}/result')
         if code != 200:
             raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
 
