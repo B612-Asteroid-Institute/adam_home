@@ -139,7 +139,7 @@ class JobsClient(object):
         code, response = self._rest.get(request_path)
 
         if code == 200:
-            jobs = list(map(self._jobObjectFromHashMap, response['items']))
+            jobs = list(map(self._job_object_from_dictionary, response['items']))
             return jobs
         else:
             raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
@@ -180,7 +180,7 @@ class JobsClient(object):
 
         return results
 
-    def _jobObjectFromHashMap(self, j):
+    def _job_object_from_dictionary(self, j):
         try:
             submission_time = dateparser.parse(j['submissionTime'])
         except KeyError:

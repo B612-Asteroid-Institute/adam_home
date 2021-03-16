@@ -33,7 +33,7 @@ class ResultsClient(object):
             job (Job): The job id or Job object that has the Job ID in it
 
         Returns:
-            result (ApsResults): a result object that can be used to query for data about the
+            result (MonteCarloResults): a result object that can be used to query for data about the
             submitted job
         """
         results_processor = ApsRestServiceResultsProcessor(self._rest,
@@ -46,7 +46,7 @@ class ApsResults:
     """API for retrieving job details"""
 
     @classmethod
-    def fromRESTwithRawIds(self, rest, project_uuid, job_uuid):
+    def _from_rest_with_raw_ids(self, rest, project_uuid, job_uuid):
         results_processor = ApsRestServiceResultsProcessor(rest, project_uuid)
         return ApsResults(results_processor, job_uuid)
 
@@ -123,7 +123,7 @@ class MonteCarloResults(ApsResults):
         IMPACT = 'IMPACT'
 
     @classmethod
-    def fromRESTwithRawIds(cls, rest, project_uuid, job_uuid):
+    def _from_rest_with_raw_ids(cls, rest, project_uuid, job_uuid):
         results_processor = ApsRestServiceResultsProcessor(rest, project_uuid)
         return MonteCarloResults(results_processor, job_uuid)
 
@@ -144,7 +144,7 @@ class MonteCarloResults(ApsResults):
 
         """
 
-        self.__update_results(force_update)
+        self._update_results(force_update)
         # {"totalMisses": 6, "totalImpacts": 0, "totalCloseApproaches": 12}
         misses = self._summary.get('totalMisses')
         if misses is None:
@@ -155,7 +155,11 @@ class MonteCarloResults(ApsResults):
         impacts = self._summary.get('totalImpacts')
         if impacts is None:
             impacts = 0
-        probability = impacts / (misses + impacts)
+
+        denominator = misses + impacts
+        probability = 0
+        if denominator > 0:
+            probability = impacts / (misses + impacts)
         return MonteCarloSummary(
             misses=misses,
             close_approach=close_approaches,
@@ -174,7 +178,7 @@ class MonteCarloResults(ApsResults):
             list: A list of the final orbit positions, filtered by the position_orbit_type.
         """
 
-        self.__update_results(force_update)
+        self._update_results(force_update)
         position_type_string = position_orbit_type.value
         final_positions = self._detailedOutputs['finalPositionsByType'].get(position_type_string)
         if final_positions is None:
@@ -195,7 +199,7 @@ class MonteCarloResults(ApsResults):
             int: the number of ephemerides generated from the propagation.
         """
 
-        self.__update_results(force_update)
+        self._update_results(force_update)
         ephemeris = self._detailedOutputs.get('ephemeris')
         if ephemeris is None:
             return 0
@@ -214,7 +218,7 @@ class MonteCarloResults(ApsResults):
             str: the ephemeris file as a string.
         """
 
-        self.__update_results(force_update)
+        self._update_results(force_update)
         ephemeris = self._detailedOutputs['ephemeris']
         ephemeris_resource_name = ephemeris['ephemerisResourcePath'][run_number]
         base_url = ephemeris['resourceBasePath']
@@ -238,7 +242,7 @@ class MonteCarloResults(ApsResults):
         ephemeris = stk.io.ephemeris_file_data_to_dataframe(ephemeris_text.splitlines())
         return ephemeris
 
-    def __update_results(self, force_update):
+    def _update_results(self, force_update):
         if force_update or self._detailedOutputs is None:
             results = self.get_results()
             self._summary = json.loads(results['outputSummaryJson'])
