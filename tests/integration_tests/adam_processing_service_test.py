@@ -90,7 +90,7 @@ class TestApsResultClass:
 class TestBatchPropagationResultClass:
 
     def test_get_summary(self, service):
-        results = BatchPropagationResults._from_rest_with_raw_ids(
+        results = MonteCarloResults._from_rest_with_raw_ids(
             service.rest,
             '0dc1e8b0-4f92-46ad-8838-c9e9eca6935c',
             '285332fd-91e9-4e48-843d-36495caaf915')
@@ -98,28 +98,28 @@ class TestBatchPropagationResultClass:
         print(summary)
 
     def test_get_final_positions(self, service):
-        results = BatchPropagationResults._from_rest_with_raw_ids(
+        results = MonteCarloResults._from_rest_with_raw_ids(
             service.rest,
             '0dc1e8b0-4f92-46ad-8838-c9e9eca6935c',
             '285332fd-91e9-4e48-843d-36495caaf915')
         print("Misses: ")
-        print(results.get_final_positions(BatchPropagationResults.PositionOrbitType.MISS))
+        print(results.get_final_positions(MonteCarloResults.PositionOrbitType.MISS))
 
         print("Close Approaches: ")
-        print(results.get_final_positions(BatchPropagationResults.PositionOrbitType.CLOSE_APPROACH))
+        print(results.get_final_positions(MonteCarloResults.PositionOrbitType.CLOSE_APPROACH))
 
         print("Impacts:")
-        print(results.get_final_positions(BatchPropagationResults.PositionOrbitType.IMPACT))
+        print(results.get_final_positions(MonteCarloResults.PositionOrbitType.IMPACT))
 
     def test_get_result_ephemeris_count(self, service):
-        results = BatchPropagationResults._from_rest_with_raw_ids(
+        results = MonteCarloResults._from_rest_with_raw_ids(
             service.rest,
             '0dc1e8b0-4f92-46ad-8838-c9e9eca6935c',
             '285332fd-91e9-4e48-843d-36495caaf915')
         print(results.get_result_ephemeris_count())
 
     def test_get_result_ephemeris(self, service):
-        results = BatchPropagationResults._from_rest_with_raw_ids(
+        results = MonteCarloResults._from_rest_with_raw_ids(
             service.rest,
             '0dc1e8b0-4f92-46ad-8838-c9e9eca6935c',
             '285332fd-91e9-4e48-843d-36495caaf915')

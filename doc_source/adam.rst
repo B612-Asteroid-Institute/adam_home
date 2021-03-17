@@ -20,6 +20,14 @@ adam.adam\_objects module
    :undoc-members:
    :show-inheritance:
 
+adam.adam\_processing\_results\_processor module
+------------------------------------------------
+
+.. automodule:: adam.adam_processing_results_processor
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 adam.adam\_processing\_service module
 -------------------------------------
 
@@ -60,6 +68,14 @@ adam.batch\_propagation module
    :undoc-members:
    :show-inheritance:
 
+adam.batch\_propagation\_results module
+---------------------------------------
+
+.. automodule:: adam.batch_propagation_results
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 adam.batch\_run\_manager module
 -------------------------------
 
@@ -72,6 +88,14 @@ adam.batches module
 -------------------
 
 .. automodule:: adam.batches
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+adam.comparison module
+----------------------
+
+.. automodule:: adam.comparison
    :members:
    :undoc-members:
    :show-inheritance:
@@ -96,6 +120,14 @@ adam.group module
 -----------------
 
 .. automodule:: adam.group
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+adam.job module
+---------------
+
+.. automodule:: adam.job
    :members:
    :undoc-members:
    :show-inheritance:
