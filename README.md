@@ -19,7 +19,8 @@ There are 2 required configuration IDs you'll need:
 
 ```bash
 # get latest release of ADAM sdk
-conda install -c asteroid-institute adam
+# add the -c conda-forge for some of the adam dependencies
+conda install -c conda-forge -c asteroid-institute adam
 
 # log in with Google account, defaults to prod server
 adamctl login
