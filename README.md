@@ -40,7 +40,7 @@ adamctl config
 Sometimes you might need to use an ADAM development server (e.g. for experimental APIs or developing ADAM client/server). 
 Create a separate ADAM configuration for that workspace.
 
-```
+```bash
 # Set up a configuration e.g. "experimental_dev"
 # The URL points to the ADAM server you specify, plus the path to the API.
 # This will also set the default_env property of your configuration to "experimental_dev".
@@ -125,7 +125,7 @@ A typical development loop will consist of:
 
 You probably don't have to do the initial setup.
 
-```python
+```bash
 # In the same conda environment where you've installed ADAM:
 cd adam_home
 conda install sphinx sphinx_rtd_theme
@@ -151,7 +151,7 @@ make html
 
 ### Re-generate documentation
 
-```python
+```bash
 cd adam_home
 sphinx-apidoc --force -o doc_source adam
 make html
