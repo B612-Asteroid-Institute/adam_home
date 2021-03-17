@@ -155,6 +155,8 @@ make html
 cd adam_home
 sphinx-apidoc --force -o doc_source adam
 make html
+rm -rf docs
+mv build/html docs
 ```
 
 Eventually this should be part of CI/CD.
