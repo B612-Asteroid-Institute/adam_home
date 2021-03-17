@@ -152,7 +152,7 @@ make html
 
 ```python
 cd adam_home
-sphinx-apidoc -o doc_source adam
+sphinx-apidoc --force -o doc_source adam
 make html
 ```
 

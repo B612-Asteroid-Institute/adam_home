@@ -84,16 +84,20 @@
 <li><a class="reference internal" href="#subpackages">Subpackages</a></li>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-adam.adam_objects">adam.adam_objects module</a></li>
+<li><a class="reference internal" href="#module-adam.adam_processing_results_processor">adam.adam_processing_results_processor module</a></li>
 <li><a class="reference internal" href="#module-adam.adam_processing_service">adam.adam_processing_service module</a></li>
 <li><a class="reference internal" href="#module-adam.astro_utils">adam.astro_utils module</a></li>
 <li><a class="reference internal" href="#module-adam.auth">adam.auth module</a></li>
 <li><a class="reference internal" href="#module-adam.batch">adam.batch module</a></li>
 <li><a class="reference internal" href="#module-adam.batch_propagation">adam.batch_propagation module</a></li>
+<li><a class="reference internal" href="#module-adam.batch_propagation_results">adam.batch_propagation_results module</a></li>
 <li><a class="reference internal" href="#module-adam.batch_run_manager">adam.batch_run_manager module</a></li>
 <li><a class="reference internal" href="#module-adam.batches">adam.batches module</a></li>
+<li><a class="reference internal" href="#module-adam.comparison">adam.comparison module</a></li>
 <li><a class="reference internal" href="#module-adam.config_manager">adam.config_manager module</a></li>
 <li><a class="reference internal" href="#module-adam.errors">adam.errors module</a></li>
 <li><a class="reference internal" href="#module-adam.group">adam.group module</a></li>
+<li><a class="reference internal" href="#module-adam.job">adam.job module</a></li>
 <li><a class="reference internal" href="#module-adam.opm_params">adam.opm_params module</a></li>
 <li><a class="reference internal" href="#module-adam.permission">adam.permission module</a></li>
 <li><a class="reference internal" href="#module-adam.project">adam.project module</a></li>
@@ -292,94 +296,22 @@
 </dd></dl>
 
 </div>
-<div class="section" id="module-adam.adam_processing_service">
-<span id="adam-adam-processing-service-module"></span><h2>adam.adam_processing_service module<a class="headerlink" href="#module-adam.adam_processing_service" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-adam.adam_processing_results_processor">
+<span id="adam-adam-processing-results-processor-module"></span><h2>adam.adam_processing_results_processor module<a class="headerlink" href="#module-adam.adam_processing_results_processor" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt id="adam.adam_processing_service.AdamProcessingService">
-<em class="property">class </em><code class="sig-prename descclassname">adam.adam_processing_service.</code><code class="sig-name descname">AdamProcessingService</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rest</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_processing_service.AdamProcessingService" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>The ADAM service handling operations related to jobs.</p>
-<dl class="py method">
-<dt id="adam.adam_processing_service.AdamProcessingService.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rest</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_processing_service.AdamProcessingService.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="adam.adam_processing_service.AdamProcessingService.execute_batch_propagation">
-<code class="sig-name descname">execute_batch_propagation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">project</span></em>, <em class="sig-param"><span class="n">propagation_params</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#adam.propagation_params.PropagationParams" title="adam.propagation_params.PropagationParams">adam.propagation_params.PropagationParams</a></span></em>, <em class="sig-param"><span class="n">opm_params</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#adam.opm_params.OpmParams" title="adam.opm_params.OpmParams">adam.opm_params.OpmParams</a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#adam.adam_processing_service.BatchPropagationResults" title="adam.adam_processing_service.BatchPropagationResults">adam.adam_processing_service.BatchPropagationResults</a><a class="headerlink" href="#adam.adam_processing_service.AdamProcessingService.execute_batch_propagation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a new job to run a batch propagation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>project</strong> (<em>str</em>) – The workspace (project) id.</p></li>
-<li><p><strong>propagation_params</strong> (<a class="reference internal" href="#adam.propagation_params.PropagationParams" title="adam.propagation_params.PropagationParams"><em>PropagationParams</em></a>) – Parameters for the propagation.</p></li>
-<li><p><strong>opm_params</strong> (<a class="reference internal" href="#adam.opm_params.OpmParams" title="adam.opm_params.OpmParams"><em>OpmParams</em></a>) – Parameters specific to the OPM.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a reference to batch propagation object.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#adam.adam_processing_service.BatchPropagationResults" title="adam.adam_processing_service.BatchPropagationResults">BatchPropagationResults</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="adam.adam_processing_service.AdamProcessingService.get_job_results">
-<code class="sig-name descname">get_job_results</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">project</span></em>, <em class="sig-param"><span class="n">job_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_processing_service.AdamProcessingService.get_job_results" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the job results for a specific job for a specific project.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>project</strong> (<em>str</em>) – The workspace (project) id.</p></li>
-<li><p><strong>job_id</strong> (<em>str</em>) – The job id.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a result object that can be used to query for data about the
-submitted job</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>result (<a class="reference internal" href="#adam.adam_processing_service.ApsResults" title="adam.adam_processing_service.ApsResults">ApsResults</a>)</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="adam.adam_processing_service.AdamProcessingService.get_jobs">
-<code class="sig-name descname">get_jobs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">project</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_processing_service.AdamProcessingService.get_jobs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the jobs within a certain workspace (project).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>project</strong> (<em>str</em>) – The workspace (project) id.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a list of jobs within the workspace (project).</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt id="adam.adam_processing_service.ApsRestServiceResultsProcessor">
-<em class="property">class </em><code class="sig-prename descclassname">adam.adam_processing_service.</code><code class="sig-name descname">ApsRestServiceResultsProcessor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rest</span></em>, <em class="sig-param"><span class="n">project</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_processing_service.ApsRestServiceResultsProcessor" title="Permalink to this definition">¶</a></dt>
+<dt id="adam.adam_processing_results_processor.ApsRestServiceResultsProcessor">
+<em class="property">class </em><code class="sig-prename descclassname">adam.adam_processing_results_processor.</code><code class="sig-name descname">ApsRestServiceResultsProcessor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rest</span></em>, <em class="sig-param"><span class="n">project</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_processing_results_processor.ApsRestServiceResultsProcessor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>AdamProcessingService REST service to check job status and results</p>
 <dl class="py method">
-<dt id="adam.adam_processing_service.ApsRestServiceResultsProcessor.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rest</span></em>, <em class="sig-param"><span class="n">project</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_processing_service.ApsRestServiceResultsProcessor.__init__" title="Permalink to this definition">¶</a></dt>
+<dt id="adam.adam_processing_results_processor.ApsRestServiceResultsProcessor.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rest</span></em>, <em class="sig-param"><span class="n">project</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_processing_results_processor.ApsRestServiceResultsProcessor.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="adam.adam_processing_service.ApsRestServiceResultsProcessor.check_status">
-<code class="sig-name descname">check_status</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">job_uuid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_processing_service.ApsRestServiceResultsProcessor.check_status" title="Permalink to this definition">¶</a></dt>
+<dt id="adam.adam_processing_results_processor.ApsRestServiceResultsProcessor.check_status">
+<code class="sig-name descname">check_status</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">job_uuid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_processing_results_processor.ApsRestServiceResultsProcessor.check_status" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check the status of a job.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -395,8 +327,8 @@ submitted job</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="adam.adam_processing_service.ApsRestServiceResultsProcessor.get_results">
-<code class="sig-name descname">get_results</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">job_uuid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_processing_service.ApsRestServiceResultsProcessor.get_results" title="Permalink to this definition">¶</a></dt>
+<dt id="adam.adam_processing_results_processor.ApsRestServiceResultsProcessor.get_results">
+<code class="sig-name descname">get_results</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">job_uuid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_processing_results_processor.ApsRestServiceResultsProcessor.get_results" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the results of a job.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -422,198 +354,37 @@ submitted job</p>
 
 </dd></dl>
 
-<dl class="py class">
-<dt id="adam.adam_processing_service.ApsResults">
-<em class="property">class </em><code class="sig-prename descclassname">adam.adam_processing_service.</code><code class="sig-name descname">ApsResults</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">results_processor</span></em>, <em class="sig-param"><span class="n">job_uuid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_processing_service.ApsResults" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>API for retrieving job details</p>
-<dl class="py method">
-<dt id="adam.adam_processing_service.ApsResults.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">results_processor</span></em>, <em class="sig-param"><span class="n">job_uuid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_processing_service.ApsResults.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="adam.adam_processing_service.ApsResults.check_status">
-<code class="sig-name descname">check_status</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_processing_service.ApsResults.check_status" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="adam.adam_processing_service.ApsResults.fromRESTwithRawIds">
-<em class="property">classmethod </em><code class="sig-name descname">fromRESTwithRawIds</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rest</span></em>, <em class="sig-param"><span class="n">project_uuid</span></em>, <em class="sig-param"><span class="n">job_uuid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_processing_service.ApsResults.fromRESTwithRawIds" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="adam.adam_processing_service.ApsResults.get_results">
-<code class="sig-name descname">get_results</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">force_update</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_processing_service.ApsResults.get_results" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="adam.adam_processing_service.ApsResults.job_id">
-<code class="sig-name descname">job_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_processing_service.ApsResults.job_id" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="adam.adam_processing_service.ApsResults.json">
-<code class="sig-name descname">json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_processing_service.ApsResults.json" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="adam.adam_processing_service.ApsResults.wait_for_complete">
-<code class="sig-name descname">wait_for_complete</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">max_wait_sec</span><span class="o">=</span><span class="default_value">60</span></em>, <em class="sig-param"><span class="n">print_waiting</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_processing_service.ApsResults.wait_for_complete" title="Permalink to this definition">¶</a></dt>
-<dd><p>Polls the job until the job completes.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>max_wait_sec</strong> (<em>int</em>) – the maximum time in seconds to run the wait.
-Defaults to 60.</p></li>
-<li><p><strong>print_waiting</strong> (<em>boolean</em>) – Whether to print the waiting status messages.
-Defaults to False.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>the job status.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt id="adam.adam_processing_service.BatchPropagationResults">
-<em class="property">class </em><code class="sig-prename descclassname">adam.adam_processing_service.</code><code class="sig-name descname">BatchPropagationResults</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">results_processor</span></em>, <em class="sig-param"><span class="n">job_uuid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_processing_service.BatchPropagationResults" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#adam.adam_processing_service.ApsResults" title="adam.adam_processing_service.ApsResults"><code class="xref py py-class docutils literal notranslate"><span class="pre">adam.adam_processing_service.ApsResults</span></code></a></p>
-<p>API for retrieving propagation results and summaries</p>
-<dl class="py class">
-<dt id="adam.adam_processing_service.BatchPropagationResults.PositionOrbitType">
-<em class="property">class </em><code class="sig-name descname">PositionOrbitType</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_processing_service.BatchPropagationResults.PositionOrbitType" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
-<p>The type of orbit position in relation to a target body.</p>
-<dl class="py attribute">
-<dt id="adam.adam_processing_service.BatchPropagationResults.PositionOrbitType.CLOSE_APPROACH">
-<code class="sig-name descname">CLOSE_APPROACH</code><em class="property"> = 'CLOSE_APPROACH'</em><a class="headerlink" href="#adam.adam_processing_service.BatchPropagationResults.PositionOrbitType.CLOSE_APPROACH" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="adam.adam_processing_service.BatchPropagationResults.PositionOrbitType.IMPACT">
-<code class="sig-name descname">IMPACT</code><em class="property"> = 'IMPACT'</em><a class="headerlink" href="#adam.adam_processing_service.BatchPropagationResults.PositionOrbitType.IMPACT" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="adam.adam_processing_service.BatchPropagationResults.PositionOrbitType.MISS">
-<code class="sig-name descname">MISS</code><em class="property"> = 'MISS'</em><a class="headerlink" href="#adam.adam_processing_service.BatchPropagationResults.PositionOrbitType.MISS" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py method">
-<dt id="adam.adam_processing_service.BatchPropagationResults.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">results_processor</span></em>, <em class="sig-param"><span class="n">job_uuid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_processing_service.BatchPropagationResults.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="adam.adam_processing_service.BatchPropagationResults.fromRESTwithRawIds">
-<em class="property">classmethod </em><code class="sig-name descname">fromRESTwithRawIds</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rest</span></em>, <em class="sig-param"><span class="n">project_uuid</span></em>, <em class="sig-param"><span class="n">job_uuid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_processing_service.BatchPropagationResults.fromRESTwithRawIds" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="adam.adam_processing_service.BatchPropagationResults.get_final_positions">
-<code class="sig-name descname">get_final_positions</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">position_orbit_type</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#adam.adam_processing_service.BatchPropagationResults.PositionOrbitType" title="adam.adam_processing_service.BatchPropagationResults.PositionOrbitType">adam.adam_processing_service.BatchPropagationResults.PositionOrbitType</a></span></em>, <em class="sig-param"><span class="n">force_update</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_processing_service.BatchPropagationResults.get_final_positions" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the final positions of all propagated objects in the job.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>position_orbit_type</strong> (<a class="reference internal" href="#adam.adam_processing_service.BatchPropagationResults.PositionOrbitType" title="adam.adam_processing_service.BatchPropagationResults.PositionOrbitType"><em>PositionOrbitType</em></a>) – the type of orbit position to filter.</p></li>
-<li><p><strong>force_update</strong> (<em>boolean</em>) – whether the request should be re-executed.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A list of the final orbit positions, filtered by the position_orbit_type.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="adam.adam_processing_service.BatchPropagationResults.get_result_ephemeris">
-<code class="sig-name descname">get_result_ephemeris</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">run_number</span></em>, <em class="sig-param"><span class="n">force_update</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_processing_service.BatchPropagationResults.get_result_ephemeris" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get an ephemeris for a particular run in the batch as a Panda DataFrame</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>force_update</strong> (<em>boolean</em>) – whether the request should be re-executed.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Ephemeris from file as a Pandas DataFrame</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>ephemeris</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="adam.adam_processing_service.BatchPropagationResults.get_result_ephemeris_count">
-<code class="sig-name descname">get_result_ephemeris_count</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">force_update</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_processing_service.BatchPropagationResults.get_result_ephemeris_count" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the number of ephemerides.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>force_update</strong> (<em>boolean</em>) – whether the request should be re-executed.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>the number of ephemerides generated from the propagation.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>int</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="adam.adam_processing_service.BatchPropagationResults.get_result_raw_ephemeris">
-<code class="sig-name descname">get_result_raw_ephemeris</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">run_number</span></em>, <em class="sig-param"><span class="n">force_update</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_processing_service.BatchPropagationResults.get_result_raw_ephemeris" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get an ephemeris for a particular run in the batch.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>force_update</strong> (<em>boolean</em>) – whether the request should be re-executed.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>the ephemeris file as a string.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="adam.adam_processing_service.BatchPropagationResults.get_summary">
-<code class="sig-name descname">get_summary</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">force_update</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_processing_service.BatchPropagationResults.get_summary" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the propagation results summary.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>force_update</strong> (<em>boolean</em>) – True if calling this method should be re-executed,
-otherwise False (default).</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><p>A summary of propagation results:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s1">&#39;misses&#39;</span><span class="p">:</span> <span class="n">number</span> <span class="n">of</span> <span class="n">misses</span><span class="p">,</span>
-    <span class="s1">&#39;close_approach&#39;</span><span class="p">:</span> <span class="n">number</span> <span class="n">of</span> <span class="n">close</span> <span class="n">approaches</span><span class="p">,</span>
-    <span class="s1">&#39;impacts&#39;</span><span class="p">:</span> <span class="n">number</span> <span class="n">of</span> <span class="n">impacts</span><span class="p">,</span>
-    <span class="s1">&#39;pc&#39;</span><span class="p">:</span> <span class="n">probability</span> <span class="n">of</span> <span class="n">collision</span>
-<span class="p">}</span>
-</pre></div>
 </div>
-</p>
+<div class="section" id="module-adam.adam_processing_service">
+<span id="adam-adam-processing-service-module"></span><h2>adam.adam_processing_service module<a class="headerlink" href="#module-adam.adam_processing_service" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="adam.adam_processing_service.AdamProcessingService">
+<em class="property">class </em><code class="sig-prename descclassname">adam.adam_processing_service.</code><code class="sig-name descname">AdamProcessingService</code><span class="sig-paren">(</span><em class="sig-param">rest=&lt;adam.rest_proxy.AuthenticatingRestProxy object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_processing_service.AdamProcessingService" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The ADAM service handling operations related to jobs.</p>
+<dl class="py method">
+<dt id="adam.adam_processing_service.AdamProcessingService.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">rest=&lt;adam.rest_proxy.AuthenticatingRestProxy object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#adam.adam_processing_service.AdamProcessingService.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="adam.adam_processing_service.AdamProcessingService.execute_batch_propagation">
+<code class="sig-name descname">execute_batch_propagation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">project</span></em>, <em class="sig-param"><span class="n">propagation_params</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#adam.propagation_params.PropagationParams" title="adam.propagation_params.PropagationParams">adam.propagation_params.PropagationParams</a></span></em>, <em class="sig-param"><span class="n">opm_params</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#adam.opm_params.OpmParams" title="adam.opm_params.OpmParams">adam.opm_params.OpmParams</a></span></em>, <em class="sig-param"><span class="n">object_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">user_defined_id</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#adam.batch_propagation_results.MonteCarloResults" title="adam.batch_propagation_results.MonteCarloResults">adam.batch_propagation_results.MonteCarloResults</a><a class="headerlink" href="#adam.adam_processing_service.AdamProcessingService.execute_batch_propagation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new job to run a batch propagation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>project</strong> (<em>str | Project</em>) – The workspace (project) id or project object</p></li>
+<li><p><strong>propagation_params</strong> (<a class="reference internal" href="#adam.propagation_params.PropagationParams" title="adam.propagation_params.PropagationParams"><em>PropagationParams</em></a>) – Parameters for the propagation.</p></li>
+<li><p><strong>opm_params</strong> (<a class="reference internal" href="#adam.opm_params.OpmParams" title="adam.opm_params.OpmParams"><em>OpmParams</em></a>) – Parameters specific to the OPM.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a reference to batch propagation object.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>dict</p>
+<dd class="field-odd"><p><a class="reference internal" href="#adam.batch_propagation_results.MonteCarloResults" title="adam.batch_propagation_results.MonteCarloResults">MonteCarloResults</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1026,6 +797,254 @@ state summary (e.g. from /batch/uuid or in bulk from batch/project_id)</p>
 </dd></dl>
 
 </div>
+<div class="section" id="module-adam.batch_propagation_results">
+<span id="adam-batch-propagation-results-module"></span><h2>adam.batch_propagation_results module<a class="headerlink" href="#module-adam.batch_propagation_results" title="Permalink to this headline">¶</a></h2>
+<p>batch_propagation_results.py</p>
+<dl class="py class">
+<dt id="adam.batch_propagation_results.ApsResults">
+<em class="property">class </em><code class="sig-prename descclassname">adam.batch_propagation_results.</code><code class="sig-name descname">ApsResults</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">results_processor</span></em>, <em class="sig-param"><span class="n">job_uuid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch_propagation_results.ApsResults" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>API for retrieving job details</p>
+<dl class="py method">
+<dt id="adam.batch_propagation_results.ApsResults.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">results_processor</span></em>, <em class="sig-param"><span class="n">job_uuid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch_propagation_results.ApsResults.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="adam.batch_propagation_results.ApsResults.check_status">
+<code class="sig-name descname">check_status</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch_propagation_results.ApsResults.check_status" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="adam.batch_propagation_results.ApsResults.get_results">
+<code class="sig-name descname">get_results</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">force_update</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch_propagation_results.ApsResults.get_results" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="adam.batch_propagation_results.ApsResults.job_id">
+<code class="sig-name descname">job_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch_propagation_results.ApsResults.job_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="adam.batch_propagation_results.ApsResults.json">
+<code class="sig-name descname">json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch_propagation_results.ApsResults.json" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="adam.batch_propagation_results.ApsResults.wait_for_complete">
+<code class="sig-name descname">wait_for_complete</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">max_wait_sec</span><span class="o">=</span><span class="default_value">60</span></em>, <em class="sig-param"><span class="n">print_waiting</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch_propagation_results.ApsResults.wait_for_complete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Polls the job until the job completes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>max_wait_sec</strong> (<em>int</em>) – the maximum time in seconds to run the wait.
+Defaults to 60.</p></li>
+<li><p><strong>print_waiting</strong> (<em>boolean</em>) – Whether to print the waiting status messages.
+Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the job status.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="adam.batch_propagation_results.MonteCarloResults">
+<em class="property">class </em><code class="sig-prename descclassname">adam.batch_propagation_results.</code><code class="sig-name descname">MonteCarloResults</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">results_processor</span></em>, <em class="sig-param"><span class="n">job_uuid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch_propagation_results.MonteCarloResults" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#adam.batch_propagation_results.ApsResults" title="adam.batch_propagation_results.ApsResults"><code class="xref py py-class docutils literal notranslate"><span class="pre">adam.batch_propagation_results.ApsResults</span></code></a></p>
+<p>API for retrieving propagation results and summaries</p>
+<dl class="py class">
+<dt id="adam.batch_propagation_results.MonteCarloResults.PositionOrbitType">
+<em class="property">class </em><code class="sig-name descname">PositionOrbitType</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch_propagation_results.MonteCarloResults.PositionOrbitType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>The type of orbit position in relation to a target body.</p>
+<dl class="py attribute">
+<dt id="adam.batch_propagation_results.MonteCarloResults.PositionOrbitType.CLOSE_APPROACH">
+<code class="sig-name descname">CLOSE_APPROACH</code><em class="property"> = 'CLOSE_APPROACH'</em><a class="headerlink" href="#adam.batch_propagation_results.MonteCarloResults.PositionOrbitType.CLOSE_APPROACH" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="adam.batch_propagation_results.MonteCarloResults.PositionOrbitType.IMPACT">
+<code class="sig-name descname">IMPACT</code><em class="property"> = 'IMPACT'</em><a class="headerlink" href="#adam.batch_propagation_results.MonteCarloResults.PositionOrbitType.IMPACT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="adam.batch_propagation_results.MonteCarloResults.PositionOrbitType.MISS">
+<code class="sig-name descname">MISS</code><em class="property"> = 'MISS'</em><a class="headerlink" href="#adam.batch_propagation_results.MonteCarloResults.PositionOrbitType.MISS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py method">
+<dt id="adam.batch_propagation_results.MonteCarloResults.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">results_processor</span></em>, <em class="sig-param"><span class="n">job_uuid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch_propagation_results.MonteCarloResults.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="adam.batch_propagation_results.MonteCarloResults.get_final_positions">
+<code class="sig-name descname">get_final_positions</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">position_orbit_type</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#adam.batch_propagation_results.MonteCarloResults.PositionOrbitType" title="adam.batch_propagation_results.MonteCarloResults.PositionOrbitType">adam.batch_propagation_results.MonteCarloResults.PositionOrbitType</a></span></em>, <em class="sig-param"><span class="n">force_update</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch_propagation_results.MonteCarloResults.get_final_positions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the final positions of all propagated objects in the job.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>position_orbit_type</strong> (<a class="reference internal" href="#adam.batch_propagation_results.MonteCarloResults.PositionOrbitType" title="adam.batch_propagation_results.MonteCarloResults.PositionOrbitType"><em>PositionOrbitType</em></a>) – the type of orbit position to filter.</p></li>
+<li><p><strong>force_update</strong> (<em>boolean</em>) – whether the request should be re-executed.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list of the final orbit positions, filtered by the position_orbit_type.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="adam.batch_propagation_results.MonteCarloResults.get_result_ephemeris">
+<code class="sig-name descname">get_result_ephemeris</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">run_number</span></em>, <em class="sig-param"><span class="n">force_update</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch_propagation_results.MonteCarloResults.get_result_ephemeris" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get an ephemeris for a particular run in the batch as a Panda DataFrame</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>force_update</strong> (<em>boolean</em>) – whether the request should be re-executed.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Ephemeris from file as a Pandas DataFrame</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ephemeris</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="adam.batch_propagation_results.MonteCarloResults.get_result_ephemeris_count">
+<code class="sig-name descname">get_result_ephemeris_count</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">force_update</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch_propagation_results.MonteCarloResults.get_result_ephemeris_count" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the number of ephemerides.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>force_update</strong> (<em>boolean</em>) – whether the request should be re-executed.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the number of ephemerides generated from the propagation.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="adam.batch_propagation_results.MonteCarloResults.get_result_raw_ephemeris">
+<code class="sig-name descname">get_result_raw_ephemeris</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">run_number</span></em>, <em class="sig-param"><span class="n">force_update</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch_propagation_results.MonteCarloResults.get_result_raw_ephemeris" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get an ephemeris for a particular run in the batch.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>force_update</strong> (<em>boolean</em>) – whether the request should be re-executed.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the ephemeris file as a string.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="adam.batch_propagation_results.MonteCarloResults.get_summary">
+<code class="sig-name descname">get_summary</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">force_update</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch_propagation_results.MonteCarloResults.get_summary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the propagation results summary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>force_update</strong> (<em>boolean</em>) – True if calling this method should be re-executed,
+otherwise False (default).</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>summary (MonteCarloSummary)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="adam.batch_propagation_results.MonteCarloSummary">
+<em class="property">class </em><code class="sig-prename descclassname">adam.batch_propagation_results.</code><code class="sig-name descname">MonteCarloSummary</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">misses</span></em>, <em class="sig-param"><span class="n">close_approach</span></em>, <em class="sig-param"><span class="n">impacts</span></em>, <em class="sig-param"><span class="n">pc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch_propagation_results.MonteCarloSummary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="adam.batch_propagation_results.MonteCarloSummary.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">misses</span></em>, <em class="sig-param"><span class="n">close_approach</span></em>, <em class="sig-param"><span class="n">impacts</span></em>, <em class="sig-param"><span class="n">pc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch_propagation_results.MonteCarloSummary.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="adam.batch_propagation_results.MonteCarloSummary.get_close_approaches">
+<code class="sig-name descname">get_close_approaches</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch_propagation_results.MonteCarloSummary.get_close_approaches" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="adam.batch_propagation_results.MonteCarloSummary.get_impacts">
+<code class="sig-name descname">get_impacts</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch_propagation_results.MonteCarloSummary.get_impacts" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="adam.batch_propagation_results.MonteCarloSummary.get_misses">
+<code class="sig-name descname">get_misses</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch_propagation_results.MonteCarloSummary.get_misses" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="adam.batch_propagation_results.MonteCarloSummary.get_pc">
+<code class="sig-name descname">get_pc</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch_propagation_results.MonteCarloSummary.get_pc" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="adam.batch_propagation_results.ResultsClient">
+<em class="property">class </em><code class="sig-prename descclassname">adam.batch_propagation_results.</code><code class="sig-name descname">ResultsClient</code><span class="sig-paren">(</span><em class="sig-param">rest=&lt;adam.rest_proxy.AuthenticatingRestProxy object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch_propagation_results.ResultsClient" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Module for managing results interactions.</p>
+<dl class="py method">
+<dt id="adam.batch_propagation_results.ResultsClient.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">rest=&lt;adam.rest_proxy.AuthenticatingRestProxy object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch_propagation_results.ResultsClient.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the Results Service API client.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>rest</strong> (<a class="reference internal" href="#adam.rest_proxy.RestProxy" title="adam.rest_proxy.RestProxy"><em>RestProxy</em></a>) – a RestProxy that makes calls to the ADAM API.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="adam.batch_propagation_results.ResultsClient.get_monte_carlo_results">
+<code class="sig-name descname">get_monte_carlo_results</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">job</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch_propagation_results.ResultsClient.get_monte_carlo_results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the job results for a specific job for a specific project.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>job</strong> (<a class="reference internal" href="#adam.job.Job" title="adam.job.Job"><em>Job</em></a>) – The job id or Job object that has the Job ID in it</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a result object that can be used to query for data about the
+submitted job</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>result (<a class="reference internal" href="#adam.batch_propagation_results.MonteCarloResults" title="adam.batch_propagation_results.MonteCarloResults">MonteCarloResults</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="module-adam.batch_run_manager">
 <span id="adam-batch-run-manager-module"></span><h2>adam.batch_run_manager module<a class="headerlink" href="#module-adam.batch_run_manager" title="Permalink to this headline">¶</a></h2>
 <p>batch_run_manager.py</p>
@@ -1151,6 +1170,48 @@ guaranteed to exist or to have an ephemeris.</p>
 <dd><p>Expects a list of pairs of [propagation_params, opm_params].
 Returns a list of batch summaries for the submitted batches in the same order.</p>
 </dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-adam.comparison">
+<span id="adam-comparison-module"></span><h2>adam.comparison module<a class="headerlink" href="#module-adam.comparison" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="adam.comparison.Comparison">
+<em class="property">class </em><code class="sig-prename descclassname">adam.comparison.</code><code class="sig-name descname">Comparison</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.comparison.Comparison" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.IntEnum</span></code></p>
+<p>Comparison class.</p>
+<p>A comparison utility library that can be used as a way of configuring
+comparison functions as method arguments</p>
+<dl class="py attribute">
+<dt id="adam.comparison.Comparison.Equals">
+<code class="sig-name descname">Equals</code><em class="property"> = 0</em><a class="headerlink" href="#adam.comparison.Comparison.Equals" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="adam.comparison.Comparison.GreaterThan">
+<code class="sig-name descname">GreaterThan</code><em class="property"> = 1</em><a class="headerlink" href="#adam.comparison.Comparison.GreaterThan" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="adam.comparison.Comparison.GreaterThanOrEquals">
+<code class="sig-name descname">GreaterThanOrEquals</code><em class="property"> = 2</em><a class="headerlink" href="#adam.comparison.Comparison.GreaterThanOrEquals" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="adam.comparison.Comparison.LessThan">
+<code class="sig-name descname">LessThan</code><em class="property"> = 3</em><a class="headerlink" href="#adam.comparison.Comparison.LessThan" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="adam.comparison.Comparison.LessThanOrEquals">
+<code class="sig-name descname">LessThanOrEquals</code><em class="property"> = 4</em><a class="headerlink" href="#adam.comparison.Comparison.LessThanOrEquals" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="adam.comparison.Comparison.compare">
+<code class="sig-name descname">compare</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">test_value</span></em>, <em class="sig-param"><span class="n">actual</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.comparison.Comparison.compare" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -1405,6 +1466,146 @@ or to <code class="docutils literal notranslate"><span class="pre">file_name</sp
 </dd></dl>
 
 </div>
+<div class="section" id="module-adam.job">
+<span id="adam-job-module"></span><h2>adam.job module<a class="headerlink" href="#module-adam.job" title="Permalink to this headline">¶</a></h2>
+<p>job.py</p>
+<dl class="py class">
+<dt id="adam.job.Job">
+<em class="property">class </em><code class="sig-prename descclassname">adam.job.</code><code class="sig-name descname">Job</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">uuid</span></em>, <em class="sig-param"><span class="n">project_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">object_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">user_defined_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">description</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">job_type</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">input_json</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">submission_time</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">execution_start</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">completion_time</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">status</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.job.Job" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Job class.</p>
+<p>An ADAM Project is like captures a computational run in our services.</p>
+<dl class="py method">
+<dt id="adam.job.Job.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">uuid</span></em>, <em class="sig-param"><span class="n">project_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">object_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">user_defined_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">description</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">job_type</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">input_json</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">submission_time</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">execution_start</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">completion_time</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">status</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.job.Job.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="adam.job.Job.get_completion_time">
+<code class="sig-name descname">get_completion_time</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.job.Job.get_completion_time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="adam.job.Job.get_description">
+<code class="sig-name descname">get_description</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.job.Job.get_description" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="adam.job.Job.get_execution_start">
+<code class="sig-name descname">get_execution_start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.job.Job.get_execution_start" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="adam.job.Job.get_input_json">
+<code class="sig-name descname">get_input_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.job.Job.get_input_json" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="adam.job.Job.get_input_json_string">
+<code class="sig-name descname">get_input_json_string</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.job.Job.get_input_json_string" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="adam.job.Job.get_job_type">
+<code class="sig-name descname">get_job_type</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.job.Job.get_job_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="adam.job.Job.get_object_id">
+<code class="sig-name descname">get_object_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.job.Job.get_object_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="adam.job.Job.get_project_id">
+<code class="sig-name descname">get_project_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.job.Job.get_project_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="adam.job.Job.get_status">
+<code class="sig-name descname">get_status</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.job.Job.get_status" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="adam.job.Job.get_submission_time">
+<code class="sig-name descname">get_submission_time</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.job.Job.get_submission_time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="adam.job.Job.get_user_defined_id">
+<code class="sig-name descname">get_user_defined_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.job.Job.get_user_defined_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="adam.job.Job.get_uuid">
+<code class="sig-name descname">get_uuid</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.job.Job.get_uuid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="adam.job.JobsClient">
+<em class="property">class </em><code class="sig-prename descclassname">adam.job.</code><code class="sig-name descname">JobsClient</code><span class="sig-paren">(</span><em class="sig-param">rest=&lt;adam.rest_proxy.AuthenticatingRestProxy object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#adam.job.JobsClient" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Module for managing jobs.</p>
+<dl class="py method">
+<dt id="adam.job.JobsClient.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">rest=&lt;adam.rest_proxy.AuthenticatingRestProxy object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#adam.job.JobsClient.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the Jobs API client.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>rest</strong> (<a class="reference internal" href="#adam.rest_proxy.RestProxy" title="adam.rest_proxy.RestProxy"><em>RestProxy</em></a>) – a RestProxy that makes calls to the ADAM API.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="adam.job.JobsClient.filter_by_inputs">
+<code class="sig-name descname">filter_by_inputs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">jobs</span></em>, <em class="sig-param"><span class="n">keys</span></em>, <em class="sig-param"><span class="n">comparison</span></em>, <em class="sig-param"><span class="n">comparison_value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.job.JobsClient.filter_by_inputs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the Jobs API client.</p>
+<p>filter_by_inputs(jobs, [‘monteCarloDraws’], Comparison.GreaterThan, 50000)
+filter_by_inputs(jobs, [‘opm’,’keplerian’,’inclination’], Comparison.GreaterThan, 23)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>jobs</strong> (<em>List</em><em>[</em><a class="reference internal" href="#adam.job.Job" title="adam.job.Job"><em>Job</em></a><em>]</em>) – the jobs list to filter</p></li>
+<li><p><strong>keys</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – one or more keys of the JSON hierarchy</p></li>
+<li><p><strong>comparison</strong> (<a class="reference internal" href="#adam.comparison.Comparison" title="adam.comparison.Comparison"><em>Comparison</em></a>) – The type of comparison desired</p></li>
+<li><p><strong>comparison_value</strong> – the value of the specific key of interest that is</p></li>
+<li><p><strong>tested for equality</strong> (<em>being</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="adam.job.JobsClient.get_jobs">
+<code class="sig-name descname">get_jobs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">project</span></em>, <em class="sig-param"><span class="n">status</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">object_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">user_defined_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">description</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">earliest_submission_datetime</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">latest_submission_datetime</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.job.JobsClient.get_jobs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds jobs based on one or more of the specified fields</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>project</strong> (<em>str | Project</em>) – (Required) The workspace (project) id or a Project object</p></li>
+<li><p><strong>status</strong> (<em>str</em>) – (Optional) The status field looking for (can have wildcards)</p></li>
+<li><p><strong>object_id</strong> (<em>str</em>) – (Optional) The object ID field looking for (can have wildcards)</p></li>
+<li><p><strong>user_defined_id</strong> (<em>str</em>) – (Optional) The user ID field looking for (can have wildcards)</p></li>
+<li><p><strong>description</strong> (<em>str</em>) – (Optional) The description field looking for (can have wildcards)</p></li>
+<li><p><strong>earliest_submission_datetime</strong> (<em>datetime</em>) – (Optional) Earliest submission interested in</p></li>
+<li><p><strong>latest_submission_datetime</strong> (<em>datetime</em>) – (Optional) Earliest submission interested in</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a list of jobs for the project that match that criteria.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="module-adam.opm_params">
 <span id="adam-opm-params-module"></span><h2>adam.opm_params module<a class="headerlink" href="#module-adam.opm_params" title="Permalink to this headline">¶</a></h2>
 <p>opm_params.py</p>
@@ -1648,13 +1849,13 @@ initial_maneuver (list): An array with 3 elements representing initial dx, dy, d
 </dd></dl>
 
 <dl class="py class">
-<dt id="adam.project.Projects">
-<em class="property">class </em><code class="sig-prename descclassname">adam.project.</code><code class="sig-name descname">Projects</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rest</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.project.Projects" title="Permalink to this definition">¶</a></dt>
+<dt id="adam.project.ProjectsClient">
+<em class="property">class </em><code class="sig-prename descclassname">adam.project.</code><code class="sig-name descname">ProjectsClient</code><span class="sig-paren">(</span><em class="sig-param">rest=&lt;adam.rest_proxy.AuthenticatingRestProxy object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#adam.project.ProjectsClient" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Module for managing projects.</p>
 <dl class="py method">
-<dt id="adam.project.Projects.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rest</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.project.Projects.__init__" title="Permalink to this definition">¶</a></dt>
+<dt id="adam.project.ProjectsClient.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">rest=&lt;adam.rest_proxy.AuthenticatingRestProxy object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#adam.project.ProjectsClient.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize the Projects API client.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1664,8 +1865,8 @@ initial_maneuver (list): An array with 3 elements representing initial dx, dy, d
 </dd></dl>
 
 <dl class="py method">
-<dt id="adam.project.Projects.delete_project">
-<code class="sig-name descname">delete_project</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">uuid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.project.Projects.delete_project" title="Permalink to this definition">¶</a></dt>
+<dt id="adam.project.ProjectsClient.delete_project">
+<code class="sig-name descname">delete_project</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">uuid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.project.ProjectsClient.delete_project" title="Permalink to this definition">¶</a></dt>
 <dd><p>Deletes a project.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1678,8 +1879,13 @@ initial_maneuver (list): An array with 3 elements representing initial dx, dy, d
 </dd></dl>
 
 <dl class="py method">
-<dt id="adam.project.Projects.get_project">
-<code class="sig-name descname">get_project</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">uuid</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#adam.project.Project" title="adam.project.Project">adam.project.Project</a><a class="headerlink" href="#adam.project.Projects.get_project" title="Permalink to this definition">¶</a></dt>
+<dt id="adam.project.ProjectsClient.filter_projects">
+<code class="sig-name descname">filter_projects</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">projects</span></em>, <em class="sig-param"><span class="n">uuid</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">description</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span><a class="reference internal" href="#adam.project.Project" title="adam.project.Project">adam.project.Project</a><span class="p">]</span><a class="headerlink" href="#adam.project.ProjectsClient.filter_projects" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="adam.project.ProjectsClient.get_project">
+<code class="sig-name descname">get_project</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">uuid</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#adam.project.Project" title="adam.project.Project">adam.project.Project</a><a class="headerlink" href="#adam.project.ProjectsClient.get_project" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets project details.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1698,25 +1904,38 @@ initial_maneuver (list): An array with 3 elements representing initial dx, dy, d
 </dd></dl>
 
 <dl class="py method">
-<dt id="adam.project.Projects.get_projects">
-<code class="sig-name descname">get_projects</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span><a class="reference internal" href="#adam.project.Project" title="adam.project.Project">adam.project.Project</a><span class="p">]</span><a class="headerlink" href="#adam.project.Projects.get_projects" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets projects that the current user has access to read.</p>
+<dt id="adam.project.ProjectsClient.get_project_from_config">
+<code class="sig-name descname">get_project_from_config</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">config</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#adam.project.Project" title="adam.project.Project">adam.project.Project</a><a class="headerlink" href="#adam.project.ProjectsClient.get_project_from_config" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="adam.project.ProjectsClient.get_projects">
+<code class="sig-name descname">get_projects</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">uuid</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">description</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span><a class="reference internal" href="#adam.project.Project" title="adam.project.Project">adam.project.Project</a><span class="p">]</span><a class="headerlink" href="#adam.project.ProjectsClient.get_projects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets projects that the current user has access to read with filtering by
+zero or more optional fields</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>a list of Projects.</p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>uuid</strong> (<em>str</em>) – (Optional) checks whether uuid contains this text</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – (Optional) checks whether name contains this text</p></li>
+<li><p><strong>description</strong> (<em>str</em>) – (Optional) checks whether description contains this text</p></li>
+</ul>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list(<a class="reference internal" href="#adam.project.Project" title="adam.project.Project">Project</a>)</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a list of Projects.</p>
 </dd>
-<dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><strong>RuntimeError if the server returns a non-200.</strong> – </p>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list(<a class="reference internal" href="#adam.project.Project" title="adam.project.Project">Project</a>)</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>RuntimeError if the server returns a non-200.</strong> – </p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="adam.project.Projects.get_sub_projects">
-<code class="sig-name descname">get_sub_projects</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span></em><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span><a class="reference internal" href="#adam.project.Project" title="adam.project.Project">adam.project.Project</a><span class="p">]</span><a class="headerlink" href="#adam.project.Projects.get_sub_projects" title="Permalink to this definition">¶</a></dt>
+<dt id="adam.project.ProjectsClient.get_sub_projects">
+<code class="sig-name descname">get_sub_projects</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span></em><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span><a class="reference internal" href="#adam.project.Project" title="adam.project.Project">adam.project.Project</a><span class="p">]</span><a class="headerlink" href="#adam.project.ProjectsClient.get_sub_projects" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the projects under specified parent project.</p>
 <p>For now, this just filters the returned values by parent project. We may eventually
 choose to implement this server-side, in which case we will call into whatever API
@@ -1735,8 +1954,8 @@ that exposes.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="adam.project.Projects.new_project">
-<code class="sig-name descname">new_project</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span></em>, <em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">description</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#adam.project.Project" title="adam.project.Project">adam.project.Project</a><a class="headerlink" href="#adam.project.Projects.new_project" title="Permalink to this definition">¶</a></dt>
+<dt id="adam.project.ProjectsClient.new_project">
+<code class="sig-name descname">new_project</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span></em>, <em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">description</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#adam.project.Project" title="adam.project.Project">adam.project.Project</a><a class="headerlink" href="#adam.project.ProjectsClient.new_project" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a new project.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
