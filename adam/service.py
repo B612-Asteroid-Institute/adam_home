@@ -10,7 +10,7 @@ from adam.adam_processing_service import AdamProcessingService
 from adam.auth import Auth
 from adam.group import Groups
 from adam.permission import Permissions
-from adam.project import Projects
+from adam.project import ProjectsClient
 from adam.rest_proxy import AuthenticatingRestProxy
 from adam.rest_proxy import RestRequests
 from adam.rest_proxy import RetryingRestProxy
@@ -80,7 +80,7 @@ class Service(object):
             print("Could not authenticate.")
             return False
 
-        self.projects = Projects(self.rest)
+        self.projects = ProjectsClient(self.rest)
         self.batches = Batches(self.rest)
         self.groups = Groups(self.rest)
         self.permissions = Permissions(self.rest)

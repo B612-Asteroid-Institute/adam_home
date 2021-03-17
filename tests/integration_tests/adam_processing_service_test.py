@@ -1,7 +1,7 @@
 import pytest
 
 from adam import PropagationParams, OpmParams
-from adam.adam_processing_service import ApsResults, BatchPropagationResults
+from adam.batch_propagation_results import ApsResults, MonteCarloResults
 
 
 class TestAdamProcessingService:
@@ -70,13 +70,13 @@ class TestAdamProcessingService:
 class TestApsResultClass:
 
     def test_get_status(self, service):
-        results = ApsResults.fromRESTwithRawIds(
+        results = ApsResults._from_rest_with_raw_ids(
             service.rest, service.workspace, '31a02f1b-0398-431f-b048-c9c9aa5128e4')
         print(results.check_status())
 
     def test_get_empty_results(self, service):
         with pytest.raises(RuntimeError):
-            results = ApsResults.fromRESTwithRawIds(
+            results = ApsResults._from_rest_with_raw_ids(
                 service.rest, service.workspace, '31a02f1b-0398-431f-b048-c9c9aa5128e4')
             print(results.get_results())
 
@@ -90,7 +90,7 @@ class TestApsResultClass:
 class TestBatchPropagationResultClass:
 
     def test_get_summary(self, service):
-        results = BatchPropagationResults.fromRESTwithRawIds(
+        results = BatchPropagationResults._from_rest_with_raw_ids(
             service.rest,
             '0dc1e8b0-4f92-46ad-8838-c9e9eca6935c',
             '285332fd-91e9-4e48-843d-36495caaf915')
@@ -98,7 +98,7 @@ class TestBatchPropagationResultClass:
         print(summary)
 
     def test_get_final_positions(self, service):
-        results = BatchPropagationResults.fromRESTwithRawIds(
+        results = BatchPropagationResults._from_rest_with_raw_ids(
             service.rest,
             '0dc1e8b0-4f92-46ad-8838-c9e9eca6935c',
             '285332fd-91e9-4e48-843d-36495caaf915')
@@ -112,14 +112,14 @@ class TestBatchPropagationResultClass:
         print(results.get_final_positions(BatchPropagationResults.PositionOrbitType.IMPACT))
 
     def test_get_result_ephemeris_count(self, service):
-        results = BatchPropagationResults.fromRESTwithRawIds(
+        results = BatchPropagationResults._from_rest_with_raw_ids(
             service.rest,
             '0dc1e8b0-4f92-46ad-8838-c9e9eca6935c',
             '285332fd-91e9-4e48-843d-36495caaf915')
         print(results.get_result_ephemeris_count())
 
     def test_get_result_ephemeris(self, service):
-        results = BatchPropagationResults.fromRESTwithRawIds(
+        results = BatchPropagationResults._from_rest_with_raw_ids(
             service.rest,
             '0dc1e8b0-4f92-46ad-8838-c9e9eca6935c',
             '285332fd-91e9-4e48-843d-36495caaf915')

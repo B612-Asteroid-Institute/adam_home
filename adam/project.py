@@ -3,6 +3,7 @@
 """
 
 from typing import List
+from adam import AuthenticatingRestProxy, RestRequests
 
 
 class Project(object):
@@ -10,6 +11,7 @@ class Project(object):
 
     An ADAM Project is like a folder for work executed in the ADAM platform.
     """
+
     def __init__(self, uuid, parent=None, name=None, description=None):
         """Initialize the Project data class.
 
@@ -26,8 +28,8 @@ class Project(object):
 
     def __repr__(self):
         return (
-            f"Project(uuid={self._uuid}, parent={self._parent}, "
-            f"name={self._name}, description={self._description})")
+            f"Project(name={self._name}, description={self._description}, "
+            f"uuid={self._uuid}, parent={self._parent})")
 
     def get_uuid(self):
         return self._uuid
@@ -42,14 +44,14 @@ class Project(object):
         return self._description
 
 
-class Projects(object):
+class ProjectsClient(object):
     """Module for managing projects.
 
     """
 
     _REST_ENDPOINT_PREFIX = '/projects'
 
-    def __init__(self, rest):
+    def __init__(self, rest=AuthenticatingRestProxy(RestRequests())):
         """Initialize the Projects API client.
 
         Args:
@@ -83,8 +85,14 @@ class Projects(object):
         """
         return [p for p in self.get_projects() if p.get_parent() == parent]
 
-    def get_projects(self) -> List[Project]:
-        """Gets projects that the current user has access to read.
+    def get_projects(self, uuid=None, name=None, description=None) -> List[Project]:
+        """Gets projects that the current user has access to read with filtering by
+        zero or more optional fields
+
+        Args:
+            uuid (str): (Optional) checks whether uuid contains this text
+            name (str): (Optional) checks whether name contains this text
+            description (str): (Optional) checks whether description contains this text
 
         Returns:
             list(Project): a list of Projects.
@@ -97,7 +105,7 @@ class Projects(object):
             project = Project(p['uuid'], p.get('parent'), p.get('name'), p.get('description'))
             projects.append(project)
 
-        return projects
+        return self.filter_projects(projects, uuid, name, description)
 
     def get_project(self, uuid) -> Project:
         """Gets project details.
@@ -125,6 +133,10 @@ class Projects(object):
                        response.get('parent'),
                        response.get('name'),
                        response.get('description'))
+
+    def get_project_from_config(self, config) -> Project:
+        uuid = config['workspace']
+        return self.get_project(uuid)
 
     def new_project(self, parent, name, description) -> Project:
         """Creates a new project.
@@ -162,3 +174,22 @@ class Projects(object):
 
         if code != 204:
             raise RuntimeError("Server status code: %s" % (code))
+
+    def filter_projects(self, projects, uuid=None, name=None, description=None) -> List[Project]:
+        results = []
+        for project in projects:
+            if (uuid is not None and not project._uuid.__contains__(uuid)):
+                continue
+            if (name is not None):
+                if (project._name is None):
+                    continue
+                if (not project._name.__contains__(name)):
+                    continue
+            if (description is not None):
+                if (project._description is None):
+                    continue
+                if (not project._description.__contains__(description)):
+                    continue
+            results.append(project)
+
+        return results
