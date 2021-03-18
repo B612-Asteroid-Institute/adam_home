@@ -4,6 +4,7 @@ conda-build
 flake8
 jupyter
 matplotlib
+numpy
 pandas
 pytest
 pytest-cov

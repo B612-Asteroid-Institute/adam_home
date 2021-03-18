@@ -1,16 +1,31 @@
 """
     batch_propagation_results.py
 """
-
+import enum
+import io
 import json
 import time
 import urllib
-from enum import Enum
+from typing import List, Optional, Dict
 
 import numpy as np
+import pandas as pd
+import requests
 from dateutil import parser as dateparser
 
 from adam import stk, ApsRestServiceResultsProcessor, AuthenticatingRestProxy, RestRequests
+
+
+class OrbitEventType(enum.Enum):
+    """Events of interest, from an orbit propagation.
+
+    This is the same as PositionOrbitType, but with updated naming to be consistent with the
+    server-side enum.
+    """
+
+    MISS = 'MISS'
+    CLOSE_APPROACH = 'CLOSE_APPROACH'
+    IMPACT = 'IMPACT'
 
 
 class ResultsClient(object):
@@ -46,12 +61,12 @@ class ApsResults:
     """API for retrieving job details"""
 
     @classmethod
-    def _from_rest_with_raw_ids(self, rest, project_uuid, job_uuid):
+    def _from_rest_with_raw_ids(cls, rest, project_uuid, job_uuid):
         results_processor = ApsRestServiceResultsProcessor(rest, project_uuid)
         return ApsResults(results_processor, job_uuid)
 
-    def __init__(self, results_processor, job_uuid):
-        self._rp = results_processor
+    def __init__(self, client, job_uuid):
+        self._rp = client
         self._job_uuid = job_uuid
         self._results_uuid = None
         self._results = None
@@ -69,7 +84,6 @@ class ApsResults:
     def check_status(self):
         return self._rp.check_status(self._job_uuid)['status']
 
-    # TODO make this work
     def wait_for_complete(self, max_wait_sec=60, print_waiting=False):
         """Polls the job until the job completes.
 
@@ -116,7 +130,7 @@ class ApsResults:
 class MonteCarloResults(ApsResults):
     """API for retrieving propagation results and summaries"""
 
-    class PositionOrbitType(Enum):
+    class PositionOrbitType(enum.Enum):
         """The type of orbit position in relation to a target body."""
         MISS = 'MISS'
         CLOSE_APPROACH = 'CLOSE_APPROACH'
@@ -228,8 +242,8 @@ class MonteCarloResults(ApsResults):
         with urllib.request.urlopen(url) as response:
             return response.read().decode('utf-8')
 
-    def get_result_ephemeris(self, run_number, force_update=False):
-        """Get an ephemeris for a particular run in the batch as a Panda DataFrame
+    def get_result_ephemeris(self, run_number, force_update=False) -> pd.DataFrame:
+        """Get an ephemeris for a particular run in the batch as a Pandas DataFrame
 
         Args:
             force_update (boolean): whether the request should be re-executed.
@@ -241,6 +255,161 @@ class MonteCarloResults(ApsResults):
         ephemeris_text = self.get_result_raw_ephemeris(run_number, force_update)
         ephemeris = stk.io.ephemeris_file_data_to_dataframe(ephemeris_text.splitlines())
         return ephemeris
+
+    def list_result_ephemerides_files(
+            self, page_size: int = 100, page_token: str = None) -> Dict:
+        """List one page of ephemerides files from the job results.
+
+        Args:
+            page_size (int): The size of the results to retrieve
+            page_token (str): Which page to retrieve
+
+        Returns:
+            Dict containing the ephemerides paths
+        """
+        params = {}
+        if page_size < 0 or page_size > 100:
+            page_size = 100
+        params['pageSize'] = page_size
+        if page_token:
+            params['pageToken'] = page_token
+        ephs = self._rp._rest.get(
+            f'/projects/{self._rp._project}/jobs/{self._job_uuid}'
+            f'/ephemerides?{urllib.parse.urlencode(params)}')
+        return ephs
+
+    def list_all_ephemerides_files(self) -> Dict:
+        """Lists all ephemerides from the job results.
+
+        Performs all the paging without user intervention.
+
+        Returns:
+            Dict containing the ephemerides paths
+        """
+        ephs = self.list_result_ephemerides_files()
+        while 'nextPageToken' in ephs:
+            next_page_token = ephs['nextPageToken']
+            _, e = self.list_result_ephemerides_files(page_token=next_page_token)
+            ephs['ephemerisResourcePath'].extend(e['ephemerisResourcePath'])
+        return ephs
+
+    def get_ephemeris_content(self, run_index: int,
+                              orbit_event_type: Optional[OrbitEventType] = None,
+                              force_update: bool = False) -> str:
+        """Retrieves an ephemeris file and returns the text content.
+
+        This doesn't use the ADAM REST wrapper, since that class assumes the response will be in
+        json, and this is an ephemeris. For now, it's fine to use `requests` directly.
+
+        Args:
+            run_index (int): The run number of the ephemeris
+            orbit_event_type (Optional[OrbitEventType]): The OrbitEventType of the ephemeris
+            force_update (bool): Whether the results should be reloaded from the server
+
+        Returns:
+            str: The ephemeris content, as a string.
+        """
+
+        self._update_results(force_update)
+        file_prefix = (f"{self._detailedOutputs['jobOutputPath']}"
+                       f"/{self._detailedOutputs['ephemeridesDirectoryPrefix']}")
+        eph_name = f'run-{run_index}-00000-of-00001.e'
+        # Retrieve all the file paths, ignoring 404s. Ephems are supposed to only map to either
+        # MISS or IMPACT. If the orbit_event_type isn't provided, then brute-force try to get the
+        # the file path for both MISS and IMPACT. We wouldn't know which one exists without
+        # listing the bucket, and sometimes that might just be too much to wade through.
+        file_paths = []
+        if orbit_event_type is None:
+            file_paths.append(f"{file_prefix}/{OrbitEventType.MISS.value}/{eph_name}")
+            file_paths.append(f"{file_prefix}/{OrbitEventType.IMPACT.value}/{eph_name}")
+        else:
+            file_paths.append(f"{file_prefix}/{orbit_event_type.value}/{eph_name}")
+        responses = [r for r in [requests.get(f) for f in file_paths] if r.status_code != 404]
+        # There should just be 1 successful response (assuming the orbit_event_type and run_index
+        # are correct)
+        if responses and responses[0].status_code < 300:
+            return responses[0].text
+        resp_tuples = [(r.status_code, r.text) for r in responses]
+        raise RuntimeError(f'There was a problem getting the ephemeris.\n{resp_tuples}')
+
+    def get_ephemeris_as_dataframe(self, run_index: int,
+                                   orbit_event_type: Optional[
+                                       OrbitEventType] = None) -> pd.DataFrame:
+        """Get ephemeris content and convert it to a pandas DataFrame.
+
+        Args:
+            run_index (int): The run number of the ephemeris
+            orbit_event_type (Optional[OrbitEventType]): The OrbitEventType of the ephemeris
+
+        Returns:
+            pandas.DataFrame: The STK ephemeris in a pandas DataFrame.
+        """
+        ephem_text = self.get_ephemeris_content(run_index=run_index,
+                                                orbit_event_type=orbit_event_type)
+        return stk.io.ephemeris_file_data_to_dataframe(ephem_text.splitlines())
+
+    def list_state_files(self, force_update: bool = False) -> List[str]:
+        """List the state files generated during the propagation.
+
+        Args:
+            force_update (bool): Whether the results should be reloaded from the server
+
+        Returns:
+            list (str): a list of URL strings for the state files.
+        """
+        self._update_results(force_update)
+        state_files = self._detailedOutputs['states']
+        file_prefix = self._detailedOutputs['jobOutputPath']
+        return [f"{file_prefix}/{s}" for s in state_files]
+
+    def get_states_content(self, orbit_event_type: OrbitEventType,
+                           force_update: bool = False) -> str:
+        """Retrieves a states file and returns the content as a string.
+
+        This doesn't use the ADAM REST wrapper, since that class assumes the response will be in
+        json, and this is an ephemeris. For now, it's fine to use `requests` directly.
+
+        Args:
+            orbit_event_type (OrbitEventType): The type of OrbitEvent for which to retrieve the
+                states output.
+            force_update (bool): Whether the results should be reloaded from the server
+
+        Returns:
+            str: The content of the state file.
+        """
+        self._update_results(force_update)
+        state_files = [f"{self._detailedOutputs['jobOutputPath']}/{f}" for f in
+                       self._detailedOutputs['states'] if
+                       f'states/{orbit_event_type.value}' in f]
+        if not state_files:
+            return ''
+        response = requests.get(state_files[0])
+        if response.status_code >= 300:
+            raise RuntimeError(
+                f"Unable to retrieve state file: HTTP status code={response.status_code}, "
+                f"response={response.text}")
+        return response.text
+
+    def get_states_dataframe(self, orbit_event_type: OrbitEventType,
+                             force_update: bool = False) -> pd.DataFrame:
+        """Retrieves a states file and returns it as a pandas DataFrame.
+
+        This doesn't use the ADAM REST wrapper, since that class assumes the response will be in
+        json, and this is an ephemeris. For now, it's fine to use `requests` directly.
+
+        Args:
+            orbit_event_type (OrbitEventType): The type of OrbitEvent for which to retrieve the
+                states output.
+            force_update (bool): Whether the results should be reloaded from the server
+
+        Returns:
+            pandas.DataFrame: The STK ephemeris in a pandas DataFrame.
+        """
+        states_content = self.get_states_content(orbit_event_type, force_update)
+        if states_content:
+            return pd.read_csv(io.StringIO(states_content), comment='#', index_col=0).sort_values(
+                'runIndex')
+        return pd.DataFrame()
 
     def _update_results(self, force_update):
         if force_update or self._detailedOutputs is None:

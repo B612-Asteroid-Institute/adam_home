@@ -3,6 +3,7 @@ astroquery
 flake8
 jupyter
 matplotlib
+numpy
 pandas
 pytest
 pytest-cov

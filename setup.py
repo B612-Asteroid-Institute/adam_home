@@ -34,7 +34,7 @@ def git_version():
         tag, count, sha = parts[:3]
         if not tag.startswith('v'):
             raise Exception("Annotated tags on the repository must begin with the letter 'v'. "
-                            "Please fix this then try building agains.")
+                            "Please fix this then try building again.")
         tag = tag[1:]
         if count == '0' and not dirty:
             return tag
@@ -58,7 +58,7 @@ setup(name="adam",
       url="https://github.com/B612-Asteroid-Institute/adam_home",
       classifiers=[
           "Programming Language :: Python :: 3",
-          "License :: OSI Approved :: BSD License",
+          "License :: OSI Approved :: MIT License",
           "Development Status :: 3 - Alpha",
           "Operating System :: POSIX :: Linux",
           "Operating System :: MacOS :: MacOS X"
@@ -68,4 +68,5 @@ setup(name="adam",
       entry_points={
           'console_scripts': ['adamctl=adam.__main__:main'],
       }
-      )
+)
+
