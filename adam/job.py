@@ -11,7 +11,7 @@ from adam import Project, AuthenticatingRestProxy, RestRequests
 class Job(object):
     """Job class.
 
-    An ADAM Project is like captures a computational run in our services.
+    An ADAM Project is the parent container of a computational run.
     """
 
     def __init__(self, uuid, project_id=None, object_id=None, user_defined_id=None,

@@ -24,6 +24,8 @@ class AdamProcessingService:
             project (str | Project): The workspace (project) id or project object
             propagation_params (PropagationParams): Parameters for the propagation.
             opm_params (OpmParams): Parameters specific to the OPM.
+            object_id (str): The object id
+            user_defined_id (str): The user-defined id
 
         Returns:
             MonteCarloResults: a reference to batch propagation object.

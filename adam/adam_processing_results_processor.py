@@ -9,7 +9,7 @@ class ApsRestServiceResultsProcessor:
         self._project = project
 
     def __repr__(self):
-        return "Adam Results Processing Class"
+        return f"ApsRestServiceResultsProcessor(rest={self._rest}, project={self._project})"
 
     def check_status(self, job_uuid):
         """Check the status of a job.

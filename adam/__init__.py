@@ -18,7 +18,7 @@ from adam.rest_proxy import RetryingRestProxy
 from adam.project import *
 from adam.job import *
 from adam.adam_processing_results_processor import ApsRestServiceResultsProcessor
-from adam.batch_propagation_results import ResultsClient, MonteCarloResults
+from adam.batch_propagation_results import OrbitEventType, MonteCarloResults, ResultsClient
 from adam.opm_params import OpmParams
 from adam.opm_params import OpmParams
 from adam.permission import Permission
