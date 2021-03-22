@@ -1482,6 +1482,11 @@ or to <code class="docutils literal notranslate"><span class="pre">file_name</sp
 </dd></dl>
 
 <dl class="py method">
+<dt id="adam.job.Job.from_dict">
+<em class="property">static </em><code class="sig-name descname">from_dict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">job</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.job.Job.from_dict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt id="adam.job.Job.get_completion_time">
 <code class="sig-name descname">get_completion_time</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.job.Job.get_completion_time" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -1562,7 +1567,7 @@ or to <code class="docutils literal notranslate"><span class="pre">file_name</sp
 <dl class="py method">
 <dt id="adam.job.JobsClient.filter_by_inputs">
 <code class="sig-name descname">filter_by_inputs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">jobs</span></em>, <em class="sig-param"><span class="n">keys</span></em>, <em class="sig-param"><span class="n">comparison</span></em>, <em class="sig-param"><span class="n">comparison_value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.job.JobsClient.filter_by_inputs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize the Jobs API client.</p>
+<dd><p>Filter a list of Jobs by some criteria.</p>
 <p>filter_by_inputs(jobs, [‘monteCarloDraws’], Comparison.GreaterThan, 50000)
 filter_by_inputs(jobs, [‘opm’,’keplerian’,’inclination’], Comparison.GreaterThan, 23)</p>
 <dl class="field-list simple">
@@ -1580,7 +1585,7 @@ filter_by_inputs(jobs, [‘opm’,’keplerian’,’inclination’], Comparison
 
 <dl class="py method">
 <dt id="adam.job.JobsClient.get_jobs">
-<code class="sig-name descname">get_jobs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">project</span></em>, <em class="sig-param"><span class="n">status</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">object_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">user_defined_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">description</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">earliest_submission_datetime</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">latest_submission_datetime</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.job.JobsClient.get_jobs" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_jobs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">project</span></em>, <em class="sig-param"><span class="n">status</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">object_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">user_defined_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">description</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">earliest_submission_datetime</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">latest_submission_datetime</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span><a class="reference internal" href="#adam.job.Job" title="adam.job.Job">adam.job.Job</a><span class="p">]</span><a class="headerlink" href="#adam.job.JobsClient.get_jobs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds jobs based on one or more of the specified fields</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
