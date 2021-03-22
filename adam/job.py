@@ -1,10 +1,13 @@
 """
     job.py
 """
+import datetime
 import json
 import urllib
-import datetime
+from typing import List
+
 from dateutil import parser as dateparser
+
 from adam import Project, AuthenticatingRestProxy, RestRequests
 
 
@@ -29,13 +32,44 @@ class Job(object):
         self._completion_time = completion_time
         self._status = status
 
+    @staticmethod
+    def from_dict(job):
+        try:
+            submission_time = dateparser.parse(job.get('submissionTime'))
+        except (KeyError, dateparser.ParserError):
+            submission_time = None
+
+        try:
+            execution_start = dateparser.parse(job.get('executionStart'))
+        except (KeyError, dateparser.ParserError):
+            execution_start = None
+
+        try:
+            completion_time = dateparser.parse(job.get('completionTime'))
+        except (KeyError, dateparser.ParserError):
+            completion_time = None
+
+        return Job(
+            uuid=job.get('uuid'),
+            project_id=job.get('referenceUuid'),
+            description=job.get('description'),
+            object_id=job.get('objectId'),
+            user_defined_id=job.get('userDefinedId'),
+            job_type=job.get('jobType'),
+            input_json=job.get('inputParametersJson'),
+            submission_time=submission_time,
+            execution_start=execution_start,
+            completion_time=completion_time,
+            status=job.get('status')
+        )
+
     def __repr__(self):
         return (
             f"Job(object_id={self._object_id}, user_defined_id={self._user_defined_id}, "
             f"description={self._description}, job_type={self._job_type},"
             f"status={self._status}, submission_time={self._submission_time},"
             f"execution_start={self._execution_start}, completion_time={self._completion_time},"
-            f"input_json={self._input_json},uuid={self._uuid}, project_id={self._project_id}, )")
+            f"input_json={self._input_json},uuid={self._uuid}, project_id={self._project_id})")
 
     def get_uuid(self):
         return self._uuid
@@ -88,7 +122,7 @@ class JobsClient(object):
         self._rest = rest
 
     def get_jobs(self, project, status=None, object_id=None, user_defined_id=None, description=None,
-                 earliest_submission_datetime=None, latest_submission_datetime=None):
+                 earliest_submission_datetime=None, latest_submission_datetime=None) -> List[Job]:
         """Finds jobs based on one or more of the specified fields
 
         Args:
@@ -104,7 +138,6 @@ class JobsClient(object):
             list: a list of jobs for the project that match that criteria.
         """
 
-        project_id = project.get_uuid() if type(project) is Project else project
         query_parameters = []
 
         if (status is not None):
@@ -139,13 +172,12 @@ class JobsClient(object):
         code, response = self._rest.get(request_path)
 
         if code == 200:
-            jobs = list(map(self._job_object_from_dictionary, response['items']))
-            return jobs
+            return [Job.from_dict(i) for i in response['items']]
         else:
-            raise RuntimeError("Server status code: %s; Response: %s" % (code, response))
+            raise RuntimeError(f"Server status code: {code}; Response: {response}")
 
     def filter_by_inputs(self, jobs, keys, comparison, comparison_value):
-        """Initialize the Jobs API client.
+        """Filter a list of Jobs by some criteria.
 
         filter_by_inputs(jobs, ['monteCarloDraws'], Comparison.GreaterThan, 50000)
         filter_by_inputs(jobs, ['opm','keplerian','inclination'], Comparison.GreaterThan, 23)
@@ -179,33 +211,3 @@ class JobsClient(object):
                 results.append(job)
 
         return results
-
-    def _job_object_from_dictionary(self, j):
-        try:
-            submission_time = dateparser.parse(j['submissionTime'])
-        except KeyError:
-            submission_time = None
-
-        try:
-            execution_start = dateparser.parse(j['executionStart'])
-        except KeyError:
-            execution_start = None
-
-        try:
-            completion_time = dateparser.parse(j['completionTime'])
-        except KeyError:
-            completion_time = None
-
-        return Job(
-            uuid=j.get('uuid'),
-            project_id=j.get('referenceUuid'),
-            description=j.get('description'),
-            object_id=j.get('objectId'),
-            user_defined_id=j.get('userDefinedId'),
-            job_type=j.get('jobType'),
-            input_json=j.get('inputParametersJson'),
-            submission_time=submission_time,
-            execution_start=execution_start,
-            completion_time=completion_time,
-            status=j.get('status')
-        )
