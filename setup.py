@@ -67,6 +67,4 @@ setup(name="adam",
       packages=['adam', 'adam.stk'],
       entry_points={
           'console_scripts': ['adamctl=adam.__main__:main'],
-      }
-)
-
+      })
