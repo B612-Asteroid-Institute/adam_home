@@ -49,6 +49,7 @@ TEST_STATE_MISS_CSV = """#JobId=fake-job-id
 8,"2017-10-11T00:00:00Z",-2.6927385149503604E11,1.6041788987288612E10,-1.8148330927382935E10,-14395.656479752755,-28100.907244629958,47.96694967102391
 """  # noqa: E501
 
+
 class MockResponse(object):
     def __init__(self, text, status_code):
         self.text = text
