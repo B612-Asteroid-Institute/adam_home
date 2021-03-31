@@ -9,8 +9,14 @@ from adam.astro_utils import icrf_to_jpl_ecliptic
 STK_VERSION = "11.1"
 VERBOSE = True
 
-__all__ = ["createVectorFile", "createSensorFile", "createIntervalFile",
-           "convertPointingsToSensorInterval", "convertPointingsToVectorInterval"]
+__all__ = [
+    "createVectorFile",
+    "createSensorFile", 
+    "createIntervalFile",
+    "convertPointingsToSensorInterval", 
+    "convertPointingsToVectorInterval",
+    "ephemeris_file_data_to_dataframe"
+]
 
 
 def createVectorFile(fileName, exposureStart, exposureEnd,
