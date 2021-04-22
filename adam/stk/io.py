@@ -11,9 +11,9 @@ VERBOSE = True
 
 __all__ = [
     "createVectorFile",
-    "createSensorFile", 
+    "createSensorFile",
     "createIntervalFile",
-    "convertPointingsToSensorInterval", 
+    "convertPointingsToSensorInterval",
     "convertPointingsToVectorInterval",
     "ephemeris_file_data_to_dataframe"
 ]
