@@ -5,9 +5,9 @@
 
 # What is ADAM?
 
-ADAM is a cloud-based software platform that performs astrodynamics algorithms (e.g. orbit propagation). You can find whitepapers, presentations, etc. [here](https://adam.b612foundation.org).
+ADAM (Asteroid Decision, Analysis, and Mapping) is a cloud-based software platform that performs astrodynamics algorithms (e.g. orbit propagation). You can find whitepapers, presentations, etc. [here](https://adam.b612foundation.org).
 
-This repo contains the Python SDK (software development kit) and demo Jupyter notebooks for interacting with ADAM (Asteroid Decision, Analysis, and Mapping) API programmatically.
+The ADAM platform provides a REST API and this repo contains the Python SDK (software development kit) that can be used for accessing the API.
 
 ## Onboarding
 
