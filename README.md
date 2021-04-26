@@ -19,7 +19,7 @@ The following configuration steps have been tested on Mac OS (Catalina and Big S
 
 1. Install [anaconda](https://www.anaconda.com/). The individual edition is sufficient if you don't already have anaconda.
 
-1. Install `adamctl`. This command line utility helps you configure your ADAM Python client. (More on that below.)
+2. Install `adamctl`. This command line utility helps you configure your ADAM Python client. (More on that below.)
 
 ```bash
 # get latest release of ADAM sdk
@@ -27,19 +27,19 @@ The following configuration steps have been tested on Mac OS (Catalina and Big S
 conda install -c conda-forge -c asteroid-institute adam
 ```
 
-1. Login to ADAM. This authenticates you with the ADAM server so that you can access the ADAM APIs. You will need a Google account. (e.g. gmail or a Google Workspace email).
+3. Login to ADAM. This authenticates you with the ADAM server so that you can access the ADAM APIs. You will need a Google account. (e.g. gmail or a Google Workspace email).
 
 ```bash
-adamctl login
+adamctl login dev https://adam-dev-193118.appspot.com/_ah/api/adam/v1
 ```
 
-1. Set your ADAM project ID. The project is like a folder for jobs you run on ADAM.
+4. Set your ADAM project ID. The project is like a folder for jobs you run on ADAM.
 
 ```bash
-adamctl config envs.prod.workspace "YOUR_WORKSPACE_ID"
+adamctl config envs.dev.workspace "YOUR_WORKSPACE_ID"
 ```
 
-1. To view your ADAM server configurations:
+5. To view your ADAM server configurations:
 
 ```bash
 adamctl config
