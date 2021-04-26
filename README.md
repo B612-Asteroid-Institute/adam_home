@@ -3,69 +3,46 @@
 [![Python package](https://github.com/B612-Asteroid-Institute/adam_home/workflows/Python%20package/badge.svg)](https://github.com/B612-Asteroid-Institute/adam_home/actions?query=workflow%3A%22Python+package%22)
 [![Coverage Status](https://codecov.io/gh/B612-Asteroid-Institute/adam_home/branch/master/graph/badge.svg?token=3oTxQRvdID)](https://codecov.io/gh/B612-Asteroid-Institute/adam_home)
 
+# What is ADAM?
 
-This repo contains the Python SDK (software development kit) and Jupyter notebooks for interacting with ADAM (Asteroid Decision, Analysis, and Mapping) API programmatically.
+ADAM is a cloud-based software platform that performs astrodynamics algorithms (e.g. orbit propagation). You can find whitepapers, presentations, etc. [here](https://adam.b612foundation.org).
 
-## Configuration
+This repo contains the Python SDK (software development kit) and demo Jupyter notebooks for interacting with ADAM (Asteroid Decision, Analysis, and Mapping) API programmatically.
 
-Use the `adamctl` tool to configure your ADAM token and workspace before you run notebooks. The configuration steps usually only need to be done once per ADAM server environment.
+## Onboarding
 
-### Mac/Linux/WSL
+The ADAM API is currently in private beta. If you'd like to write Python workflows that use ADAM, reach out to carise@ to request a project ID.
 
-There are 2 required configuration IDs you'll need:
+## Mac/Linux/WSL Configuration
 
-  * Your login token, which you can get using the commands below (Google account required for login)
-  * A workspace (aka "project"). The workspace is like a folder for the jobs you submit to ADAM.
+The following configuration steps have been tested on Mac OS (Catalina and Big Sur), Linux (Debian-like), and WSL (Debian, Ubuntu). There's also been some limited testing on the Windows Anaconda Powershell command prompt.
+
+1. Install [anaconda](https://www.anaconda.com/). The individual edition is sufficient if you don't already have anaconda.
+
+1. Install `adamctl`. This command line utility helps you configure your ADAM Python client. (More on that below.)
 
 ```bash
 # get latest release of ADAM sdk
 # add the -c conda-forge for some of the adam dependencies
 conda install -c conda-forge -c asteroid-institute adam
+```
 
-# log in with Google account, defaults to prod server
+1. Login to ADAM. This authenticates you with the ADAM server so that you can access the ADAM APIs. You will need a Google account. (e.g. gmail or a Google Workspace email).
+
+```bash
 adamctl login
+```
 
-# set your ADAM server configuration's workspace ID
+1. Set your ADAM project ID. The project is like a folder for jobs you run on ADAM.
+
+```bash
 adamctl config envs.prod.workspace "YOUR_WORKSPACE_ID"
 ```
 
-To view your ADAM server configurations:
+1. To view your ADAM server configurations:
 
 ```bash
 adamctl config
-```
-
-## Other configurations
-
-Sometimes you might need to use an ADAM development server (e.g. for experimental APIs or developing ADAM client/server). 
-Create a separate ADAM configuration for that workspace.
-
-```bash
-# Set up a configuration e.g. "experimental_dev"
-# The URL points to the ADAM server you specify, plus the path to the API.
-# This will also set the default_env property of your configuration to "experimental_dev".
-adamctl login experimental_dev https://example-adam-server.com/_ah/api/adam/v1
-
-# Set your workspace ID. Whoever owns the development server should be
-# able to create a workspace ID for you.
-adamctl config envs.experimental_dev.workspace "YOUR_WORKSPACE_ID"
-```
-
-## Installing ADAM SDK from source
-
-Installing `adamctl` from source, instead of Anaconda. Do this if you're developing the ADAM SDK.
-
-```bash
-# grab the source code
-git clone git@github.com:B612-Asteroid-Institute/adam_home
-cd adam_home
-
-# create a new conda environment with the necessary dev tools
-conda create -n adam-dev --file conda-requirements.txt
-conda activate adam-dev
-
-# install ADAM in dev mode
-python setup.py develop
 ```
 
 ## Demos
@@ -118,6 +95,39 @@ A typical development loop will consist of:
   * Making some changes to the package in `adam/`
   * Testing with `pytest ./tests --cov=adam --ignore=tests/integration_tests`
   * Commit, push, PR.
+
+### Installing ADAM SDK from source
+
+Installing `adamctl` from source, instead of Anaconda. Do this if you're developing the ADAM SDK.
+
+```bash
+# grab the source code
+git clone git@github.com:B612-Asteroid-Institute/adam_home
+cd adam_home
+
+# create a new conda environment with the necessary dev tools
+conda create -n adam-dev --file conda-requirements.txt
+conda activate adam-dev
+
+# install ADAM in dev mode
+python setup.py develop
+```
+
+### Developer configurations
+
+Sometimes you might need to use an ADAM development server (e.g. for experimental APIs or developing ADAM client/server). 
+Create a separate ADAM configuration for that workspace.
+
+```bash
+# Set up a configuration e.g. "experimental_dev"
+# The URL points to the ADAM server you specify, plus the path to the API.
+# This will also set the default_env property of your configuration to "experimental_dev".
+adamctl login experimental_dev https://example-adam-server.com/_ah/api/adam/v1
+
+# Set your workspace ID. Whoever owns the development server should be
+# able to create a workspace ID for you.
+adamctl config envs.experimental_dev.workspace "YOUR_WORKSPACE_ID"
+```
 
 ## Updating documentation
 
