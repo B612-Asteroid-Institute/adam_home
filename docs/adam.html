@@ -1,181 +1,304 @@
 
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
-<head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>adam package &mdash; ADAM Python SDK  documentation</title>
-  
 
-  
-  
-  
-  
-
-  
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
-  
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>adam package &#8212; ADAM Python SDK  documentation</title>
     
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
+  <link href="_static/css/theme.css" rel="stylesheet" />
+  <link href="_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
 
     
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+      
+
+    
+    <link rel="stylesheet" href="_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+  <link rel="preload" as="script" href="_static/js/index.1c5a1a01449ed65a7b51.js">
+
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
-</head>
-
-<body class="wy-body-for-nav">
-
-   
-  <div class="wy-grid-for-nav">
+    <link rel="search" title="Search" href="search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en" />
     
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-          
+      
+      <link rel="icon" sizes="16x16" href="_static/b612-favicon-16x16.png">
+      
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
 
-          
-            <a href="index.html" class="icon icon-home"> ADAM Python SDK
-          
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
 
-          
+  <div id="navbar-start">
+    
+    
+
+<a class="navbar-brand" href="index.html">
+  <img src="_static/b612-logo-dark.png" class="logo" alt="logo">
+</a>
+
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/B612-Asteroid-Institute" rel="noopener" target="_blank" title="GitHub">
+            <span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label>
           </a>
-
-          
-            
-            
-          
-
-          
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+  </div>
 </div>
+    </nav>
+    
 
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+    <div class="container-xl">
+      <div class="row">
           
             
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar"><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="adam.stk.html">
+   adam.stk package
+  </a>
+ </li>
+</ul>
+
+  </div>
+</nav>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
             
               
-            
-            
-              <!-- Local TOC -->
-              <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">adam package</a><ul>
-<li><a class="reference internal" href="#subpackages">Subpackages</a></li>
-<li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-adam.adam_objects">adam.adam_objects module</a></li>
-<li><a class="reference internal" href="#module-adam.adam_processing_results_processor">adam.adam_processing_results_processor module</a></li>
-<li><a class="reference internal" href="#module-adam.adam_processing_service">adam.adam_processing_service module</a></li>
-<li><a class="reference internal" href="#module-adam.astro_utils">adam.astro_utils module</a></li>
-<li><a class="reference internal" href="#module-adam.auth">adam.auth module</a></li>
-<li><a class="reference internal" href="#module-adam.batch">adam.batch module</a></li>
-<li><a class="reference internal" href="#module-adam.batch_propagation">adam.batch_propagation module</a></li>
-<li><a class="reference internal" href="#module-adam.batch_propagation_results">adam.batch_propagation_results module</a></li>
-<li><a class="reference internal" href="#module-adam.batch_run_manager">adam.batch_run_manager module</a></li>
-<li><a class="reference internal" href="#module-adam.batches">adam.batches module</a></li>
-<li><a class="reference internal" href="#module-adam.comparison">adam.comparison module</a></li>
-<li><a class="reference internal" href="#module-adam.config_manager">adam.config_manager module</a></li>
-<li><a class="reference internal" href="#module-adam.errors">adam.errors module</a></li>
-<li><a class="reference internal" href="#module-adam.group">adam.group module</a></li>
-<li><a class="reference internal" href="#module-adam.job">adam.job module</a></li>
-<li><a class="reference internal" href="#module-adam.opm_params">adam.opm_params module</a></li>
-<li><a class="reference internal" href="#module-adam.permission">adam.permission module</a></li>
-<li><a class="reference internal" href="#module-adam.project">adam.project module</a></li>
-<li><a class="reference internal" href="#module-adam.propagation_params">adam.propagation_params module</a></li>
-<li><a class="reference internal" href="#module-adam.propagator_config">adam.propagator_config module</a></li>
-<li><a class="reference internal" href="#module-adam.rest_proxy">adam.rest_proxy module</a></li>
-<li><a class="reference internal" href="#module-adam.runnable_manager">adam.runnable_manager module</a></li>
-<li><a class="reference internal" href="#module-adam.service">adam.service module</a></li>
-<li><a class="reference internal" href="#module-adam.stm_propagation_module">adam.stm_propagation_module module</a></li>
-<li><a class="reference internal" href="#module-adam.targeted_propagation">adam.targeted_propagation module</a></li>
-<li><a class="reference internal" href="#module-adam.timer">adam.timer module</a></li>
-<li><a class="reference internal" href="#module-adam">Module contents</a></li>
-</ul>
-</li>
-</ul>
+              <div class="toc-item">
+                
+<div class="tocsection onthispage pt-5 pb-3">
+    <i class="fas fa-list"></i> On this page
 </div>
+
+<nav id="bd-toc-nav">
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#subpackages">
+   Subpackages
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#submodules">
+   Submodules
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-adam.adam_objects">
+   adam.adam_objects module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-adam.adam_processing_results_processor">
+   adam.adam_processing_results_processor module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-adam.adam_processing_service">
+   adam.adam_processing_service module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-adam.astro_utils">
+   adam.astro_utils module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-adam.auth">
+   adam.auth module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-adam.batch">
+   adam.batch module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-adam.batch_propagation">
+   adam.batch_propagation module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-adam.batch_propagation_results">
+   adam.batch_propagation_results module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-adam.batch_run_manager">
+   adam.batch_run_manager module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-adam.batches">
+   adam.batches module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-adam.comparison">
+   adam.comparison module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-adam.config_manager">
+   adam.config_manager module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-adam.errors">
+   adam.errors module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-adam.group">
+   adam.group module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-adam.job">
+   adam.job module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-adam.opm_params">
+   adam.opm_params module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-adam.permission">
+   adam.permission module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-adam.project">
+   adam.project module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-adam.propagation_params">
+   adam.propagation_params module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-adam.propagator_config">
+   adam.propagator_config module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-adam.rest_proxy">
+   adam.rest_proxy module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-adam.runnable_manager">
+   adam.runnable_manager module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-adam.service">
+   adam.service module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-adam.stm_propagation_module">
+   adam.stm_propagation_module module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-adam.targeted_propagation">
+   adam.targeted_propagation module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-adam.timer">
+   adam.timer module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-adam">
+   Module contents
+  </a>
+ </li>
+</ul>
+
+</nav>
+              </div>
+              
+              <div class="toc-item">
+                
+              </div>
+              
+            
+          </div>
+          
+
+          
+          
             
           
-        </div>
-      </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">ADAM Python SDK</a>
-        
-      </nav>
-
-
-      <div class="wy-nav-content">
-        
-        <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
-  <ul class="wy-breadcrumbs">
-    
-      <li><a href="index.html">Docs</a> &raquo;</li>
-        
-      <li>adam package</li>
-    
-    
-      <li class="wy-breadcrumbs-aside">
-        
-            
-            <a href="_sources/adam.rst.txt" rel="nofollow"> View page source</a>
-          
-        
-      </li>
-    
-  </ul>
-
-  
-  <hr/>
-</div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-            
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
   <div class="section" id="adam-package">
 <h1>adam package<a class="headerlink" href="#adam-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="subpackages">
@@ -378,6 +501,8 @@
 <li><p><strong>project</strong> (<em>str | Project</em>) – The workspace (project) id or project object</p></li>
 <li><p><strong>propagation_params</strong> (<a class="reference internal" href="#adam.propagation_params.PropagationParams" title="adam.propagation_params.PropagationParams"><em>PropagationParams</em></a>) – Parameters for the propagation.</p></li>
 <li><p><strong>opm_params</strong> (<a class="reference internal" href="#adam.opm_params.OpmParams" title="adam.opm_params.OpmParams"><em>OpmParams</em></a>) – Parameters specific to the OPM.</p></li>
+<li><p><strong>object_id</strong> (<em>str</em>) – The object id</p></li>
+<li><p><strong>user_defined_id</strong> (<em>str</em>) – The user-defined id</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -802,12 +927,12 @@ state summary (e.g. from /batch/uuid or in bulk from batch/project_id)</p>
 <p>batch_propagation_results.py</p>
 <dl class="py class">
 <dt id="adam.batch_propagation_results.ApsResults">
-<em class="property">class </em><code class="sig-prename descclassname">adam.batch_propagation_results.</code><code class="sig-name descname">ApsResults</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">results_processor</span></em>, <em class="sig-param"><span class="n">job_uuid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch_propagation_results.ApsResults" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">adam.batch_propagation_results.</code><code class="sig-name descname">ApsResults</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">client</span></em>, <em class="sig-param"><span class="n">job_uuid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch_propagation_results.ApsResults" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>API for retrieving job details</p>
 <dl class="py method">
 <dt id="adam.batch_propagation_results.ApsResults.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">results_processor</span></em>, <em class="sig-param"><span class="n">job_uuid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch_propagation_results.ApsResults.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">client</span></em>, <em class="sig-param"><span class="n">job_uuid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch_propagation_results.ApsResults.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
@@ -889,6 +1014,49 @@ Defaults to False.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt id="adam.batch_propagation_results.MonteCarloResults.get_ephemeris_as_dataframe">
+<code class="sig-name descname">get_ephemeris_as_dataframe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">run_index</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">orbit_event_type</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference internal" href="#adam.batch_propagation_results.OrbitEventType" title="adam.batch_propagation_results.OrbitEventType">adam.batch_propagation_results.OrbitEventType</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#adam.batch_propagation_results.MonteCarloResults.get_ephemeris_as_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get ephemeris content and convert it to a pandas DataFrame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>run_index</strong> (<em>int</em>) – The run number of the ephemeris</p></li>
+<li><p><strong>orbit_event_type</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="#adam.batch_propagation_results.OrbitEventType" title="adam.batch_propagation_results.OrbitEventType"><em>OrbitEventType</em></a><em>]</em>) – The OrbitEventType of the ephemeris</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The STK ephemeris in a pandas DataFrame.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pandas.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="adam.batch_propagation_results.MonteCarloResults.get_ephemeris_content">
+<code class="sig-name descname">get_ephemeris_content</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">run_index</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">orbit_event_type</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference internal" href="#adam.batch_propagation_results.OrbitEventType" title="adam.batch_propagation_results.OrbitEventType">adam.batch_propagation_results.OrbitEventType</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">force_update</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#adam.batch_propagation_results.MonteCarloResults.get_ephemeris_content" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves an ephemeris file and returns the text content.</p>
+<p>This doesn’t use the ADAM REST wrapper, since that class assumes the response will be in
+json, and this is an ephemeris. For now, it’s fine to use <cite>requests</cite> directly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>run_index</strong> (<em>int</em>) – The run number of the ephemeris</p></li>
+<li><p><strong>orbit_event_type</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="#adam.batch_propagation_results.OrbitEventType" title="adam.batch_propagation_results.OrbitEventType"><em>OrbitEventType</em></a><em>]</em>) – The OrbitEventType of the ephemeris</p></li>
+<li><p><strong>force_update</strong> (<em>bool</em>) – Whether the results should be reloaded from the server</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The ephemeris content, as a string.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="adam.batch_propagation_results.MonteCarloResults.get_final_positions">
 <code class="sig-name descname">get_final_positions</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">position_orbit_type</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#adam.batch_propagation_results.MonteCarloResults.PositionOrbitType" title="adam.batch_propagation_results.MonteCarloResults.PositionOrbitType">adam.batch_propagation_results.MonteCarloResults.PositionOrbitType</a></span></em>, <em class="sig-param"><span class="n">force_update</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch_propagation_results.MonteCarloResults.get_final_positions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the final positions of all propagated objects in the job.</p>
@@ -910,8 +1078,8 @@ Defaults to False.</p></li>
 
 <dl class="py method">
 <dt id="adam.batch_propagation_results.MonteCarloResults.get_result_ephemeris">
-<code class="sig-name descname">get_result_ephemeris</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">run_number</span></em>, <em class="sig-param"><span class="n">force_update</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch_propagation_results.MonteCarloResults.get_result_ephemeris" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get an ephemeris for a particular run in the batch as a Panda DataFrame</p>
+<code class="sig-name descname">get_result_ephemeris</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">run_number</span></em>, <em class="sig-param"><span class="n">force_update</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#adam.batch_propagation_results.MonteCarloResults.get_result_ephemeris" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get an ephemeris for a particular run in the batch as a Pandas DataFrame</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>force_update</strong> (<em>boolean</em>) – whether the request should be re-executed.</p>
@@ -960,6 +1128,52 @@ Defaults to False.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt id="adam.batch_propagation_results.MonteCarloResults.get_states_content">
+<code class="sig-name descname">get_states_content</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">orbit_event_type</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#adam.batch_propagation_results.OrbitEventType" title="adam.batch_propagation_results.OrbitEventType">adam.batch_propagation_results.OrbitEventType</a></span></em>, <em class="sig-param"><span class="n">force_update</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#adam.batch_propagation_results.MonteCarloResults.get_states_content" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves a states file and returns the content as a string.</p>
+<p>This doesn’t use the ADAM REST wrapper, since that class assumes the response will be in
+json, and this is an ephemeris. For now, it’s fine to use <cite>requests</cite> directly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>orbit_event_type</strong> (<a class="reference internal" href="#adam.batch_propagation_results.OrbitEventType" title="adam.batch_propagation_results.OrbitEventType"><em>OrbitEventType</em></a>) – The type of OrbitEvent for which to retrieve the
+states output.</p></li>
+<li><p><strong>force_update</strong> (<em>bool</em>) – Whether the results should be reloaded from the server</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The content of the state file.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="adam.batch_propagation_results.MonteCarloResults.get_states_dataframe">
+<code class="sig-name descname">get_states_dataframe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">orbit_event_type</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#adam.batch_propagation_results.OrbitEventType" title="adam.batch_propagation_results.OrbitEventType">adam.batch_propagation_results.OrbitEventType</a></span></em>, <em class="sig-param"><span class="n">force_update</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#adam.batch_propagation_results.MonteCarloResults.get_states_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves a states file and returns it as a pandas DataFrame.</p>
+<p>This doesn’t use the ADAM REST wrapper, since that class assumes the response will be in
+json, and this is an ephemeris. For now, it’s fine to use <cite>requests</cite> directly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>orbit_event_type</strong> (<a class="reference internal" href="#adam.batch_propagation_results.OrbitEventType" title="adam.batch_propagation_results.OrbitEventType"><em>OrbitEventType</em></a>) – The type of OrbitEvent for which to retrieve the
+states output.</p></li>
+<li><p><strong>force_update</strong> (<em>bool</em>) – Whether the results should be reloaded from the server</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The STK ephemeris in a pandas DataFrame.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pandas.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="adam.batch_propagation_results.MonteCarloResults.get_summary">
 <code class="sig-name descname">get_summary</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">force_update</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch_propagation_results.MonteCarloResults.get_summary" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the propagation results summary.</p>
@@ -970,6 +1184,52 @@ otherwise False (default).</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>summary (MonteCarloSummary)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="adam.batch_propagation_results.MonteCarloResults.list_all_ephemerides_files">
+<code class="sig-name descname">list_all_ephemerides_files</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Dict<a class="headerlink" href="#adam.batch_propagation_results.MonteCarloResults.list_all_ephemerides_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lists all ephemerides from the job results.</p>
+<p>Performs all the paging without user intervention.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Dict containing the ephemerides paths</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="adam.batch_propagation_results.MonteCarloResults.list_result_ephemerides_files">
+<code class="sig-name descname">list_result_ephemerides_files</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">page_size</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">100</span></em>, <em class="sig-param"><span class="n">page_token</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Dict<a class="headerlink" href="#adam.batch_propagation_results.MonteCarloResults.list_result_ephemerides_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>List one page of ephemerides files from the job results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>page_size</strong> (<em>int</em>) – The size of the results to retrieve</p></li>
+<li><p><strong>page_token</strong> (<em>str</em>) – Which page to retrieve</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Dict containing the ephemerides paths</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="adam.batch_propagation_results.MonteCarloResults.list_state_files">
+<code class="sig-name descname">list_state_files</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">force_update</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span>str<span class="p">]</span><a class="headerlink" href="#adam.batch_propagation_results.MonteCarloResults.list_state_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>List the state files generated during the propagation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>force_update</strong> (<em>bool</em>) – Whether the results should be reloaded from the server</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a list of URL strings for the state files.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list (str)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1004,6 +1264,30 @@ otherwise False (default).</p>
 <dl class="py method">
 <dt id="adam.batch_propagation_results.MonteCarloSummary.get_pc">
 <code class="sig-name descname">get_pc</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch_propagation_results.MonteCarloSummary.get_pc" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="adam.batch_propagation_results.OrbitEventType">
+<em class="property">class </em><code class="sig-prename descclassname">adam.batch_propagation_results.</code><code class="sig-name descname">OrbitEventType</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.batch_propagation_results.OrbitEventType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>Events of interest, from an orbit propagation.</p>
+<p>This is the same as PositionOrbitType, but with updated naming to be consistent with the
+server-side enum.</p>
+<dl class="py attribute">
+<dt id="adam.batch_propagation_results.OrbitEventType.CLOSE_APPROACH">
+<code class="sig-name descname">CLOSE_APPROACH</code><em class="property"> = 'CLOSE_APPROACH'</em><a class="headerlink" href="#adam.batch_propagation_results.OrbitEventType.CLOSE_APPROACH" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="adam.batch_propagation_results.OrbitEventType.IMPACT">
+<code class="sig-name descname">IMPACT</code><em class="property"> = 'IMPACT'</em><a class="headerlink" href="#adam.batch_propagation_results.OrbitEventType.IMPACT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="adam.batch_propagation_results.OrbitEventType.MISS">
+<code class="sig-name descname">MISS</code><em class="property"> = 'MISS'</em><a class="headerlink" href="#adam.batch_propagation_results.OrbitEventType.MISS" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -1474,7 +1758,7 @@ or to <code class="docutils literal notranslate"><span class="pre">file_name</sp
 <em class="property">class </em><code class="sig-prename descclassname">adam.job.</code><code class="sig-name descname">Job</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">uuid</span></em>, <em class="sig-param"><span class="n">project_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">object_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">user_defined_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">description</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">job_type</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">input_json</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">submission_time</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">execution_start</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">completion_time</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">status</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.job.Job" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Job class.</p>
-<p>An ADAM Project is like captures a computational run in our services.</p>
+<p>An ADAM Project is the parent container of a computational run.</p>
 <dl class="py method">
 <dt id="adam.job.Job.__init__">
 <code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">uuid</span></em>, <em class="sig-param"><span class="n">project_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">object_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">user_defined_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">description</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">job_type</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">input_json</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">submission_time</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">execution_start</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">completion_time</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">status</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.job.Job.__init__" title="Permalink to this definition">¶</a></dt>
@@ -3071,43 +3355,38 @@ provided, defaults to a multiple of target_distance_from_earth.</p>
 </div>
 
 
-           </div>
-           
-          </div>
-          <footer>
-  
+              </div>
+              
+              
+              <div class='prev-next-bottom'>
+                
 
-  <hr/>
+              </div>
+              
+          </main>
+          
 
-  <div role="contentinfo">
-    <p>
-        &copy; Copyright 2021, B612 Asteroid Institute
-
-    </p>
-  </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
-
-</footer>
-
-        </div>
       </div>
-
-    </section>
-
-  </div>
+    </div>
   
+  <script src="_static/js/index.1c5a1a01449ed65a7b51.js"></script>
 
-
-  <script type="text/javascript">
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script>
-
-  
-  
+  <footer class="footer mt-5 mt-md-0">
+  <div class="container">
     
-   
-
-</body>
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2021, B612 Asteroid Institute.<br/>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.2.1.<br/>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
 </html>

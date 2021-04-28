@@ -54,10 +54,30 @@ autodoc_default_options = {
 # a list of builtin themes.
 #
 
-html_theme = 'sphinx_rtd_theme'
+html_theme = 'pydata_sphinx_theme'
 
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+# Custom configuration
+html_logo = '_static/b612-logo-dark.png'
+
+html_theme_options = {
+  "icon_links": [
+    {
+      "name": "GitHub",
+      "url": "https://github.com/B612-Asteroid-Institute",
+      "icon": "fab fa-github-square",
+    },
+  ],
+  "favicons": [
+      {
+         "rel": "icon",
+         "sizes": "16x16",
+         "href": "b612-favicon-16x16.png",
+      },
+  ]
+}
