@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>adam package &#8212; ADAM Python SDK  documentation</title>
+    <title>adam.opm_params module &#8212; ADAM Python SDK  documentation</title>
     
   <link href="_static/css/theme.css" rel="stylesheet" />
   <link href="_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
@@ -131,7 +131,7 @@
   </ul>
  </li>
 </ul>
-<ul class="nav bd-sidenav">
+<ul class="current nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="adam.adam_objects.html">
    adam.adam_objects module
@@ -207,8 +207,8 @@
    adam.job module
   </a>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="adam.opm_params.html">
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
    adam.opm_params module
   </a>
  </li>
@@ -276,29 +276,9 @@
               
               <div class="toc-item">
                 
-<div class="tocsection onthispage pt-5 pb-3">
-    <i class="fas fa-list"></i> On this page
-</div>
 
 <nav id="bd-toc-nav">
-    <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#subpackages">
-   Subpackages
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#submodules">
-   Submodules
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-adam">
-   Module contents
-  </a>
- </li>
-</ul>
-
+    
 </nav>
               </div>
               
@@ -318,61 +298,112 @@
               
               <div>
                 
-  <div class="section" id="adam-package">
-<h1>adam package<a class="headerlink" href="#adam-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="subpackages">
-<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="adam.stk.html">adam.stk package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="adam.stk.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="adam.stk.astrogatoroutput.html">adam.stk.astrogatoroutput module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="adam.stk.io.html">adam.stk.io module</a></li>
+  <div class="section" id="module-adam.opm_params">
+<span id="adam-opm-params-module"></span><h1>adam.opm_params module<a class="headerlink" href="#module-adam.opm_params" title="Permalink to this headline">¶</a></h1>
+<p>opm_params.py</p>
+<dl class="py class">
+<dt id="adam.opm_params.OpmParams">
+<em class="property">class </em><code class="sig-prename descclassname">adam.opm_params.</code><code class="sig-name descname">OpmParams</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">params</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.opm_params.OpmParams" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="adam.opm_params.OpmParams.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">params</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.opm_params.OpmParams.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>params</strong> (<em>dict</em>) – contains the OPM properties</p>
+</dd>
+</dl>
+<p>Params properties are:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>--- epoch is required! ---
+epoch (str): the epoch associated with the state vector (IS0-8601 format)
+
+--- either state_vector or keplerian_elements is required! ---
+--- note that if keplerian_elements are provided, state_vector will be ignored
+--- by server side even if also provided. ---
+state_vector (list): an array with 6 elements [rx, ry, rz, vx, vy, vz]
+    representing the cartesian coordinates (the position and velocity vector)
+    of the object.
+keplerian_elements (dictionary): contains 7 elements representing the
+    keplerian coordinates of the object. The elements are:
+        semi_major_axis_km (float): Semimajor axis (km)
+        eccentricity (float): Eccentricity of orbit
+        inclination_deg (float): Inclination of orbit (deg)
+        ra_of_asc_node_deg (float): Right ascension of ascending node (deg)
+        arg_of_pericenter_deg (float): Argument of pericenter (deg)
+        true_anomaly_deg (float): True anomaly (deg)
+        gm (float): Gravitational constant (km^3/s^2)
+keplerian_covariance (list): lower triangular covariance matrix (21 elements)
+
+originator (str): responsible entity for run (default: &#39;ADAM_User&#39;)
+object_name (str): name of object (default: &#39;dummy&#39;)
+object_id (str): identification of object (default: &#39;001&#39;)
+
+center_name (str): center for propagation. &#39;SUN&#39; or &#39;EARTH&#39;. (default: &#39;SUN&#39;)
+ref_frame (str): reference frame for propagation. &#39;ICRF&#39; (International Celestial
+                 Reference Frame) or &#39;EMEME2000&#39; (Earth Mean Ecliptic Mean
+                 Equinox of J2000). (default: &#39;ICRF&#39;)
+
+mass (float): object mass in kilograms (default: 1000 kg)
+solar_rad_area (float): object solar radiation area in squared meters
+    (default: 20 m^2)
+solar_rad_coeff (float): object solar radiation coefficient (default: 1)
+drag_area (float): object drag area in squared meters (default: 20 m^2)
+drag_coeff (float): object drag coefficient (default: 2.2)
+
+--- None or all of covariance, perturbation, and hypercube must be given ---
+--- No defaults if not given ---
+covariance (list): an array with 21 elements corresponding to a 6x6 lower triangle
+perturbation (int): sigma perturbation on state vector
+hypercube (str): hypercube propagation type (e.g. &#39;FACES&#39; or &#39;CORNERS&#39;)
+
+initial_maneuver (list): An array with 3 elements representing initial dx, dy, dz
+    in velocity-orbit-normal coordinates (dx is in direction of velocity,
+    dy is orbit-normal, and dz is in direction of x cross y).
+    Assumed to take place at state vector epoch.
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>KeyError if the given object does not include 'epoch' and 'state_vector'</strong><strong>,</strong> – </p></li>
+<li><p><strong>or if unsupported parameters are provided</strong> – </p></li>
 </ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="adam.stk.html#module-adam.stk">Module contents</a></li>
-</ul>
-</li>
-</ul>
-</div>
-</div>
-<div class="section" id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="adam.adam_objects.html">adam.adam_objects module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.adam_processing_results_processor.html">adam.adam_processing_results_processor module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.adam_processing_service.html">adam.adam_processing_service module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.astro_utils.html">adam.astro_utils module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.auth.html">adam.auth module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.batch.html">adam.batch module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.batch_propagation.html">adam.batch_propagation module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.batch_propagation_results.html">adam.batch_propagation_results module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.batch_run_manager.html">adam.batch_run_manager module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.batches.html">adam.batches module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.comparison.html">adam.comparison module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.config_manager.html">adam.config_manager module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.errors.html">adam.errors module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.group.html">adam.group module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.job.html">adam.job module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.opm_params.html">adam.opm_params module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.permission.html">adam.permission module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.project.html">adam.project module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.propagation_params.html">adam.propagation_params module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.propagator_config.html">adam.propagator_config module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.rest_proxy.html">adam.rest_proxy module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.runnable_manager.html">adam.runnable_manager module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.service.html">adam.service module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.stm_propagation_module.html">adam.stm_propagation_module module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.targeted_propagation.html">adam.targeted_propagation module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.timer.html">adam.timer module</a></li>
-</ul>
-</div>
-</div>
-<div class="section" id="module-adam">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-adam" title="Permalink to this headline">¶</a></h2>
-<p>__init__.py</p>
-</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="adam.opm_params.OpmParams.fromJsonResponse">
+<em class="property">classmethod </em><code class="sig-name descname">fromJsonResponse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">response_opm</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.opm_params.OpmParams.fromJsonResponse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="adam.opm_params.OpmParams.generate_opm">
+<code class="sig-name descname">generate_opm</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.opm_params.OpmParams.generate_opm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate an OPM string</p>
+<p>This function generates a single OPM string from defined parameters (CCSDS format)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>None</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>OPM (str)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="adam.opm_params.OpmParams.get_state_vector">
+<code class="sig-name descname">get_state_vector</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.opm_params.OpmParams.get_state_vector" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="adam.opm_params.OpmParams.set_state_vector">
+<code class="sig-name descname">set_state_vector</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">state_vector</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.opm_params.OpmParams.set_state_vector" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </div>
 
 

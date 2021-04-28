@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>adam package &#8212; ADAM Python SDK  documentation</title>
+    <title>adam.stm_propagation_module module &#8212; ADAM Python SDK  documentation</title>
     
   <link href="_static/css/theme.css" rel="stylesheet" />
   <link href="_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
@@ -131,7 +131,7 @@
   </ul>
  </li>
 </ul>
-<ul class="nav bd-sidenav">
+<ul class="current nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="adam.adam_objects.html">
    adam.adam_objects module
@@ -247,8 +247,8 @@
    adam.service module
   </a>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="adam.stm_propagation_module.html">
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
    adam.stm_propagation_module module
   </a>
  </li>
@@ -276,29 +276,9 @@
               
               <div class="toc-item">
                 
-<div class="tocsection onthispage pt-5 pb-3">
-    <i class="fas fa-list"></i> On this page
-</div>
 
 <nav id="bd-toc-nav">
-    <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#subpackages">
-   Subpackages
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#submodules">
-   Submodules
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-adam">
-   Module contents
-  </a>
- </li>
-</ul>
-
+    
 </nav>
               </div>
               
@@ -318,61 +298,54 @@
               
               <div>
                 
-  <div class="section" id="adam-package">
-<h1>adam package<a class="headerlink" href="#adam-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="subpackages">
-<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="adam.stk.html">adam.stk package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="adam.stk.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="adam.stk.astrogatoroutput.html">adam.stk.astrogatoroutput module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="adam.stk.io.html">adam.stk.io module</a></li>
+  <div class="section" id="module-adam.stm_propagation_module">
+<span id="adam-stm-propagation-module-module"></span><h1>adam.stm_propagation_module module<a class="headerlink" href="#module-adam.stm_propagation_module" title="Permalink to this headline">¶</a></h1>
+<p>&#64;author: vivek
+&#64;todo: change all printing to logging</p>
+<dl class="py class">
+<dt id="adam.stm_propagation_module.StmPropagationModule">
+<em class="property">class </em><code class="sig-prename descclassname">adam.stm_propagation_module.</code><code class="sig-name descname">StmPropagationModule</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">batches_module</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.stm_propagation_module.StmPropagationModule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="adam.stm_propagation_module.StmPropagationModule.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">batches_module</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.stm_propagation_module.StmPropagationModule.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="adam.stm_propagation_module.StmPropagationModule.run_stm_propagation">
+<code class="sig-name descname">run_stm_propagation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">propagation_params</span></em>, <em class="sig-param"><span class="n">opm_params</span></em>, <em class="sig-param"><span class="n">only_dV</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.stm_propagation_module.StmPropagationModule.run_stm_propagation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a state transition matrix for the propagation described by the
+given parameters. Does so by nudging the state vector given in opm_params
+in several different directions and combining the results of propagating
+with the slightly different state vectors.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>propagation_params</strong> (<a class="reference internal" href="adam.propagation_params.html#adam.propagation_params.PropagationParams" title="adam.propagation_params.PropagationParams"><em>PropagationParams</em></a>) – Propagation-related parameters for the STM propagations</p></li>
+<li><p><strong>opm_params</strong> (<a class="reference internal" href="adam.opm_params.html#adam.opm_params.OpmParams" title="adam.opm_params.OpmParams"><em>OpmParams</em></a>) – OPM-related parameters for the propagations, including the nominal
+state vector that will be varied. Keplerian elements not supported.</p></li>
+<li><p><strong>only_dV</strong> (<em>bool</em>) – If True, only find the STM with respect to the velocity</p></li>
 </ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="adam.stk.html#module-adam.stk">Module contents</a></li>
-</ul>
-</li>
-</ul>
-</div>
-</div>
-<div class="section" id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="adam.adam_objects.html">adam.adam_objects module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.adam_processing_results_processor.html">adam.adam_processing_results_processor module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.adam_processing_service.html">adam.adam_processing_service module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.astro_utils.html">adam.astro_utils module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.auth.html">adam.auth module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.batch.html">adam.batch module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.batch_propagation.html">adam.batch_propagation module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.batch_propagation_results.html">adam.batch_propagation_results module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.batch_run_manager.html">adam.batch_run_manager module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.batches.html">adam.batches module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.comparison.html">adam.comparison module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.config_manager.html">adam.config_manager module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.errors.html">adam.errors module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.group.html">adam.group module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.job.html">adam.job module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.opm_params.html">adam.opm_params module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.permission.html">adam.permission module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.project.html">adam.project module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.propagation_params.html">adam.propagation_params module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.propagator_config.html">adam.propagator_config module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.rest_proxy.html">adam.rest_proxy module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.runnable_manager.html">adam.runnable_manager module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.service.html">adam.service module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.stm_propagation_module.html">adam.stm_propagation_module module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.targeted_propagation.html">adam.targeted_propagation module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adam.timer.html">adam.timer module</a></li>
-</ul>
-</div>
-</div>
-<div class="section" id="module-adam">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-adam" title="Permalink to this headline">¶</a></h2>
-<p>__init__.py</p>
-</div>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>Final state vector of nominal propagation [rx, ry, rz, vx, vy, vz]</dt><dd><p>[km, km/s]</p>
+</dd>
+<dt>stm (matrix):</dt><dd><p>STM describing effect of changes to final state due to
+initial state (or velocity)</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>end_state (list)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 

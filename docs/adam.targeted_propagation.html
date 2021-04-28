@@ -1,0 +1,475 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>adam.targeted_propagation module &#8212; ADAM Python SDK  documentation</title>
+    
+  <link href="_static/css/theme.css" rel="stylesheet" />
+  <link href="_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" href="_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+  <link rel="preload" as="script" href="_static/js/index.1c5a1a01449ed65a7b51.js">
+
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en" />
+    
+      
+      <link rel="icon" sizes="16x16" href="_static/b612-favicon-16x16.png">
+      
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+
+<a class="navbar-brand" href="index.html">
+  <img src="_static/b612-logo-dark.png" class="logo" alt="logo">
+</a>
+
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/B612-Asteroid-Institute" rel="noopener" target="_blank" title="GitHub">
+            <span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label>
+          </a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar"><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    <ul class="nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="adam.stk.html">
+   adam.stk package
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="adam.stk.astrogatoroutput.html">
+     adam.stk.astrogatoroutput module
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="adam.stk.io.html">
+     adam.stk.io module
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="adam.adam_objects.html">
+   adam.adam_objects module
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="adam.adam_processing_results_processor.html">
+   adam.adam_processing_results_processor module
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="adam.adam_processing_service.html">
+   adam.adam_processing_service module
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="adam.astro_utils.html">
+   adam.astro_utils module
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="adam.auth.html">
+   adam.auth module
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="adam.batch.html">
+   adam.batch module
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="adam.batch_propagation.html">
+   adam.batch_propagation module
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="adam.batch_propagation_results.html">
+   adam.batch_propagation_results module
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="adam.batch_run_manager.html">
+   adam.batch_run_manager module
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="adam.batches.html">
+   adam.batches module
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="adam.comparison.html">
+   adam.comparison module
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="adam.config_manager.html">
+   adam.config_manager module
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="adam.errors.html">
+   adam.errors module
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="adam.group.html">
+   adam.group module
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="adam.job.html">
+   adam.job module
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="adam.opm_params.html">
+   adam.opm_params module
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="adam.permission.html">
+   adam.permission module
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="adam.project.html">
+   adam.project module
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="adam.propagation_params.html">
+   adam.propagation_params module
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="adam.propagator_config.html">
+   adam.propagator_config module
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="adam.rest_proxy.html">
+   adam.rest_proxy module
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="adam.runnable_manager.html">
+   adam.runnable_manager module
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="adam.service.html">
+   adam.service module
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="adam.stm_propagation_module.html">
+   adam.stm_propagation_module module
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   adam.targeted_propagation module
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="adam.timer.html">
+   adam.timer module
+  </a>
+ </li>
+</ul>
+
+  </div>
+</nav>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+              
+              <div class="toc-item">
+                
+
+<nav id="bd-toc-nav">
+    
+</nav>
+              </div>
+              
+              <div class="toc-item">
+                
+              </div>
+              
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <div class="section" id="module-adam.targeted_propagation">
+<span id="adam-targeted-propagation-module"></span><h1>adam.targeted_propagation module<a class="headerlink" href="#module-adam.targeted_propagation" title="Permalink to this headline">¶</a></h1>
+<p>targeted_propagation.py</p>
+<dl class="py class">
+<dt id="adam.targeted_propagation.TargetedPropagation">
+<em class="property">class </em><code class="sig-prename descclassname">adam.targeted_propagation.</code><code class="sig-name descname">TargetedPropagation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">propagation_params</span></em>, <em class="sig-param"><span class="n">opm_params</span></em>, <em class="sig-param"><span class="n">targeting_params</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.targeted_propagation.TargetedPropagation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="adam.adam_objects.html#adam.adam_objects.AdamObject" title="adam.adam_objects.AdamObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">adam.adam_objects.AdamObject</span></code></a></p>
+<dl class="py method">
+<dt id="adam.targeted_propagation.TargetedPropagation.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">propagation_params</span></em>, <em class="sig-param"><span class="n">opm_params</span></em>, <em class="sig-param"><span class="n">targeting_params</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.targeted_propagation.TargetedPropagation.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="adam.targeted_propagation.TargetedPropagation.get_ephemeris">
+<code class="sig-name descname">get_ephemeris</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.targeted_propagation.TargetedPropagation.get_ephemeris" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="adam.targeted_propagation.TargetedPropagation.get_maneuver">
+<code class="sig-name descname">get_maneuver</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.targeted_propagation.TargetedPropagation.get_maneuver" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="adam.targeted_propagation.TargetedPropagation.get_opm_params">
+<code class="sig-name descname">get_opm_params</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.targeted_propagation.TargetedPropagation.get_opm_params" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="adam.targeted_propagation.TargetedPropagation.get_propagation_params">
+<code class="sig-name descname">get_propagation_params</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.targeted_propagation.TargetedPropagation.get_propagation_params" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="adam.targeted_propagation.TargetedPropagation.get_targeting_params">
+<code class="sig-name descname">get_targeting_params</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.targeted_propagation.TargetedPropagation.get_targeting_params" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="adam.targeted_propagation.TargetedPropagation.set_ephemeris">
+<code class="sig-name descname">set_ephemeris</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ephemeris</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.targeted_propagation.TargetedPropagation.set_ephemeris" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="adam.targeted_propagation.TargetedPropagation.set_maneuver">
+<code class="sig-name descname">set_maneuver</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">maneuver</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.targeted_propagation.TargetedPropagation.set_maneuver" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="adam.targeted_propagation.TargetedPropagations">
+<em class="property">class </em><code class="sig-prename descclassname">adam.targeted_propagation.</code><code class="sig-name descname">TargetedPropagations</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rest</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.targeted_propagation.TargetedPropagations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="adam.adam_objects.html#adam.adam_objects.AdamObjects" title="adam.adam_objects.AdamObjects"><code class="xref py py-class docutils literal notranslate"><span class="pre">adam.adam_objects.AdamObjects</span></code></a></p>
+<dl class="py method">
+<dt id="adam.targeted_propagation.TargetedPropagations.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rest</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.targeted_propagation.TargetedPropagations.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="adam.targeted_propagation.TargetedPropagations.get">
+<code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">uuid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.targeted_propagation.TargetedPropagations.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="adam.targeted_propagation.TargetedPropagations.get_children">
+<code class="sig-name descname">get_children</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">uuid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.targeted_propagation.TargetedPropagations.get_children" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="adam.targeted_propagation.TargetedPropagations.insert">
+<code class="sig-name descname">insert</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">targeted_propagation</span></em>, <em class="sig-param"><span class="n">project_uuid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.targeted_propagation.TargetedPropagations.insert" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="adam.targeted_propagation.TargetedPropagations.update_with_results">
+<code class="sig-name descname">update_with_results</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">targeted_propagation</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.targeted_propagation.TargetedPropagations.update_with_results" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="adam.targeted_propagation.TargetingParams">
+<em class="property">class </em><code class="sig-prename descclassname">adam.targeted_propagation.</code><code class="sig-name descname">TargetingParams</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">params</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.targeted_propagation.TargetingParams" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="adam.targeted_propagation.TargetingParams.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">params</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.targeted_propagation.TargetingParams.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Param options are:</dt><dd><dl class="simple">
+<dt>target_distance_from_earth (float):</dt><dd><p>Target distance from the center of the earth, in km. Required!</p>
+</dd>
+<dt>initial_target_distance_from_earth (float):</dt><dd><p>Initial target distance from the center of the earth, in km. If not
+provided, defaults to a multiple of target_distance_from_earth.</p>
+</dd>
+<dt>tolerance (float):</dt><dd><p>Tolerance on the target distance, in km. Must be &gt; 0. Defaults to 1 km.</p>
+</dd>
+<dt>run_nominal_only (boolean):</dt><dd><p>Whether to run only the nominal sequence of the targeter. Defaults to false.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>KeyError if unsupported parameters are provided</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="adam.targeted_propagation.TargetingParams.fromJsonResponse">
+<em class="property">classmethod </em><code class="sig-name descname">fromJsonResponse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">response_targeting_params</span></em><span class="sig-paren">)</span><a class="headerlink" href="#adam.targeted_propagation.TargetingParams.fromJsonResponse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="adam.targeted_propagation.TargetingParams.get_initial_target_distance_from_earth">
+<code class="sig-name descname">get_initial_target_distance_from_earth</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.targeted_propagation.TargetingParams.get_initial_target_distance_from_earth" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="adam.targeted_propagation.TargetingParams.get_run_nominal_only">
+<code class="sig-name descname">get_run_nominal_only</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.targeted_propagation.TargetingParams.get_run_nominal_only" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="adam.targeted_propagation.TargetingParams.get_target_distance_from_earth">
+<code class="sig-name descname">get_target_distance_from_earth</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.targeted_propagation.TargetingParams.get_target_distance_from_earth" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="adam.targeted_propagation.TargetingParams.get_tolerance">
+<code class="sig-name descname">get_tolerance</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adam.targeted_propagation.TargetingParams.get_tolerance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+              </div>
+              
+              
+              <div class='prev-next-bottom'>
+                
+
+              </div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+  <script src="_static/js/index.1c5a1a01449ed65a7b51.js"></script>
+
+  <footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2021, B612 Asteroid Institute.<br/>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.2.1.<br/>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>
