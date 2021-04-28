@@ -163,7 +163,7 @@ make html
 
 ```bash
 cd adam_home
-sphinx-apidoc --force -o doc_source adam
+sphinx-apidoc --separate --force -o doc_source adam
 make html
 rm -rf docs
 mv build/html docs

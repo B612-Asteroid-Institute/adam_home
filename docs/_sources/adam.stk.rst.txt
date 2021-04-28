@@ -4,21 +4,11 @@ adam.stk package
 Submodules
 ----------
 
-adam.stk.astrogatoroutput module
---------------------------------
+.. toctree::
+   :maxdepth: 4
 
-.. automodule:: adam.stk.astrogatoroutput
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-adam.stk.io module
-------------------
-
-.. automodule:: adam.stk.io
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   adam.stk.astrogatoroutput
+   adam.stk.io
 
 Module contents
 ---------------

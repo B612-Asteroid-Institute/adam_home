@@ -1,150 +1,147 @@
 
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
-<head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>adam &mdash; ADAM Python SDK  documentation</title>
-  
 
-  
-  
-  
-  
-
-  
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
-  
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>adam &#8212; ADAM Python SDK  documentation</title>
     
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
+  <link href="_static/css/theme.css" rel="stylesheet" />
+  <link href="_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
 
     
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+      
+
+    
+    <link rel="stylesheet" href="_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+  <link rel="preload" as="script" href="_static/js/index.1c5a1a01449ed65a7b51.js">
+
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
-</head>
-
-<body class="wy-body-for-nav">
-
-   
-  <div class="wy-grid-for-nav">
+    <link rel="search" title="Search" href="search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en" />
     
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-          
+      
+      <link rel="icon" sizes="16x16" href="_static/b612-favicon-16x16.png">
+      
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
 
-          
-            <a href="index.html" class="icon icon-home"> ADAM Python SDK
-          
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
 
-          
+  <div id="navbar-start">
+    
+    
+
+<a class="navbar-brand" href="index.html">
+  <img src="_static/b612-logo-dark.png" class="logo" alt="logo">
+</a>
+
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/B612-Asteroid-Institute" rel="noopener" target="_blank" title="GitHub">
+            <span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label>
           </a>
-
-          
-            
-            
-          
-
-          
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+  </div>
 </div>
+    </nav>
+    
 
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+    <div class="container-xl">
+      <div class="row">
           
             
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar"><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    
+  </div>
+</nav>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
             
               
+              <div class="toc-item">
+                
+
+<nav id="bd-toc-nav">
+    
+</nav>
+              </div>
+              
+              <div class="toc-item">
+                
+              </div>
+              
             
-            
-              <!-- Local TOC -->
-              <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">adam</a></li>
-</ul>
-</div>
-            
-          
-        </div>
-      </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">ADAM Python SDK</a>
-        
-      </nav>
-
-
-      <div class="wy-nav-content">
-        
-        <div class="rst-content">
-        
+          </div>
           
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
-  <ul class="wy-breadcrumbs">
-    
-      <li><a href="index.html">Docs</a> &raquo;</li>
-        
-      <li>adam</li>
-    
-    
-      <li class="wy-breadcrumbs-aside">
-        
-            
-            <a href="_sources/modules.rst.txt" rel="nofollow"> View page source</a>
           
-        
-      </li>
-    
-  </ul>
-
-  
-  <hr/>
-</div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
+          
             
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
   <div class="section" id="adam">
 <h1>adam<a class="headerlink" href="#adam" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
@@ -153,40 +150,40 @@
 <li class="toctree-l2"><a class="reference internal" href="adam.html#subpackages">Subpackages</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="adam.stk.html">adam.stk package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="adam.stk.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="adam.stk.html#module-adam.stk.astrogatoroutput">adam.stk.astrogatoroutput module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="adam.stk.html#module-adam.stk.io">adam.stk.io module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="adam.stk.html#module-adam.stk">Module contents</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="adam.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adam.html#module-adam.adam_objects">adam.adam_objects module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adam.html#module-adam.adam_processing_results_processor">adam.adam_processing_results_processor module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adam.html#module-adam.adam_processing_service">adam.adam_processing_service module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adam.html#module-adam.astro_utils">adam.astro_utils module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adam.html#module-adam.auth">adam.auth module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adam.html#module-adam.batch">adam.batch module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adam.html#module-adam.batch_propagation">adam.batch_propagation module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adam.html#module-adam.batch_propagation_results">adam.batch_propagation_results module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adam.html#module-adam.batch_run_manager">adam.batch_run_manager module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adam.html#module-adam.batches">adam.batches module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adam.html#module-adam.comparison">adam.comparison module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adam.html#module-adam.config_manager">adam.config_manager module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adam.html#module-adam.errors">adam.errors module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adam.html#module-adam.group">adam.group module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adam.html#module-adam.job">adam.job module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adam.html#module-adam.opm_params">adam.opm_params module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adam.html#module-adam.permission">adam.permission module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adam.html#module-adam.project">adam.project module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adam.html#module-adam.propagation_params">adam.propagation_params module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adam.html#module-adam.propagator_config">adam.propagator_config module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adam.html#module-adam.rest_proxy">adam.rest_proxy module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adam.html#module-adam.runnable_manager">adam.runnable_manager module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adam.html#module-adam.service">adam.service module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adam.html#module-adam.stm_propagation_module">adam.stm_propagation_module module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adam.html#module-adam.targeted_propagation">adam.targeted_propagation module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adam.html#module-adam.timer">adam.timer module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="adam.html#submodules">Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="adam.adam_objects.html">adam.adam_objects module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="adam.adam_processing_results_processor.html">adam.adam_processing_results_processor module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="adam.adam_processing_service.html">adam.adam_processing_service module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="adam.astro_utils.html">adam.astro_utils module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="adam.auth.html">adam.auth module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="adam.batch.html">adam.batch module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="adam.batch_propagation.html">adam.batch_propagation module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="adam.batch_propagation_results.html">adam.batch_propagation_results module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="adam.batch_run_manager.html">adam.batch_run_manager module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="adam.batches.html">adam.batches module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="adam.comparison.html">adam.comparison module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="adam.config_manager.html">adam.config_manager module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="adam.errors.html">adam.errors module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="adam.group.html">adam.group module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="adam.job.html">adam.job module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="adam.opm_params.html">adam.opm_params module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="adam.permission.html">adam.permission module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="adam.project.html">adam.project module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="adam.propagation_params.html">adam.propagation_params module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="adam.propagator_config.html">adam.propagator_config module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="adam.rest_proxy.html">adam.rest_proxy module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="adam.runnable_manager.html">adam.runnable_manager module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="adam.service.html">adam.service module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="adam.stm_propagation_module.html">adam.stm_propagation_module module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="adam.targeted_propagation.html">adam.targeted_propagation module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="adam.timer.html">adam.timer module</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="adam.html#module-adam">Module contents</a></li>
 </ul>
 </li>
@@ -195,43 +192,38 @@
 </div>
 
 
-           </div>
-           
-          </div>
-          <footer>
-  
+              </div>
+              
+              
+              <div class='prev-next-bottom'>
+                
 
-  <hr/>
+              </div>
+              
+          </main>
+          
 
-  <div role="contentinfo">
-    <p>
-        &copy; Copyright 2021, B612 Asteroid Institute
-
-    </p>
-  </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
-
-</footer>
-
-        </div>
       </div>
-
-    </section>
-
-  </div>
+    </div>
   
+  <script src="_static/js/index.1c5a1a01449ed65a7b51.js"></script>
 
-
-  <script type="text/javascript">
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script>
-
-  
-  
+  <footer class="footer mt-5 mt-md-0">
+  <div class="container">
     
-   
-
-</body>
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2021, B612 Asteroid Institute.<br/>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.2.1.<br/>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
 </html>
