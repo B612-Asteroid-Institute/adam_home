@@ -69,7 +69,7 @@ class TestBatchPropagation:
         batch_propagation = self._new_batch_propagation()
         props = BatchPropagations(service.rest)
 
-        props.insert(batch_propagation, working_project.get_uuid())
+        props.insert_all([batch_propagation], self.working_project.get_uuid())
         uuid = batch_propagation.get_uuid()
         assert uuid is not None
         print(uuid)

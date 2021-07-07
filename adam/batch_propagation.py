@@ -93,11 +93,21 @@ class BatchPropagations(AdamObjects):
 
         return data
 
+    def insert_all(self, batch_propagations, project_uuid):
+        all_data = {'requests': [], 'project': project_uuid}
+        for batch_propagation in batch_propagations:
+            all_data['requests'].append(self._build_batch_propagation_creation_data(
+                batch_propagation.get_propagation_params(),
+                batch_propagation.get_opm_params()))
+        uuids = AdamObjects._insert_all(self, all_data)
+        for i in range(len(uuids)):
+            batch_propagations[i].set_uuid(uuids[i])
+
     def insert(self, batch_propagation, project_uuid):
         data = self._build_batch_propagation_creation_data(
             batch_propagation.get_propagation_params(),
-            batch_propagation.get_opm_params(),
-            project_uuid)
+            batch_propagation.get_opm_params())
+        data['project'] = project_uuid
         batch_propagation.set_uuid(AdamObjects._insert(self, data))
 
     def update_with_results(self, batch_propagation):

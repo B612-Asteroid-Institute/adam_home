@@ -88,8 +88,10 @@ class RunnableManager(object):
     def _update_cached_status(self):
         status = self._get_empty_cached_status()
         for r in self.runnables:
-            status[r.get_runnable_state().get_calc_state()
-                   ].append(r.get_uuid())
+            calc_state = 'PENDING'
+            if r.get_runnable_state() is not None:
+                calc_state = r.get_runnable_state().get_calc_state()
+            status[calc_state].append(r.get_uuid())
 
         self.status_lock.acquire()
         self.cached_status = status
@@ -106,53 +108,36 @@ class RunnableManager(object):
             return
 
         # Insert all the runnables server-side.
-        import time
-        count = 0
-        for r in self.runnables:
-            self.runnables_module.insert(r, self.project_uuid)
-            count = count + 1
-            if count % 10 == 0:
-                print('Inserted ' + str(count) + ' runnables')
-            time.sleep(.5)
 
-        # TODO: support batched submission.
+        # Insertions are most efficient when submitted in a single call because of the
+        # overhead of authorization, connecting to the database, etc. The server takes
+        # ~20 seconds to submit 500 runnables. We don't want to take more time than that
+        # because calls time out around 60 seconds.
+        submission_batch_size = 500
 
-        # # Batch runs are most efficient when submitted in a single call because of the
-        # # overhead of authorization, connecting to the database, etc. The server takes
-        # # ~20 seconds to submit 500 batch runs. We don't want to take more time than that
-        # # because calls time out around 60 seconds.
-        # submission_batch_size = 500
+        # Use as many threads as we have runnables to submit, up to an arbitrary maximum
+        # of 10, which allows us to submit 5000 runnables in parallel.
+        if self.multi_threaded:
+            num_batches = round(len(self.runnables) / submission_batch_size) + 1
+            threads = min(num_batches, 10)
+        else:
+            threads = 1
 
-        # # Use as many threads as we have batches to submit, up to an arbitrary maximum
-        # # of 10, which allows us to submit 5000 batches in parallel.
-        # if self.multi_threaded:
-        #     num_batches = round(len(self.batch_runs) / submission_batch_size) + 1
-        #     threads = min(num_batches, 10)
-        # else:
-        #     threads = 1
+        def _submit_runnables(i):
+            # Call to the server to insert the runnables.
+            runnable_subset = self.runnables[i:i + submission_batch_size]
+            self.runnables_module.insert_all(runnable_subset, self.project_uuid)
 
-        # def _submit_batches(i):
-        #     # Grab all the creation parameters from the batch objects.
-        #     runs = self.batch_runs[i:i+submission_batch_size]
-        #     params = [[b.get_propagation_params(), b.get_opm_params()] for b in runs]
+        pool = ThreadPool(threads)
+        # Break up the runnables into chunks and submit them in chunks. For fewer than
+        # <submission_batch_size> runs, this just submits them all in one request on one
+        # thread.
+        pool.map(_submit_runnables,
+                 [i for i in range(0, len(self.runnables), submission_batch_size)])
+        pool.close()
+        pool.join()
 
-        #     # Call to the server to create the batches.
-        #     summaries = self.batches_module.new_batches(params)
-
-        #     # Update the batches with the resulting state summaries.
-        #     for summary_i in range(len(summaries)):
-        #         self.batch_runs[i + summary_i].set_state_summary(summaries[summary_i])
-
-        # pool = ThreadPool(threads)
-        # # Break up the batches into chunks and submit them in chunks. For fewer than
-        # # <submission_batch_size> runs, this just submits them all in one request on one
-        # # thread.
-        # pool.map(_submit_batches,
-        #          [i for i in range(0, len(self.batch_runs), submission_batch_size)])
-        # pool.close()
-        # pool.join()
-
-        # self._update_cached_status()
+        self._update_cached_status()
 
         if self.do_timing:
             self.timer.stop()
@@ -172,20 +157,22 @@ class RunnableManager(object):
             return
 
         # First, update the status of all runnables.
-        runnable_states = self.runnables_module.get_runnable_states(
-            self.project_uuid)
+        runnable_states = self.runnables_module.get_runnable_states(self.project_uuid)
         runnable_states_by_uuid = {}
         for runnable_state in runnable_states:
             runnable_states_by_uuid[runnable_state.get_uuid()] = runnable_state
 
         for runnable in self.runnables:
             runnable.set_runnable_state(
-                runnable_states_by_uuid[runnable.get_uuid()])
+                runnable_states_by_uuid.get(runnable.get_uuid()))
 
         # Then, if the state of this whole batch should be updated, do that.
         complete = True
         for runnable in self.runnables:
-            if not runnable.get_runnable_state().get_calc_state() in ['COMPLETED', 'FAILED']:
+            calc_state = 'PENDING'
+            if runnable.get_runnable_state() is not None:
+                calc_state = runnable.get_runnable_state().get_calc_state()
+            if calc_state not in ['COMPLETED', 'FAILED']:
                 complete = False
                 break
         if complete:
@@ -194,8 +181,8 @@ class RunnableManager(object):
         self._update_cached_status()
 
     def _wait_for_completion(self):
-        """ Waits for the completion of all the batches managed by this object. When this
-            returns, all managed batches are guaranteed to be in a final state
+        """ Waits for the completion of all the runnables managed by this object. When this
+            returns, all managed runnables are guaranteed to be in a final state
             (COMPLETED or FAILED).
         """
         if self.do_timing:

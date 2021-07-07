@@ -56,6 +56,16 @@ class AdamObjects(object):
     def __repr__(self):
         return "AdamObjects module"
 
+    def _insert_all(self, all_data):
+        code, response = self._rest.post(
+            '/adam_object/batch/' + self._type, all_data)
+
+        if code != 200:
+            raise RuntimeError(
+                "Server status code: %s; Response: %s" % (code, response))
+
+        return [r['uuid'] for r in response['items']]
+
     def _insert(self, data):
         code, response = self._rest.post(
             '/adam_object/single/' + self._type, data)
@@ -114,7 +124,7 @@ class AdamObjects(object):
 
         return response['items']
 
-    def _get_children_json(self, uuid):
+    def _get_children_types_and_uuids(self, uuid):
         code, response = self._rest.get(
             '/adam_object/by_parent/' + self._type + '/' + uuid)
 
@@ -127,13 +137,21 @@ class AdamObjects(object):
         if response is None:
             return []
 
+        # Format will be like [['SinglePropagation', 'uuid1'], ['LsstAccessCalculation', 'uuid2']]
+        return zip(response['childTypes'], response['childUuids'])
+
+    def _get_child_json(self, child_type, child_uuid):
+        retriever = AdamObjects(self._rest, child_type)
+        return [retriever._get_json(child_uuid),
+                retriever.get_runnable_state(child_uuid),
+                child_type]
+
+    def _get_children_json(self, uuid):
         child_json_list = []
-        for child_type, child_uuid in zip(response['childTypes'], response['childUuids']):
+        for child_type, child_uuid in self._get_children_types_and_uuids(uuid):
             print('Fetching ' + child_uuid + ' of type ' + child_type)
-            retriever = AdamObjects(self._rest, child_type)
-            child_json_list.append([retriever._get_json(child_uuid),
-                                    retriever.get_runnable_state(child_uuid),
-                                    child_type])
+            child_json_list.append(
+                self._get_child_json(child_type, child_uuid))
         return child_json_list
 
     def delete(self, uuid):
